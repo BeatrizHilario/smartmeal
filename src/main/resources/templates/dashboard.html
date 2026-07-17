@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard- SmartMeal</title>
+    <!-- Tailwind CSS para estilização rápida -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para os ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Rancho&display=swap" rel="stylesheet">
+    <!-- Link para o arquivo CSS modularizado do Dashboard -->
+    <link rel="stylesheet" th:href="@{/dashboard.css}">
+    <link rel="shortcut icon" th:href="@{/imagens/favicon.png}" type="image/png">
+</head>
+<body class="text-textoEscuro font-sans h-screen flex">
+
+<!-- Ondas Decorativas de Fundo -->
+<svg class="ondas-bg" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#84A98C" fill-opacity="0.5" d="M0,224L48,229.3C96,235,192,245,288,234.7C384,224,480,192,576,192C672,192,768,224,864,250.7C960,277,1056,299,1152,282.7C1248,267,1344,213,1392,186.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    <path fill="#84A98C" d="M0,288L60,282.7C120,277,240,267,360,240C480,213,600,171,720,170.7C840,171,960,213,1080,240C1200,267,1320,277,1380,282.7L1440,288L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+</svg>
+
+<!-- MENU LATERAL (SIDEBAR) -->
+<aside class="hidden md:flex w-72 bg-verdeSalvia text-white rounded-r-[3rem] shadow-xl z-20 flex-col py-10 my-4 ml-0 relative transition-transform duration-300">    <div class="px-8 mb-12 flex justify-center items-center w-full">
+        <h1 class="text-5xl font-cursiva text-center">
+            Smart<span class="text-amareloMostarda">Meal</span>
+        </h1>
+    </div>
+
+    <nav class="flex-1 px-4 space-y-2">
+        <a href="#" class="flex items-center space-x-4 px-6 py-4 bg-white/20 rounded-2xl transition hover:bg-white/30 text-white font-medium">
+            <i class="fa-solid fa-house w-6 text-xl"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="javascript:void(0)" class="link-em-breve flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
+            <i class="fa-solid fa-book-open w-6 text-xl"></i>
+            <span>Diário Alimentar</span>
+        </a>
+
+        <a href="javascript:void(0)" class="link-em-breve flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
+            <i class="fa-solid fa-wallet w-6 text-xl"></i>
+            <span>Orçamento e Compras</span>
+        </a>
+
+        <a href="#" id="btn-abrir-editar-perfil" class="flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
+            <i class="fa-solid fa-user-gear w-6 text-xl"></i>
+            <span>Perfil e Restrições</span>
+        </a>
+    </nav>
+
+    <!-- Card de Meta Dinâmico com base no objetivo mapeado da IA -->
+    <div class="bg-black/15 p-4 rounded-2xl mt-auto mx-4 mb-2">
+        <div class="flex items-center text-amareloMostarda font-bold mb-1 text-sm">
+            <i class="fa-solid fa-bullseye mr-2 animate-pulse"></i> Foco Atual
+        </div>
+        <p class="text-white text-sm font-semibold capitalize">
+            <span th:if="${usuario.objetivo == 'emagrecer'}">Emagrecer</span>
+            <span th:if="${usuario.objetivo == 'manter'}">Manter Peso</span>
+            <span th:if="${usuario.objetivo == 'hipertrofia'}">Ganhar Massa</span>
+        </p>
+    </div>
+</aside>
+
+<!-- CONTEÚDO PRINCIPAL -->
+<main class="flex-1 px-5 md:px-12 py-8 md:py-10 h-full overflow-y-auto z-10 relative pb-28 md:pb-10 w-full">
+
+    <!-- ALERTA DE ERRO DA IA (Só aparece se a IA falhar) -->
+    <div th:if="${erroIA}" class="bg-red-50 border-l-[6px] border-red-500 text-red-700 p-4 mb-6 rounded-r-2xl shadow-sm flex items-center animate-fade-in" role="alert">
+        <i class="fa-solid fa-triangle-exclamation text-2xl mr-4 text-red-500"></i>
+        <div>
+            <h4 class="font-bold">Ops! Tivemos um contratempo.</h4>
+            <p class="text-sm font-medium" th:text="${erroIA}"></p>
+        </div>
+    </div>
+
+    <!-- HEADER DO CONTEÚDO -->
+    <header class="flex flex-col mb-8 md:mb-10 mt-2 md:mt-0 gap-3 md:gap-4">
+
+        <div class="flex justify-between items-center w-full">
+            <h2 class="text-4xl md:text-5xl font-cursiva text-textoEscuro"
+                th:text="'Bem-vindo(a), ' + ${usuario.nome} + '!'">
+                Bem-vindo(a)!
+            </h2>
+
+            <div class="flex items-center space-x-3 md:space-x-4 bg-cardBranco py-2 px-3 md:px-4 rounded-full shadow-sm border border-verdeSalvia/20 shrink-0">
+                <span class="hidden md:block font-semibold text-sm whitespace-nowrap" th:text="${usuario.nome}">Usuário</span>
+                <div class="w-10 h-10 rounded-full bg-verdeSalvia text-white flex items-center justify-center font-bold shadow-md cursor-pointer uppercase shrink-0"
+                     th:text="${usuario.nome != null && !usuario.nome.isEmpty()} ? ${usuario.nome.substring(0,1)} : 'U'">
+                    U
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 w-full">
+
+            <div class="flex-1">
+                <p th:if="${perfilIncompleto}" class="text-textoClaro font-medium text-sm md:text-base">
+                    Preencha seus dados corporais para desbloquear uma experiência 100% personalizada.
+                </p>
+                <p th:unless="${perfilIncompleto}" class="text-textoClaro text-sm md:text-base font-medium">
+                    Aqui está o resumo do seu planejamento nutricional de hoje.
+                </p>
+            </div>
+
+            <button th:if="${perfilIncompleto}" id="btn-completar-perfil" class="shrink-0 bg-amareloMostarda text-white px-5 py-3 md:py-1.5 rounded-full text-sm font-bold shadow-md hover:opacity-90 transition flex items-center justify-center w-full lg:w-max whitespace-nowrap">
+                <i class="fa-solid fa-unlock-keyhole mr-2"></i> Completar Perfil
+            </button>
+
+        </div>
+    </header>
+
+    <div th:if="${perfilIncompleto}" class="bg-cardBranco rounded-[2.5rem] p-8 shadow-md border-l-[12px] border-verdeSalvia max-w-5xl mx-auto mt-6">
+
+        <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-3">
+            <h3 class="font-bold text-2xl text-textoEscuro">
+                Ideias Saudáveis e Econômicas do Dia <i class="fa-solid fa-lightbulb text-amareloMostarda ml-2"></i>
+            </h3>
+
+            <button id="btn-gerar-outras" class="hidden md:flex text-verdeSalvia hover:text-verdeEscuro bg-verdeSalvia/10 px-3 py-1.5 rounded-lg font-bold text-sm items-center gap-1.5 transition"><i class="fa-solid fa-arrows-rotate"></i> Gerar outra
+            </button>
+        </div>
+
+        <div class="flex gap-2 mb-6 overflow-x-auto pb-1">
+            <button class="meal-btn-incompleto bg-verdeSalvia text-white px-5 py-2 rounded-full text-sm font-bold shadow-md transition transform hover:scale-105" data-tipo="Café da Manhã">Café da Manhã</button>
+            <button class="meal-btn-incompleto bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Almoço">Almoço</button>
+            <button class="meal-btn-incompleto bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Lanche">Lanche</button>
+            <button class="meal-btn-incompleto bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Jantar">Jantar</button>
+        </div>
+
+        <div id="texto-ideitas-ia" class="text-textoClaro font-medium text-sm leading-relaxed w-full mt-2" th:utext="${ideiasReceitas}">
+            Carregando sugestões inteligentes...
+        </div>
+
+        <p class="text-xs text-textoClaro/70 mt-3 italic border-t border-gray-100 pt-3">
+            *Estas são estimativas regionais baseadas no seu estado. Para um plano de refeições calculado exatamente para a sua TMB e peso, clique em "Completar Perfil" acima.
+        </p>
+    </div>
+
+    <!-- GRIDS DE INFORMAÇÃO -->
+    <div th:unless="${perfilIncompleto}" class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+
+        <div class="xl:col-span-2 space-y-8">
+
+            <div class="grid grid-cols-2 gap-6">
+
+                <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-fire"></i>
+                        </div>
+                        <span class="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs font-bold">HOJE</span>
+                    </div>
+                    <p class="text-textoClaro font-medium mb-1">Calorias Consumidas</p>
+                    <h3 class="text-3xl font-bold text-textoEscuro">
+                        0 <span class="text-lg text-textoClaro font-medium">/ <span th:text="${usuario.metaCaloricaKcal}"></span> kcal</span>
+                    </h3>
+                    <div class="w-full bg-gray-100 rounded-full h-3 mt-4">
+                        <div class="bg-orange-400 h-3 rounded-full transition-all duration-1000" style="width: 65%;"></div>
+                    </div>
+                </div>
+
+                <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative overflow-hidden">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-amareloMostarda/10 rounded-full"></div>
+                    <div class="flex justify-between items-center mb-4 relative z-10">
+                        <div class="w-12 h-12 rounded-2xl bg-amareloMostarda/20 text-amareloMostarda flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                        <span class="bg-amareloMostarda/10 text-amareloMostarda px-3 py-1 rounded-full text-xs font-bold">MÊS</span>
+                    </div>
+                    <p class="text-textoClaro font-medium mb-1 relative z-10">Orçamento Gasto</p>
+                    <h3 class="text-3xl font-bold text-textoEscuro relative z-10">
+                        R$ 0 <span class="text-lg text-textoClaro font-medium">/ R$ <span th:text="${usuario.orcamentoMaxMensal}"></span></span>
+                    </h3>
+                    <div class="w-full bg-gray-100 rounded-full h-3 mt-4 relative z-10">
+                        <div class="bg-amareloMostarda h-3 rounded-full transition-all duration-1000" style="width: 45%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-cardBranco rounded-[2.5rem] p-8 shadow-md border-l-[12px] border-amareloMostarda relative">
+
+                <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-3">
+                    <h3 id="titulo-refeicao-ia" class="font-bold text-2xl text-textoEscuro">
+                        Sugestão Inteligente <i class="fa-solid fa-wand-magic-sparkles text-amareloMostarda ml-1"></i>
+                    </h3>
+                    <button id="btn-gerar-sugestao" class="hidden md:flex text-verdeSalvia hover:text-verdeEscuro bg-verdeSalvia/10 px-3 py-1.5 rounded-lg font-bold text-sm items-center gap-1.5 transition">                        <i class="fa-solid fa-arrows-rotate"></i> Gerar Outra
+                    </button>
+                </div>
+
+                <div class="flex gap-2 mb-6 overflow-x-auto pb-1">
+                    <button class="meal-btn bg-verdeSalvia text-white px-5 py-2 rounded-full text-sm font-bold shadow-md transition transform hover:scale-105" data-tipo="Café da Manhã">Café da Manhã</button>
+                    <button class="meal-btn bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Almoço">Almoço</button>
+                    <button class="meal-btn bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Lanche">Lanche</button>
+                    <button class="meal-btn bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Jantar">Jantar</button>
+                </div>
+
+                <div id="container-dieta-ia" th:utext="${dietaReal?.planoAlimentar}">
+                    <div class="animate-pulse flex space-x-4">
+                        <div class="flex-1 space-y-4 py-1">
+                            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                            <div class="space-y-2">
+                                <div class="h-4 bg-gray-200 rounded"></div>
+                                <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="space-y-8">
+
+            <div class="bg-cardBranco p-8 rounded-[2rem] shadow-sm border border-verdeSalvia/10 text-center">
+                <h3 class="font-bold text-xl text-textoEscuro mb-2">Hidratação</h3>
+
+                <p class="text-sm font-medium text-textoClaro mb-6">Faltam <span id="agua-faltante" th:text="${usuario.metaAguaMl}">2000</span> ml para a meta</p>
+
+                <div class="flex justify-center space-x-2 mb-4" id="container-copos" th:data-meta="${usuario.metaAguaMl}">
+                    <svg class="copo-agua w-8 h-10 text-gray-200 cursor-pointer transition-all duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/></svg>
+                    <svg class="copo-agua w-8 h-10 text-gray-200 cursor-pointer transition-all duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/></svg>
+                    <svg class="copo-agua w-8 h-10 text-gray-200 cursor-pointer transition-all duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/></svg>
+                    <svg class="copo-agua w-8 h-10 text-gray-200 cursor-pointer transition-all duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/></svg>
+                    <svg class="copo-agua w-8 h-10 text-gray-200 cursor-pointer transition-all duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/></svg>
+                </div>
+
+                <p class="text-2xl font-bold text-textoEscuro mt-4"><span id="agua-consumida">0</span> <span class="text-sm font-medium text-textoClaro">ml</span></p>
+            </div>
+
+            <div class="bg-verdeSalvia text-white p-8 rounded-[2rem] shadow-lg relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10"></div>
+                <h3 class="font-bold text-xl mb-6 relative z-10">Refeições de Hoje</h3>
+
+                <ul class="space-y-4 relative z-10 font-medium opacity-90">
+                    <li class="flex items-center text-white/50">
+                        <i class="fa-regular fa-circle text-xl mr-3"></i>
+                        <span>Café da Manhã <span class="text-sm font-normal">(Pendente)</span></span>
+                    </li>
+                    <li class="flex items-center text-white/50">
+                        <i class="fa-regular fa-circle text-xl mr-3"></i>
+                        <span>Lanche <span class="text-sm font-normal">(Pendente)</span></span>
+                    </li>
+                    <li class="flex items-center text-white/50">
+                        <i class="fa-regular fa-circle text-xl mr-3"></i>
+                        <span>Almoço <span class="text-sm font-normal">(Pendente)</span></span>
+                    </li>
+                    <li class="flex items-center text-white/50">
+                        <i class="fa-regular fa-circle text-xl mr-3"></i>
+                        <span>Jantar <span class="text-sm font-normal">(Pendente)</span></span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-white rounded-t-[2rem] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] px-6 py-3 flex justify-between items-center z-40 pb-6">
+    <a href="#" class="flex flex-col items-center text-verdeSalvia">
+        <div class="bg-verdeSalvia/10 p-2 rounded-xl mb-1">
+            <i class="fa-solid fa-house text-lg"></i>
+        </div>
+        <span class="text-[10px] font-bold">Início</span>
+    </a>
+
+    <a href="javascript:void(0)" class="link-em-breve flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition">
+        <div class="p-2 mb-1">
+            <i class="fa-solid fa-book-open text-lg"></i>
+        </div>
+        <span class="text-[10px] font-medium">Diário</span>
+    </a>
+
+    <div class="relative -top-6">
+        <a href="javascript:void(0)" id="btn-fab-gerar" class="w-14 h-14 bg-textoEscuro text-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition transform border-4 border-[#FDFBF7]">
+            <i class="fa-solid fa-wand-magic-sparkles text-2xl text-amareloMostarda"></i>
+        </a>
+    </div>
+
+    <a href="javascript:void(0)" class="link-em-breve flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition">
+        <div class="p-2 mb-1">
+            <i class="fa-solid fa-wallet text-lg"></i>
+        </div>
+        <span class="text-[10px] font-medium">Compras</span>
+    </a>
+
+    <a href="#" id="btn-abrir-editar-perfil-mobile" class="flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition">
+        <div class="p-2 mb-1">
+            <i class="fa-solid fa-user-gear text-lg"></i>
+        </div>
+        <span class="text-[10px] font-medium">Perfil</span>
+    </a>
+</nav>
+
+<div id="modal-completar-perfil" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300">
+
+    <div class="bg-cardBranco p-8 rounded-[2rem] shadow-xl w-full max-w-2xl relative transform transition-transform scale-95 border-2 border-verdeSalvia/30">
+        <button id="btn-fechar-perfil" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold">&times;</button>
+
+        <div class="text-center mb-6">
+            <h3 class="text-3xl font-bold text-textoEscuro mb-1">Finalize seu Perfil</h3>
+            <p class="text-textoClaro font-medium">A Inteligência Artificial precisa dessas métricas corporais para os cálculos.</p>
+        </div>
+
+        <form th:action="@{/completarPerfil}" method="post" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div class="flex flex-col">
+                <label class="text-textoClaro font-bold text-sm mb-1">Altura (cm)</label>
+                <input type="number" name="alturaCm" placeholder="Ex: 165" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
+            </div>
+
+            <div class="flex flex-col">
+                <label class="text-textoClaro font-bold text-sm mb-1">Peso (kg)</label>
+                <input type="number" step="0.1" name="pesoKg" placeholder="Ex: 60.5" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
+            </div>
+
+            <div class="flex flex-col">
+                <label class="text-textoClaro font-bold text-sm mb-1">Gênero Biológico</label>
+                <select name="genero" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white">
+                    <option value="">Selecione...</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Feminino</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="text-textoClaro font-bold text-sm mb-1">Frequência de Atividade</label>
+                <select name="nivelAtividade" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white">
+                    <option value="sedentario">Sedentário (Nenhuma)</option>
+                    <option value="leve">Leve (1-3 dias/sem)</option>
+                    <option value="moderado">Moderado (3-5 dias/sem)</option>
+                    <option value="intenso">Intenso (6-7 dias/sem)</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="text-textoClaro font-bold text-sm mb-1">Objetivo Principal</label>
+                <select name="objetivo" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white">
+                    <option value="">Selecione...</option>
+                    <option value="emagrecer">Emagrecer / Secar</option>
+                    <option value="manter">Manter peso</option>
+                    <option value="hipertrofia">Ganhar Massa Muscular</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
+                <input type="text" name="restricaoAlimentar" placeholder="Ex: Nenhuma, Vegano, Lactose..." required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
+            </div>
+
+            <div class="flex flex-col">
+                <label class="text-textoClaro font-bold text-sm mb-1">Orçamento Mensal (R$)</label>
+                <input type="number" step="0.01" name="orcamentoMaxMensal" placeholder="Ex: 400.00" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
+            </div>
+
+            <div class="col-span-1 md:col-span-2 flex justify-center mt-4">
+                <button type="submit" class="bg-amareloMostarda text-white px-10 py-3 rounded-full font-bold text-lg hover:opacity-90 transition shadow-md w-full">
+                    Calcular Metas e Gerar Dieta
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="modal-editar-perfil" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300">
+
+    <div class="bg-cardBranco rounded-[2.5rem] shadow-xl w-full max-w-3xl relative transform transition-transform scale-95 border-2 border-verdeSalvia/30 max-h-[85vh] flex flex-col overflow-hidden">
+
+        <button id="btn-fechar-editar-perfil" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-10">&times;</button>
+
+        <div class="text-center p-8 pb-4 border-b border-gray-100 shrink-0">
+            <h3 class="text-3xl font-rancho font-bold text-textoEscuro mb-1">Configurações da Conta</h3>
+            <p class="text-textoClaro font-medium text-sm">Mantenha suas métricas atualizadas para a IA calcular tudo com precisão.</p>
+        </div>
+
+        <form th:action="@{/atualizarPerfil}" method="post" class="flex-1 overflow-y-auto p-8 pt-4 space-y-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex flex-col">
+                    <label class="text-textoClaro font-bold text-sm mb-1">Nome Completo</label>
+                    <input type="text" name="nome" th:value="${usuario.nome}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50">
+                </div>
+
+                <div class="flex flex-col">
+                    <label class="text-textoClaro font-bold text-sm mb-1">E-mail</label>
+                    <input type="email" name="email" th:value="${usuario.email}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50">
+                </div>
+
+                <div class="flex flex-col">
+                    <label class="text-textoClaro font-bold text-sm mb-1">Estado (UF)</label>
+                    <input type="text" name="estado" th:value="${usuario.estado}" placeholder="Ex: PA, SP, RJ" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50">
+                </div>
+
+                <div class="flex flex-col">
+                    <label class="text-textoClaro font-bold text-sm mb-1">Nova Senha (opcional)</label>
+                    <input type="password" name="novaSenha" placeholder="Deixe em branco para manter" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50">
+                </div>
+
+                <th:block th:unless="${perfilIncompleto}">
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Altura (cm)</label>
+                        <input type="number" name="alturaCm" th:value="${usuario.alturaCm}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Peso Atual (kg)</label>
+                        <input type="number" step="0.1" name="pesoKg" th:value="${usuario.pesoKg}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Gênero Biológico</label>
+                        <select name="genero" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white">
+                            <option value="M" th:selected="${usuario.genero == 'M'}">Masculino</option>
+                            <option value="F" th:selected="${usuario.genero == 'F'}">Feminino</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Frequência de Atividade</label>
+                        <select name="nivelAtividade" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white">
+                            <option value="sedentario" th:selected="${usuario.nivelAtividade == 'sedentario'}">Sedentário (Nenhuma)</option>
+                            <option value="leve" th:selected="${usuario.nivelAtividade == 'leve'}">Leve (1-3 dias/sem)</option>
+                            <option value="moderado" th:selected="${usuario.nivelAtividade == 'moderado'}">Moderado (3-5 dias/sem)</option>
+                            <option value="intenso" th:selected="${usuario.nivelAtividade == 'intenso'}">Intenso (6-7 dias/sem)</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Objetivo Principal</label>
+                        <select name="objetivo" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white">
+                            <option value="emagrecer" th:selected="${usuario.objetivo == 'emagrecer'}">Emagrecer / Secar</option>
+                            <option value="manter" th:selected="${usuario.objetivo == 'manter'}">Manter peso</option>
+                            <option value="hipertrofia" th:selected="${usuario.objetivo == 'hipertrofia'}">Ganhar Massa Muscular</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
+                        <input type="text" name="restricaoAlimentar" th:value="${usuario.restricaoAlimentar}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
+                    </div>
+
+                    <div class="flex flex-col md:col-span-2">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Orçamento Mensal para Alimentação (R$)</label>
+                        <input type="number" step="0.01" name="orcamentoMaxMensal" th:value="${usuario.orcamentoMaxMensal}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full md:w-1/2">
+                    </div>
+                </th:block>
+            </div>
+
+            <div class="bg-red-50 border border-red-200 rounded-2xl p-6 mt-6">
+                <h4 class="text-red-600 font-bold mb-2"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Zona de Perigo</h4>
+                <p class="text-sm text-red-500/80 mb-4">Ao excluir sua conta, seu perfil será apagado e todas as dietas geradas pela IA serão excluídas permanentemente. Esta ação é irreversível.</p>
+
+                <a th:href="@{/deletarConta}"
+                   onclick="return confirm('ATENÇÃO: Tem certeza absoluta? Seu perfil e histórico de IA serão destruídos para sempre.');"
+                   class="inline-flex items-center bg-red-500 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-red-600 transition duration-200 cursor-pointer">
+                    <i class="fa-solid fa-trash-can mr-2"></i> Excluir Minha Conta Permanentemente
+                </a>
+            </div>
+
+            <div class="flex justify-end pt-4 border-t border-gray-100 shrink-0 sticky bottom-0 bg-white">
+                <button type="button" class="px-6 py-2 rounded-full text-textoClaro hover:text-textoEscuro font-bold transition mr-2" onclick="document.getElementById('btn-fechar-editar-perfil').click()">Cancelar</button>
+                <button type="submit" class="bg-verdeSalvia text-white px-8 py-2.5 rounded-full font-bold shadow-md hover:bg-verdeEscuro transition">
+                    Salvar Alterações
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<div id="modal-em-breve" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300">
+    <div class="bg-cardBranco p-8 rounded-[2rem] shadow-xl w-full max-w-md text-center transform transition-transform scale-95 border-2 border-verdeSalvia/30">
+        <div class="text-6xl mb-4">🚧</div>
+        <h3 class="text-2xl font-rancho font-bold text-textoEscuro mb-2">Em Desenvolvimento!</h3>
+        <p class="text-textoClaro text-sm mb-6">Esta funcionalidade estará disponível em breve.</p>
+        <button id="btn-fechar-em-breve" class="bg-verdeSalvia text-white px-8 py-2.5 rounded-full font-bold shadow-md hover:bg-verdeEscuro transition w-full">
+            Entendi
+        </button>
+    </div>
+</div>
+
+<!-- Script modularizado do Dashboard -->
+<script th:src="@{/dashboard.js}"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+/* Ocultar barra de rolagem geral para manter o visual limpo */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #84A98C;
+    border-radius: 10px;
+}
+
+body {
+    background-color: #FDF7DF;
+    margin: 0;
+    overflow: hidden; /* Esconde overflow da página inteira, controlamos internamente */
+}
+
+.ondas-bg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.8;
+}

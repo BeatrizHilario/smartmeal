@@ -1,0 +1,358 @@
+/* Variáveis de Cores */
+:root {
+    --cor-fundo: #FDF8E2;
+    --cor-verde: #82A991;
+    --cor-amarelo: #FBCB1C;
+    --cor-texto-cinza: #5B5B5B;
+    --cor-branco: #FFFFFF;
+    --cor-input-borda: #D1CDBC;
+}
+
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--cor-fundo);
+    font-family: 'Rancho', cursive;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Fundo: Ondas Decorativas */
+.waves-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 35vh;
+    z-index: 1;
+    pointer-events: none;
+}
+.wave {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+.wave-back { height: 130%; }
+
+/* Container Centralizador da Home */
+.content-wrapper {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100vh;
+    padding-bottom: 18vh; 
+    padding-right: 12vw;
+    transition: filter 0.3s ease; /* Transição suave para o efeito blur */
+}
+
+/* --- LADO ESQUERDO: CARD VERDE --- */
+.card-boas-vindas {
+    background-color: var(--cor-verde);
+    padding: 50px 100px 50px 8vw;
+    border-radius: 0 120px 120px 0;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    position: relative;
+    min-width: 500px;
+}
+.icone-decorativo {
+    position: absolute;
+    top: 40px;
+    right: 55px;
+    transform: rotate(45deg); 
+}
+.titulo-menor {
+    font-size: 3rem;
+    color: var(--cor-texto-cinza);
+    font-weight: normal;
+    margin-bottom: -10px;
+}
+.logo-texto {
+    font-size: 5.9rem;
+    font-weight: normal;
+    line-height: 1;
+    margin-bottom: 10px;
+    margin-left: 30px;
+}
+.smart { color: var(--cor-branco); }
+.meal { color: var(--cor-amarelo); }
+.subtitulo {
+    font-size: 1.9rem;
+    color: var(--cor-texto-cinza);
+    line-height: 1.1;
+    max-width: 380px;
+}
+
+/* --- LADO DIREITO: INTERAÇÕES --- */
+.interacoes-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+.botoes-linha {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.btn {
+    font-family: 'Rancho', cursive;
+    font-size: 2.2rem;
+    color: var(--cor-branco);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+}
+.btn-registrar { background-color: var(--cor-verde); width: 240px; height: 65px; }
+.btn-login { background-color: var(--cor-amarelo); width: 240px; height: 65px; }
+.separador-icone { display: flex; align-items: center; justify-content: center; }
+.link-saber-mais {
+    font-size: 2.4rem;
+    color: var(--cor-texto-cinza);
+    text-decoration: none;
+    border-bottom: 2px solid var(--cor-texto-cinza); 
+    padding-bottom: 2px;
+}
+
+/* ================= COMPONENTES DOS MODAIS ================= */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(78, 78, 78, 0.2); /* Tom acinzentado suave */
+    backdrop-filter: blur(8px); /* Efeito desfoque profissional no fundo */
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Classe ativada por JS para exibir o modal */
+.modal-overlay.ativo {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-card {
+    background-color: #E2E2E2; /* Fundo cinza sutil vindo do seu protótipo */
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Variações de tamanhos para harmonia de proporções */
+.modal-largo { width: 700px; }
+.modal-medio { width: 550px; }
+.modal-estreito { width: 400px; }
+
+.modal-titulo {
+    font-size: 3.5rem;
+    color: var(--cor-texto-cinza);
+    margin-bottom: 25px;
+    border-bottom: 3px solid var(--cor-texto-cinza);
+    padding-bottom: 5px;
+    font-weight: normal;
+}
+
+.destaque-amarelo {
+    color: var(--cor-amarelo);
+}
+
+.btn-fechar {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    background: none;
+    border: none;
+    font-size: 2.5rem;
+    color: var(--cor-texto-cinza);
+    cursor: pointer;
+}
+.btn-fechar:hover { color: #000; }
+
+/* Formulários e Inputs Modernizados */
+.grid-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Duas colunas simétricas para o registro */
+    gap: 20px;
+    width: 100%;
+}
+
+.vertical-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    font-size: 1.8rem;
+    color: var(--cor-texto-cinza);
+}
+
+.form-group input, .form-group select {
+    font-family: 'Poppins', sans-serif; /* Fonte legível profissional */
+    font-size: 1rem;
+    padding: 12px 15px;
+    border: 1px solid var(--cor-input-borda);
+    border-radius: 12px;
+    background-color: var(--cor-branco);
+    color: #333;
+    outline: none;
+    width: 100%;
+}
+.form-group input:focus, .form-group select:focus {
+    border-color: var(--cor-verde);
+}
+
+.form-acoes {
+    grid-column: span 2;
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    width: 100%;
+}
+
+.vertical-form .form-acoes {
+    grid-column: auto;
+}
+
+.btn-acao {
+    background-color: var(--cor-verde);
+    width: 240px;
+    height: 55px;
+    font-size: 2rem;
+}
+
+.modal-texto-sobre {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: var(--cor-texto-cinza);
+    text-align: justify;
+}
+
+.col-total {
+    grid-column: 1 / -1 !important;
+}
+
+/* ================= RESPONSIVIDADE (MOBILE & TABLET) ================= */
+@media (max-width: 900px) {
+    .content-wrapper {
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-right: 0;
+        padding-bottom: 0;
+    }
+
+    /* O Card verde vira uma "aba" orgânica saindo da esquerda */
+    .card-boas-vindas {
+        min-width: unset;
+        width: 90%; /* Deixa um respiro do lado direito */
+        align-self: flex-start; /* Cola na margem esquerda */
+        border-radius: 0 100px 100px 0; /* Arredonda lindamente apenas a direita */
+        padding: 5vh 20px 5vh 5vw;
+        margin-top: 12vh; /* Espaço do topo da tela */
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Escondendo OS ÍCONES para um visual 100% clean */
+    .icone-decorativo,
+    .separador-icone {
+        display: none;
+    }
+
+    /* Ajustes finos de tipografia */
+    .logo-texto {
+        margin-left: 0;
+        font-size: 5rem;
+        margin-bottom: 5px;
+    }
+
+    .titulo-menor { font-size: 2.4rem; }
+
+    .subtitulo {
+        font-size: 1.5rem;
+        max-width: 260px;
+        margin-top: 5px;
+    }
+
+    /* Área dos Botões */
+    .interacoes-container {
+        margin-top: 6vh;
+        gap: 20px;
+        width: 100%;
+    }
+
+    /* Empilha os botões perfeitamente */
+    .botoes-linha {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+
+    /* Tamanho e formato pílula para os botões */
+    .btn {
+        width: 85vw;
+        max-width: 320px;
+        height: 65px;
+        font-size: 2.2rem;
+    }
+
+    .link-saber-mais {
+        font-size: 1.8rem;
+        margin-top: 15px;
+    }
+
+    /* === AJUSTES DOS MODAIS PARA CELULAR === */
+    .modal-largo, .modal-medio, .modal-estreito {
+        width: 90vw;
+        max-height: 85vh;
+        overflow-y: auto;
+        padding: 25px 20px;
+    }
+
+    .grid-form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-titulo { font-size: 2.8rem; }
+}
