@@ -15,7 +15,16 @@
 body {
     background-color: #FDF7DF;
     margin: 0;
-    overflow: hidden; /* Esconde overflow da página inteira, controlamos internamente */
+    /* REMOVA a linha "overflow: hidden;" daqui! Ela quebra o celular */
+}
+
+/* ADICIONE ISSO AQUI: Classe para ocultar a rolagem dos botões horizontalmente */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 .ondas-bg {

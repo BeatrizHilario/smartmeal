@@ -14,7 +14,7 @@
     <link rel="stylesheet" th:href="@{/dashboard.css}">
     <link rel="shortcut icon" th:href="@{/imagens/favicon.png}" type="image/png">
 </head>
-<body class="text-textoEscuro font-sans h-screen flex">
+<body class="text-textoEscuro font-sans h-[100dvh] flex flex-col md:flex-row">
 
 <!-- Ondas Decorativas de Fundo -->
 <svg class="ondas-bg" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
@@ -65,7 +65,7 @@
 </aside>
 
 <!-- CONTEÚDO PRINCIPAL -->
-<main class="flex-1 px-5 md:px-12 py-8 md:py-10 h-full overflow-y-auto z-10 relative pb-28 md:pb-10 w-full">
+<main class="flex-1 px-5 md:px-12 py-8 md:py-10 h-full overflow-y-auto z-10 relative pb-32 md:pb-10 w-full">
 
     <!-- ALERTA DE ERRO DA IA (Só aparece se a IA falhar) -->
     <div th:if="${erroIA}" class="bg-red-50 border-l-[6px] border-red-500 text-red-700 p-4 mb-6 rounded-r-2xl shadow-sm flex items-center animate-fade-in" role="alert">
@@ -80,7 +80,7 @@
     <header class="flex flex-col mb-8 md:mb-10 mt-2 md:mt-0 gap-3 md:gap-4">
 
         <div class="flex justify-between items-center w-full">
-            <h2 class="text-4xl md:text-5xl font-cursiva text-textoEscuro"
+            <h2 class="text-3xl md:text-5xl font-cursiva text-textoEscuro leading-tight"
                 th:text="'Bem-vindo(a), ' + ${usuario.nome} + '!'">
                 Bem-vindo(a)!
             </h2>
@@ -123,11 +123,15 @@
             </button>
         </div>
 
-        <div class="flex gap-2 mb-6 overflow-x-auto pb-1">
-            <button class="meal-btn-incompleto bg-verdeSalvia text-white px-5 py-2 rounded-full text-sm font-bold shadow-md transition transform hover:scale-105" data-tipo="Café da Manhã">Café da Manhã</button>
-            <button class="meal-btn-incompleto bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Almoço">Almoço</button>
-            <button class="meal-btn-incompleto bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Lanche">Lanche</button>
-            <button class="meal-btn-incompleto bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Jantar">Jantar</button>
+        <!-- ATUALIZE A DIV E OS BOTÕES PARA FICAREM ASSIM (Faça isso nos 2 blocos onde os botões aparecem): -->
+        <div class="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar">
+            <button class="meal-btn shrink-0 whitespace-nowrap bg-verdeSalvia text-white px-5 py-2 rounded-full text-sm font-bold shadow-md transition transform hover:scale-105" data-tipo="Café da Manhã">Café da Manhã</button>
+
+            <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Almoço">Almoço</button>
+
+            <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Lanche">Lanche</button>
+
+            <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Jantar">Jantar</button>
         </div>
 
         <div id="texto-ideitas-ia" class="text-textoClaro font-medium text-sm leading-relaxed w-full mt-2" th:utext="${ideiasReceitas}">
@@ -190,11 +194,15 @@
                     </button>
                 </div>
 
-                <div class="flex gap-2 mb-6 overflow-x-auto pb-1">
-                    <button class="meal-btn bg-verdeSalvia text-white px-5 py-2 rounded-full text-sm font-bold shadow-md transition transform hover:scale-105" data-tipo="Café da Manhã">Café da Manhã</button>
-                    <button class="meal-btn bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Almoço">Almoço</button>
-                    <button class="meal-btn bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Lanche">Lanche</button>
-                    <button class="meal-btn bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Jantar">Jantar</button>
+                <!-- ATUALIZE A DIV E OS BOTÕES PARA FICAREM ASSIM (Faça isso nos 2 blocos onde os botões aparecem): -->
+                <div class="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar">
+                    <button class="meal-btn shrink-0 whitespace-nowrap bg-verdeSalvia text-white px-5 py-2 rounded-full text-sm font-bold shadow-md transition transform hover:scale-105" data-tipo="Café da Manhã">Café da Manhã</button>
+
+                    <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Almoço">Almoço</button>
+
+                    <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Lanche">Lanche</button>
+
+                    <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Jantar">Jantar</button>
                 </div>
 
                 <div id="container-dieta-ia" th:utext="${dietaReal?.planoAlimentar}">
