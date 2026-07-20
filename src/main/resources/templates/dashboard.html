@@ -65,8 +65,8 @@
 </aside>
 
 <!-- CONTEÚDO PRINCIPAL -->
-<main class="flex-1 px-5 md:px-12 py-8 md:py-10 h-full overflow-y-auto z-10 relative pb-32 md:pb-10 w-full">
-
+<!-- Forçamos o fundo off-white no mobile e transparente no desktop -->
+<main class="flex-1 px-4 md:px-12 py-6 md:py-10 h-full overflow-y-auto z-10 relative pb-32 md:pb-10 w-full bg-[#FAFAFA] md:bg-transparent">
     <!-- ALERTA DE ERRO DA IA (Só aparece se a IA falhar) -->
     <div th:if="${erroIA}" class="bg-red-50 border-l-[6px] border-red-500 text-red-700 p-4 mb-6 rounded-r-2xl shadow-sm flex items-center animate-fade-in" role="alert">
         <i class="fa-solid fa-triangle-exclamation text-2xl mr-4 text-red-500"></i>
