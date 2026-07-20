@@ -119,6 +119,19 @@
     </div>
 </div>
 
+<script th:inline="javascript">
+    /* O Thymeleaf injeta o valor do Java aqui. Se não houver nada, fica nulo. */
+    var mensagemErro = /*[[${erro}]]*/ null;
+    if (mensagemErro) {
+        alert("⚠️ Ops: " + mensagemErro);
+    }
+
+    var mensagemSucesso = /*[[${sucesso}]]*/ null;
+    if (mensagemSucesso) {
+        alert("✅ Sucesso: " + mensagemSucesso);
+    }
+</script>
+
 <script th:src="@{/login.js}"></script>
 </body>
 </html>

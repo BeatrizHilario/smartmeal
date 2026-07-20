@@ -31,29 +31,40 @@ public class UsuarioController {
     private DietaService dietaService;
 
     @PostMapping("/cadastrar")
-    public String cadastrar(Usuario usuario) {
+    public String cadastrar(Usuario usuario, RedirectAttributes redirectAttributes) {
         try {
            String senhaCripto = SenhaUtils.criptografar(usuario.getSenha());
            usuario.setSenha(senhaCripto);
 
             usuarioService.cadastrarUsuario(usuario);
-           return "redirect:/login?cadastroSucesso=true";
+
+            redirectAttributes.addFlashAttribute("sucesso", "Conta criada com sucesso! Faça seu login.");
+           return "redirect:/login";
         } catch (RuntimeException e) {
             e.printStackTrace();
-            return "redirect:/login?erroCadastro=true";
+
+            redirectAttributes.addFlashAttribute("erro", "Esse e-mail já está em uso ou houve um erro no cadastro.");
+            return "redirect:/login";
         }
     }
 
     @PostMapping("/fazerLogin")
-    public String fazerLogin(String email, String senha, HttpSession session) {
+    public String fazerLogin(String email, String senha, HttpSession session, RedirectAttributes redirectAttributes) {
         Usuario usuarioBanco = usuarioRepository.findByEmail(email);
 
-        if (usuarioBanco != null && SenhaUtils.verificar(senha, usuarioBanco.getSenha())) {
+        if (usuarioBanco != null) {
+            redirectAttributes.addFlashAttribute("erro", "Este e-mail não está cadastrado.");
+            return "redirect:/login";
+        }
+
+        if (SenhaUtils.verificar(senha, usuarioBanco.getSenha())) {
             session.setAttribute("usuarioLogado", usuarioBanco);
             return "redirect:/dashboard";
-        }else {
-            return "redirect:/login?erro=true";
+        } else {
+            redirectAttributes.addFlashAttribute("erro", "Senha incorreta. Tente novamente.");
+            return "redirect:/login";
         }
+
     }
 
     @PostMapping("/completarPerfil")
