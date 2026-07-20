@@ -195,10 +195,47 @@ public class ArtificialIntelligenceService {
         } catch (org.springframework.web.client.HttpClientErrorException e) {
             System.err.println("=== ERRO DETALHADO DO GOOGLE NA SUGESTAO ===");
             System.err.println(e.getResponseBodyAsString());
-            return "1. Crepioca de frango desfiado.\n2. Salada de grão-de-bico com atum.\n3. Omelete de forno com espinafre.";
+            return getReceitaFallback();
         } catch (Exception e) {
             e.printStackTrace();
-            return "1. Crepioca de frango desfiado.\n2. Salada de grão-de-bico com atum.\n3. Omelete de forno com espinafre.";
+            return getReceitaFallback();
         }
+    }
+
+    // Método auxiliar (adicione isso no final da classe, antes da última chave })
+    private String getReceitaFallback() {
+        return """
+            <!-- Aviso de IA Cansada -->
+            <div class="bg-orange-50 border-l-4 border-orange-400 p-3 mb-5 rounded-r-xl shadow-sm">
+                <p class="text-xs text-orange-700 font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> A IA precisa de um fôlego!</p>
+                <p class="text-xs text-orange-600 mt-1">Devido ao alto volume de testes, atingimos o limite de buscas. Enquanto ela descansa uns minutinhos, preparamos esta receita clássica para você:</p>
+            </div>
+        
+            <!-- Receita Curinga Fixa -->
+            <div class="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
+                <div class="bg-verdeSalvia/10 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <h4 class="font-bold text-lg text-verdeSalvia text-center md:text-left w-full md:w-auto">Crepioca Proteica de Frango</h4>
+                    <div class="bg-white px-4 py-2 rounded-2xl shadow-sm border border-verdeSalvia/20 whitespace-nowrap">
+                        <span class="text-sm text-textoClaro font-semibold mr-1">Total:</span>
+                        <span class="text-xl font-bold text-verdeSalvia">280 kcal</span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <p class="text-sm font-bold text-textoEscuro mb-3"><i class="fa-solid fa-basket-shopping mr-2 text-amareloMostarda"></i>Ingredientes:</p>
+                    <ul class="list-disc pl-5 mb-6 text-sm text-textoClaro md:columns-2 gap-8 space-y-2 md:space-y-0 marker:text-amareloMostarda">
+                        <li class="mb-2">2 colheres de sopa de goma de tapioca</li>
+                        <li class="mb-2">1 ovo inteiro</li>
+                        <li class="mb-2">3 colheres de sopa de frango desfiado já pronto</li>
+                        <li class="mb-2">1 colher de chá de azeite</li>
+                        <li class="mb-2">Sal e orégano a gosto</li>
+                    </ul>
+                    <div class="flex flex-wrap gap-3 pt-4 border-t border-gray-100">
+                        <span class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center"><div class="w-2 h-2 rounded-full bg-red-500 mr-2"></div> 22g Proteína</span>
+                        <span class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center"><div class="w-2 h-2 rounded-full bg-blue-500 mr-2"></div> 18g Carbo</span>
+                        <span class="bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center"><div class="w-2 h-2 rounded-full bg-yellow-500 mr-2"></div> 10g Gordura</span>
+                    </div>
+                </div>
+            </div>
+            """;
     }
 }
