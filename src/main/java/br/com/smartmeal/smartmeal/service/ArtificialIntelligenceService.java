@@ -202,7 +202,6 @@ public class ArtificialIntelligenceService {
         }
     }
 
-    // Método auxiliar (adicione isso no final da classe, antes da última chave })
     private String getReceitaFallback() {
         return """
             <!-- Aviso de IA Cansada -->
