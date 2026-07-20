@@ -118,35 +118,59 @@
         </div>
     </header>
 
-    <div th:if="${perfilIncompleto}" class="bg-cardBranco rounded-[2.5rem] p-8 shadow-md border-l-[12px] border-verdeSalvia max-w-5xl mx-auto mt-6">
+    <!-- SEÇÃO PERFIL INCOMPLETO (Responsivo: Creme no Mobile, Branco no Desktop) -->
+    <!-- Adicionado -mx-1 para dar uma leve alargada puxando pras bordas no mobile -->
+    <div th:if="${perfilIncompleto}" class="flex flex-col gap-4 mb-24 md:mb-0 mt-2 md:mt-6 -mx-1 md:mx-0">
 
-        <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-3">
-            <h3 class="font-bold text-2xl text-textoEscuro">
-                Ideias Saudáveis e Econômicas do Dia <i class="fa-solid fa-lightbulb text-amareloMostarda ml-2"></i>
-            </h3>
+        <!-- Card Principal -->
+        <!-- Mudei o padding mobile para py-6 px-3 para deixar o card largo e quase quadrado -->
+        <div class="rounded-3xl md:rounded-[2.5rem] py-6 px-3 md:p-8 shadow-sm md:shadow-md md:border-l-[12px] border-verdeSalvia bg-[#FDF7DF] md:bg-cardBranco max-w-5xl mx-auto w-full">
 
-            <button id="btn-gerar-outras" class="hidden md:flex text-verdeSalvia hover:text-verdeEscuro bg-verdeSalvia/10 px-3 py-1.5 rounded-lg font-bold text-sm items-center gap-1.5 transition"><i class="fa-solid fa-arrows-rotate"></i> Gerar outra
+            <div class="flex flex-col md:flex-row justify-between items-center mb-4 md:border-b border-gray-100 pb-3 px-2 md:px-0">
+                <h3 class="font-bold text-xl md:text-2xl text-textoEscuro text-center md:text-left mb-3 md:mb-0">
+                    Ideias Saudáveis e Econômicas do Dia <i class="hidden md:inline fa-solid fa-lightbulb text-amareloMostarda ml-2"></i>
+                </h3>
+                <button id="btn-gerar-outras" class="hidden md:flex text-verdeSalvia hover:text-verdeEscuro bg-verdeSalvia/10 px-3 py-1.5 rounded-lg font-bold text-sm items-center gap-1.5 transition">
+                    <i class="fa-solid fa-arrows-rotate"></i> Gerar outra
+                </button>
+            </div>
+
+            <!-- Botões de Refeição (justify-start corrige o erro de cortar o lado esquerdo!) -->
+            <div class="flex gap-2 mb-5 md:mb-6 overflow-x-auto pb-2 no-scrollbar justify-start px-2 md:px-0">
+                <button class="meal-btn-incompleto shrink-0 whitespace-nowrap bg-verdeSalvia text-white px-5 py-2 rounded-full text-sm font-bold shadow-md transition transform hover:scale-105" data-tipo="Café da Manhã">Café da Manhã</button>
+                <button class="meal-btn-incompleto shrink-0 whitespace-nowrap bg-white md:bg-gray-100 text-textoClaro hover:bg-gray-50 md:hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold shadow-sm md:shadow-none transition transform hover:scale-105" data-tipo="Almoço">Almoço</button>
+                <button class="meal-btn-incompleto shrink-0 whitespace-nowrap bg-white md:bg-gray-100 text-textoClaro hover:bg-gray-50 md:hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold shadow-sm md:shadow-none transition transform hover:scale-105" data-tipo="Lanche">Lanche</button>
+                <button class="meal-btn-incompleto shrink-0 whitespace-nowrap bg-white md:bg-gray-100 text-textoClaro hover:bg-gray-50 md:hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold shadow-sm md:shadow-none transition transform hover:scale-105" data-tipo="Jantar">Jantar</button>
+            </div>
+
+            <!-- "Card" Interno da IA (Ficou mais largo com p-4 no lugar de p-5) -->
+            <div class="bg-white md:bg-transparent rounded-3xl md:rounded-none p-4 md:p-0 shadow-sm md:shadow-none">
+                <div id="texto-ideitas-ia" class="text-textoEscuro md:text-textoClaro font-medium text-sm leading-relaxed w-full" th:utext="${ideiasReceitas}">
+                    Carregando sugestões inteligentes...
+                </div>
+            </div>
+
+            <p class="text-[10px] md:text-xs text-textoClaro/70 mt-4 text-center md:text-left leading-tight md:border-t border-gray-100 md:pt-3 px-2 md:px-0">
+                *Estas são estimativas regionais baseadas no seu estado. Para um plano de refeições calculado exatamente para a sua TMB e peso, complete o perfil.
+            </p>
+        </div>
+
+        <!-- Banner Laranja de Completar Perfil -->
+        <div onclick="document.getElementById('modal-completar-perfil').classList.remove('hidden'); setTimeout(() => { document.getElementById('modal-completar-perfil').classList.remove('opacity-0'); document.getElementById('modal-completar-perfil').querySelector('div').classList.remove('scale-95'); }, 10);"
+             class="md:hidden bg-gradient-to-r from-amareloMostarda to-[#E0A10D] rounded-[1.5rem] p-4 flex items-center justify-between shadow-md cursor-pointer transform transition hover:scale-105 mx-auto w-full max-w-md">
+
+            <div class="flex items-center gap-3 flex-1 pr-2">
+                <i class="fa-solid fa-lock text-white/80 text-xl ml-1 shrink-0"></i>
+                <p class="text-white text-xs font-medium leading-tight">
+                    Complete seu perfil para mais opções personalizadas e desbloquear as receitas!
+                </p>
+            </div>
+
+            <button class="bg-white text-amareloMostarda font-bold text-xs px-4 py-2.5 rounded-full shadow-sm whitespace-nowrap shrink-0 pointer-events-none">
+                Completar Perfil
             </button>
         </div>
 
-        <!-- ATUALIZE A DIV E OS BOTÕES PARA FICAREM ASSIM (Faça isso nos 2 blocos onde os botões aparecem): -->
-        <div class="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar">
-            <button class="meal-btn shrink-0 whitespace-nowrap bg-verdeSalvia text-white px-5 py-2 rounded-full text-sm font-bold shadow-md transition transform hover:scale-105" data-tipo="Café da Manhã">Café da Manhã</button>
-
-            <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Almoço">Almoço</button>
-
-            <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Lanche">Lanche</button>
-
-            <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Jantar">Jantar</button>
-        </div>
-
-        <div id="texto-ideitas-ia" class="text-textoClaro font-medium text-sm leading-relaxed w-full mt-2" th:utext="${ideiasReceitas}">
-            Carregando sugestões inteligentes...
-        </div>
-
-        <p class="text-xs text-textoClaro/70 mt-3 italic border-t border-gray-100 pt-3">
-            *Estas são estimativas regionais baseadas no seu estado. Para um plano de refeições calculado exatamente para a sua TMB e peso, clique em "Completar Perfil" acima.
-        </p>
     </div>
 
     <!-- GRIDS DE INFORMAÇÃO -->
