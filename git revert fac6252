@@ -1,0 +1,11 @@
+[33m503ab2b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Fix: Tela mobile 4
+[33m368771f[m Fix: Tela mobile 3
+[33mfac6252[m Fix: Tela mobile 2
+[33m23f925e[m Fix: Tela mobile
+[33me15f78f[m Fix: Fix: Passando nome do banco MongoDB em propriedade separada
+[33md5b83fd[m Fix: Alterando as configurações do MongoDB
+[33m3be90de[m Fix: Alterando as configurações do MySQL
+[33m967ca95[m Fix: Alterando as configurações de Banco de Dados
+[33m6a9c4ed[m Fix: Removendo acentos do application.properties para evitar erros
+[33mde20f44[m Fix: Forçando UTF-8 na codificação Maven
+[33mb5356d1[m Primeiro commit do SmartMeal, layout e IA

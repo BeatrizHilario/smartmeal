@@ -77,38 +77,44 @@
     </div>
 
     <!-- HEADER DO CONTEÚDO -->
-    <header class="flex flex-col mb-8 md:mb-10 mt-2 md:mt-0 gap-3 md:gap-4">
+    <header class="flex flex-col mb-4 md:mb-10 mt-2 md:mt-0 gap-2 md:gap-4">
 
-        <div class="flex justify-between items-center w-full">
-            <h2 class="text-3xl md:text-5xl font-cursiva text-textoEscuro leading-tight"
-                th:text="'Bem-vindo(a), ' + ${usuario.nome} + '!'">
-                Bem-vindo(a)!
-            </h2>
+        <div class="flex justify-between items-start md:items-center w-full">
+            <div>
+                <h2 class="text-4xl md:text-5xl font-cursiva text-textoEscuro leading-tight"
+                    th:text="'Bem-vindo(a), ' + ${usuario.nome} + '!'">
+                    Bem-vindo(a)!
+                </h2>
+                <!-- Subtítulo exclusivo do Mobile -->
+                <p th:if="${perfilIncompleto}" class="md:hidden text-textoClaro text-sm mt-1 font-medium">
+                    Ficamos felizes em ajudar você a cozinhar melhor e economizar!
+                </p>
+            </div>
 
-            <div class="flex items-center space-x-3 md:space-x-4 bg-cardBranco py-2 px-3 md:px-4 rounded-full shadow-sm border border-verdeSalvia/20 shrink-0">
+            <!-- Avatar: Fundo transparente no mobile, fundo branco no desktop (md:) -->
+            <div class="flex items-center space-x-3 md:space-x-4 md:bg-cardBranco md:py-2 md:px-4 md:rounded-full md:shadow-sm md:border border-verdeSalvia/20 shrink-0">
                 <span class="hidden md:block font-semibold text-sm whitespace-nowrap" th:text="${usuario.nome}">Usuário</span>
-                <div class="w-10 h-10 rounded-full bg-verdeSalvia text-white flex items-center justify-center font-bold shadow-md cursor-pointer uppercase shrink-0"
+                <div class="w-12 h-12 md:w-10 md:h-10 rounded-full bg-verdeSalvia text-white flex items-center justify-center font-bold shadow-md cursor-pointer uppercase shrink-0 text-lg md:text-base"
                      th:text="${usuario.nome != null && !usuario.nome.isEmpty()} ? ${usuario.nome.substring(0,1)} : 'U'">
                     U
                 </div>
             </div>
         </div>
 
-        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 w-full">
-
+        <!-- Textos e Botão antigos (Escondidos no mobile, visíveis no Desktop) -->
+        <div class="hidden md:flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 w-full mt-2">
             <div class="flex-1">
-                <p th:if="${perfilIncompleto}" class="text-textoClaro font-medium text-sm md:text-base">
+                <p th:if="${perfilIncompleto}" class="text-textoClaro font-medium text-base">
                     Preencha seus dados corporais para desbloquear uma experiência 100% personalizada.
                 </p>
-                <p th:unless="${perfilIncompleto}" class="text-textoClaro text-sm md:text-base font-medium">
+                <p th:unless="${perfilIncompleto}" class="text-textoClaro text-base font-medium">
                     Aqui está o resumo do seu planejamento nutricional de hoje.
                 </p>
             </div>
 
-            <button th:if="${perfilIncompleto}" id="btn-completar-perfil" class="shrink-0 bg-amareloMostarda text-white px-5 py-3 md:py-1.5 rounded-full text-sm font-bold shadow-md hover:opacity-90 transition flex items-center justify-center w-full lg:w-max whitespace-nowrap">
+            <button th:if="${perfilIncompleto}" id="btn-completar-perfil" class="shrink-0 bg-amareloMostarda text-white px-5 py-1.5 rounded-full text-sm font-bold shadow-md hover:opacity-90 transition flex items-center justify-center w-max whitespace-nowrap">
                 <i class="fa-solid fa-unlock-keyhole mr-2"></i> Completar Perfil
             </button>
-
         </div>
     </header>
 
