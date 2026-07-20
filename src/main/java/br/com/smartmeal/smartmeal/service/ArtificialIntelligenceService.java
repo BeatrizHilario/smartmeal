@@ -211,22 +211,22 @@ public class ArtificialIntelligenceService {
         // Escolhe a receita baseada no tipo de refeição
         switch (tipoRefeicao.toLowerCase()) {
             case "almoço":
-                titulo = "PF Saudável e Econômico";
+                titulo = "Filé de Frango Grelhado";
                 calorias = "420 kcal";
                 ingredientes = "<li class=\"mb-2\">4 colheres de sopa de arroz</li><li class=\"mb-2\">1 concha de feijão</li><li class=\"mb-2\">1 filé de frango grelhado (100g)</li><li class=\"mb-2\">Salada verde à vontade</li><li class=\"mb-2\">1 fio de azeite</li>";
                 macros = "<span class=\"bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-red-500 mr-2\"></div> 30g Proteína</span><span class=\"bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-blue-500 mr-2\"></div> 45g Carbo</span><span class=\"bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-yellow-500 mr-2\"></div> 12g Gordura</span>";
                 break;
             case "lanche":
-                titulo = "Creme de Aveia com Banana";
-                calorias = "210 kcal";
-                ingredientes = "<li class=\"mb-2\">3 colheres de sopa de aveia em flocos</li><li class=\"mb-2\">100ml de leite (ou água)</li><li class=\"mb-2\">1 banana amassada</li><li class=\"mb-2\">Canela a gosto</li>";
-                macros = "<span class=\"bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-red-500 mr-2\"></div> 6g Proteína</span><span class=\"bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-blue-500 mr-2\"></div> 38g Carbo</span><span class=\"bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-yellow-500 mr-2\"></div> 4g Gordura</span>";
+                titulo = "Muffin de Banana Fit";
+                calorias = "180 kcal";
+                ingredientes = "<li class=\"mb-2\">1 banana madura amassada</li><li class=\"mb-2\">1 ovo inteiro</li><li class=\"mb-2\">2 colheres de sopa de farelo de aveia</li><li class=\"mb-2\">1 colher de chá de fermento em pó</li><li class=\"mb-2\">Canela a gosto (misture e asse por 15 min)</li>";
+                macros = "<span class=\"bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-red-500 mr-2\"></div> 8g Proteína</span><span class=\"bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-blue-500 mr-2\"></div> 25g Carbo</span><span class=\"bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-yellow-500 mr-2\"></div> 6g Gordura</span>";
                 break;
             case "jantar":
-                titulo = "Sopa Nutritiva de Legumes";
-                calorias = "250 kcal";
-                ingredientes = "<li class=\"mb-2\">1 batata pequena em cubos</li><li class=\"mb-2\">1 cenoura em rodelas</li><li class=\"mb-2\">100g de carne moída magra</li><li class=\"mb-2\">Cheiro-verde e temperos a gosto</li>";
-                macros = "<span class=\"bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-red-500 mr-2\"></div> 24g Proteína</span><span class=\"bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-blue-500 mr-2\"></div> 22g Carbo</span><span class=\"bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-yellow-500 mr-2\"></div> 8g Gordura</span>";
+                titulo = "Hambúrguer de Patinho Fit";
+                calorias = "350 kcal";
+                ingredientes = "<li class=\"mb-2\">1 pão de hambúrguer integral</li><li class=\"mb-2\">1 hambúrguer caseiro de patinho magro (120g)</li><li class=\"mb-2\">1 fatia de queijo muçarela light</li><li class=\"mb-2\">Folhas de alface e rodelas de tomate à vontade</li><li class=\"mb-2\">1 colher de chá de maionese light (ou requeijão light)</li>";
+                macros = "<span class=\"bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-red-500 mr-2\"></div> 35g Proteína</span><span class=\"bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-blue-500 mr-2\"></div> 30g Carbo</span><span class=\"bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-yellow-500 mr-2\"></div> 12g Gordura</span>";
                 break;
             default: // Café da Manhã
                 titulo = "Crepioca Proteica de Frango";
