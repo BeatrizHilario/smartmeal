@@ -195,14 +195,48 @@ public class ArtificialIntelligenceService {
         } catch (org.springframework.web.client.HttpClientErrorException e) {
             System.err.println("=== ERRO DETALHADO DO GOOGLE NA SUGESTAO ===");
             System.err.println(e.getResponseBodyAsString());
-            return getReceitaFallback();
+            return getReceitaFallback(tipoRefeicao); // <-- Passando a refeição aqui
         } catch (Exception e) {
             e.printStackTrace();
-            return getReceitaFallback();
+            return getReceitaFallback(tipoRefeicao); // <-- E aqui
         }
     }
 
-    private String getReceitaFallback() {
+    private String getReceitaFallback(String tipoRefeicao) {
+        String titulo;
+        String calorias;
+        String ingredientes;
+        String macros;
+
+        // Escolhe a receita baseada no tipo de refeição
+        switch (tipoRefeicao.toLowerCase()) {
+            case "almoço":
+                titulo = "PF Saudável e Econômico";
+                calorias = "420 kcal";
+                ingredientes = "<li class=\"mb-2\">4 colheres de sopa de arroz</li><li class=\"mb-2\">1 concha de feijão</li><li class=\"mb-2\">1 filé de frango grelhado (100g)</li><li class=\"mb-2\">Salada verde à vontade</li><li class=\"mb-2\">1 fio de azeite</li>";
+                macros = "<span class=\"bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-red-500 mr-2\"></div> 30g Proteína</span><span class=\"bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-blue-500 mr-2\"></div> 45g Carbo</span><span class=\"bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-yellow-500 mr-2\"></div> 12g Gordura</span>";
+                break;
+            case "lanche":
+                titulo = "Creme de Aveia com Banana";
+                calorias = "210 kcal";
+                ingredientes = "<li class=\"mb-2\">3 colheres de sopa de aveia em flocos</li><li class=\"mb-2\">100ml de leite (ou água)</li><li class=\"mb-2\">1 banana amassada</li><li class=\"mb-2\">Canela a gosto</li>";
+                macros = "<span class=\"bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-red-500 mr-2\"></div> 6g Proteína</span><span class=\"bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-blue-500 mr-2\"></div> 38g Carbo</span><span class=\"bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-yellow-500 mr-2\"></div> 4g Gordura</span>";
+                break;
+            case "jantar":
+                titulo = "Sopa Nutritiva de Legumes";
+                calorias = "250 kcal";
+                ingredientes = "<li class=\"mb-2\">1 batata pequena em cubos</li><li class=\"mb-2\">1 cenoura em rodelas</li><li class=\"mb-2\">100g de carne moída magra</li><li class=\"mb-2\">Cheiro-verde e temperos a gosto</li>";
+                macros = "<span class=\"bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-red-500 mr-2\"></div> 24g Proteína</span><span class=\"bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-blue-500 mr-2\"></div> 22g Carbo</span><span class=\"bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-yellow-500 mr-2\"></div> 8g Gordura</span>";
+                break;
+            default: // Café da Manhã
+                titulo = "Crepioca Proteica de Frango";
+                calorias = "280 kcal";
+                ingredientes = "<li class=\"mb-2\">2 colheres de sopa de goma de tapioca</li><li class=\"mb-2\">1 ovo inteiro</li><li class=\"mb-2\">3 colheres de frango desfiado</li><li class=\"mb-2\">1 colher de chá de azeite</li><li class=\"mb-2\">Sal e orégano a gosto</li>";
+                macros = "<span class=\"bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-red-500 mr-2\"></div> 22g Proteína</span><span class=\"bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-blue-500 mr-2\"></div> 18g Carbo</span><span class=\"bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-yellow-500 mr-2\"></div> 10g Gordura</span>";
+                break;
+        }
+
+        // Retorna o HTML formatado substituindo os %s pelos dados da refeição escolhida
         return """
             <!-- Aviso de IA Cansada -->
             <div class="bg-orange-50 border-l-4 border-orange-400 p-3 mb-5 rounded-r-xl shadow-sm">
@@ -213,28 +247,22 @@ public class ArtificialIntelligenceService {
             <!-- Receita Curinga Fixa -->
             <div class="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
                 <div class="bg-verdeSalvia/10 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <h4 class="font-bold text-lg text-verdeSalvia text-center md:text-left w-full md:w-auto">Crepioca Proteica de Frango</h4>
+                    <h4 class="font-bold text-lg text-verdeSalvia text-center md:text-left w-full md:w-auto">%s</h4>
                     <div class="bg-white px-4 py-2 rounded-2xl shadow-sm border border-verdeSalvia/20 whitespace-nowrap">
                         <span class="text-sm text-textoClaro font-semibold mr-1">Total:</span>
-                        <span class="text-xl font-bold text-verdeSalvia">280 kcal</span>
+                        <span class="text-xl font-bold text-verdeSalvia">%s</span>
                     </div>
                 </div>
                 <div class="p-6">
                     <p class="text-sm font-bold text-textoEscuro mb-3"><i class="fa-solid fa-basket-shopping mr-2 text-amareloMostarda"></i>Ingredientes:</p>
                     <ul class="list-disc pl-5 mb-6 text-sm text-textoClaro md:columns-2 gap-8 space-y-2 md:space-y-0 marker:text-amareloMostarda">
-                        <li class="mb-2">2 colheres de sopa de goma de tapioca</li>
-                        <li class="mb-2">1 ovo inteiro</li>
-                        <li class="mb-2">3 colheres de sopa de frango desfiado já pronto</li>
-                        <li class="mb-2">1 colher de chá de azeite</li>
-                        <li class="mb-2">Sal e orégano a gosto</li>
+                        %s
                     </ul>
                     <div class="flex flex-wrap gap-3 pt-4 border-t border-gray-100">
-                        <span class="bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center"><div class="w-2 h-2 rounded-full bg-red-500 mr-2"></div> 22g Proteína</span>
-                        <span class="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center"><div class="w-2 h-2 rounded-full bg-blue-500 mr-2"></div> 18g Carbo</span>
-                        <span class="bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center"><div class="w-2 h-2 rounded-full bg-yellow-500 mr-2"></div> 10g Gordura</span>
+                        %s
                     </div>
                 </div>
             </div>
-            """;
+            """.formatted(titulo, calorias, ingredientes, macros);
     }
 }
