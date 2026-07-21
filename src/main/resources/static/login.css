@@ -359,8 +359,29 @@ body {
     /* --- AJUSTES RESPONSIVOS DOS MODAIS --- */
     /* Cria uma zona de segurança para o texto não encostar no X */
     .modal-titulo {
-        padding-right: 35px;
+        padding: 0 35px;
         line-height: 1.3;
+    }
+
+    /* --- TRUQUE PARA A BARRA DE ROLAGEM NÃO VAZAR NOS CANTOS ARREDONDADOS --- */
+    .modal-card {
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .modal-card::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .modal-card::-webkit-scrollbar-track {
+        background: transparent;
+        margin-top: 30px; /* Afasta a barra de rolagem do topo do card */
+        margin-bottom: 20px; /* Afasta a barra de rolagem do fundo */
+    }
+
+    .modal-card::-webkit-scrollbar-thumb {
+        background: #84A98C; /* Cor verde do seu sistema */
+        border-radius: 10px;
     }
 
     /* No mobile, empurra o conteúdo um pouco mais para baixo para o X respirar */
