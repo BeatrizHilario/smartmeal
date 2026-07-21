@@ -111,7 +111,7 @@ public class UsuarioController {
             usuarioLogado.setMetaCaloricaKcal((int) gastoDiario);
             usuarioRepository.save(usuarioLogado);
 
-            String dietaHtml = artificialIntelligenceService.gerarDietaPelaIA(usuarioLogado, "Almoço");
+            String dietaHtml = artificialIntelligenceService.gerarDietaPelaIA(usuarioLogado, "Café da Manhã");
 
             System.out.println("=========================================");
             System.out.println("RESPOSTA DIRETA DA IA PARA O UTILIZADOR: " + usuarioLogado.getIdUsuario());
