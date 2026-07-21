@@ -67,6 +67,12 @@ public class UsuarioController {
 
     }
 
+    @GetMapping("/sair")
+    public String sair(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
+
     @PostMapping("/completarPerfil")
     public String completarPerfil(Usuario dadosAtualizados, HttpSession session, RedirectAttributes redirectAttributes) {
         try {

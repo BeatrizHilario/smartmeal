@@ -91,12 +91,34 @@
                 </p>
             </div>
 
-            <!-- Avatar: Bolinha solta no mobile, com fundo branco no desktop (md:) -->
-            <div class="flex items-center space-x-3 md:space-x-4 md:bg-cardBranco md:py-2 md:px-4 md:rounded-full md:shadow-sm md:border border-verdeSalvia/20 shrink-0">
-                <span class="hidden md:block font-semibold text-sm whitespace-nowrap" th:text="${usuario.nome}">Usuário</span>
-                <div class="w-10 h-10 rounded-full bg-verdeSalvia text-white flex items-center justify-center font-bold shadow-md cursor-pointer uppercase shrink-0 text-base"
-                     th:text="${usuario.nome != null && !usuario.nome.isEmpty()} ? ${usuario.nome.substring(0,1)} : 'U'">
-                    U
+            <!-- Avatar com Menu Dropdown -->
+            <div class="relative shrink-0 z-50">
+
+                <!-- Botão do Avatar (Clicável) -->
+                <div id="btn-avatar-perfil" onclick="document.getElementById('dropdown-perfil').classList.toggle('hidden')" class="flex items-center space-x-3 md:space-x-4 md:bg-cardBranco md:py-2 md:px-4 md:rounded-full md:shadow-sm md:border border-verdeSalvia/20 cursor-pointer transition hover:bg-gray-50 select-none">
+                    <span class="hidden md:block font-semibold text-sm whitespace-nowrap" th:text="${usuario.nome}">Usuário</span>
+                    <div class="w-10 h-10 rounded-full bg-verdeSalvia text-white flex items-center justify-center font-bold shadow-md uppercase text-base"
+                         th:text="${usuario.nome != null && !usuario.nome.isEmpty()} ? ${usuario.nome.substring(0,1)} : 'U'">
+                        U
+                    </div>
+                    <!-- Ícone de setinha apenas no desktop para indicar que é um menu -->
+                    <i class="fa-solid fa-chevron-down text-textoClaro text-xs hidden md:block"></i>
+                </div>
+
+                <!-- O Menu (Fica escondido por padrão com a classe 'hidden') -->
+                <div id="dropdown-perfil" class="hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden">
+
+                    <!-- Opção "Meus Dados" (Só renderiza se o perfil já estiver completo) -->
+                    <button th:unless="${perfilIncompleto}"
+                            onclick="document.getElementById('dropdown-perfil').classList.add('hidden'); document.getElementById('modal-editar-perfil').classList.remove('hidden'); setTimeout(() => { document.getElementById('modal-editar-perfil').classList.remove('opacity-0'); document.getElementById('modal-editar-perfil').querySelector('div').classList.remove('scale-95'); }, 10);"
+                            class="w-full text-left px-5 py-3 text-sm font-medium text-textoEscuro hover:bg-gray-50 hover:text-verdeSalvia transition flex items-center border-b border-gray-50">
+                        <i class="fa-solid fa-user-gear w-5 text-center mr-2"></i> Meus Dados
+                    </button>
+
+                    <!-- Opção "Sair" (Sempre aparece) -->
+                    <a th:href="@{/sair}" class="w-full text-left px-5 py-3 text-sm font-medium text-red-500 hover:bg-red-50 transition flex items-center">
+                        <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center mr-2"></i> Sair da Conta
+                    </a>
                 </div>
             </div>
         </div>

@@ -357,3 +357,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('dropdown-perfil');
+    const btnAvatar = document.getElementById('btn-avatar-perfil');
+
+    // Se o clique não foi no botão E não foi dentro do menu, esconde o menu
+    if (dropdown && btnAvatar && !btnAvatar.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.classList.add('hidden');
+    }
+});
