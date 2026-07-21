@@ -275,18 +275,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Função ativada pelo ícone de lápis ou ao clicar no número
-    window.editarAguaManual = () => {
-        const input = prompt("Digite a quantidade exata de água consumida (em ml):\nEx: 1250", aguaConsumida);
-        if (input !== null) {
-            // Remove letras, deixando só números
-            const valor = parseInt(input.replace(/\D/g, ''));
+    // Função para abrir o novo modal bonitinho
+        window.editarAguaManual = () => {
+            const modal = document.getElementById('modal-editar-agua');
+            const input = document.getElementById('input-agua-manual');
+
+            input.value = aguaConsumida; // Preenche com o valor atual
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+            }, 10);
+        };
+
+        // Função para fechar com animação
+        window.fecharModalAgua = () => {
+            const modal = document.getElementById('modal-editar-agua');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
+
+        // Função para ler o input e salvar
+        window.salvarAguaManual = () => {
+            const input = document.getElementById('input-agua-manual');
+            const valor = parseInt(input.value.replace(/\D/g, '')); // Aceita só números
+
             if (!isNaN(valor)) {
                 aguaConsumida = valor;
-                renderizarAgua();
+                renderizarAgua(); // Re-desenha os copos e os litros
             }
-        }
-    };
+            fecharModalAgua();
+        };
 
     // Roda a primeira vez para desenhar a tela
     renderizarAgua();
