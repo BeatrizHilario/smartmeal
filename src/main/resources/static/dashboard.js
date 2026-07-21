@@ -367,3 +367,36 @@ document.addEventListener('click', function(event) {
         dropdown.classList.add('hidden');
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const mainElement = document.querySelector('main');
+    // Lista com os IDs de todos os modais da sua tela
+    const modais = ['modal-completar-perfil', 'modal-editar-perfil', 'modal-visualizar-dados', 'modal-em-breve'];
+
+    // Cria um 'olheiro' (Observer) que detecta quando as classes mudam
+    const observer = new MutationObserver(() => {
+    // Verifica se tem pelo menos UM modal aberto (sem a classe 'hidden')
+    const modalAberto = modais.some(id => {
+        const el = document.getElementById(id);
+        return el && !el.classList.contains('hidden');
+    });
+
+    if (modalAberto) {
+        // Trava o fundo
+        mainElement.classList.remove('overflow-y-auto');
+        mainElement.classList.add('overflow-y-hidden');
+        } else {
+            // Libera o fundo
+            mainElement.classList.remove('overflow-y-hidden');
+            mainElement.classList.add('overflow-y-auto');
+            }
+    });
+
+    // Coloca o 'olheiro' para vigiar a classe de todos os modais da lista
+    modais.forEach(id => {
+    const el = document.getElementById(id);
+        if (el) {
+            observer.observe(el, { attributes: true, attributeFilter: ['class'] });
+        }
+    });
+});
