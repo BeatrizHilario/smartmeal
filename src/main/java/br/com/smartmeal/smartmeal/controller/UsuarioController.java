@@ -52,7 +52,7 @@ public class UsuarioController {
     public String fazerLogin(String email, String senha, HttpSession session, RedirectAttributes redirectAttributes) {
         Usuario usuarioBanco = usuarioRepository.findByEmail(email);
 
-        if (usuarioBanco != null) {
+        if (usuarioBanco == null) {
             redirectAttributes.addFlashAttribute("erro", "Este e-mail não está cadastrado.");
             return "redirect:/login";
         }
