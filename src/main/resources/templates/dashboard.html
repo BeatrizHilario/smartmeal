@@ -270,20 +270,26 @@
 
         <div class="space-y-8">
 
-            <div class="bg-cardBranco p-8 rounded-[2rem] shadow-sm border border-verdeSalvia/10 text-center">
+            <div class="bg-cardBranco p-8 rounded-[2rem] shadow-sm border border-verdeSalvia/10 text-center relative" id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
                 <h3 class="font-bold text-xl text-textoEscuro mb-2">Hidratação</h3>
 
-                <p class="text-sm font-medium text-textoClaro mb-6">Faltam <span id="agua-faltante" th:text="${usuario.metaAguaMl}">2000</span> ml para a meta</p>
+                <p class="text-sm font-medium text-textoClaro mb-6">Faltam <span id="texto-agua-faltante" class="font-bold text-verdeSalvia">calculando...</span> para a meta</p>
 
-                <div class="flex justify-center space-x-2 mb-4" id="container-copos" th:data-meta="${usuario.metaAguaMl}">
-                    <svg class="copo-agua w-8 h-10 text-gray-200 cursor-pointer transition-all duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/></svg>
-                    <svg class="copo-agua w-8 h-10 text-gray-200 cursor-pointer transition-all duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/></svg>
-                    <svg class="copo-agua w-8 h-10 text-gray-200 cursor-pointer transition-all duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/></svg>
-                    <svg class="copo-agua w-8 h-10 text-gray-200 cursor-pointer transition-all duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/></svg>
-                    <svg class="copo-agua w-8 h-10 text-gray-200 cursor-pointer transition-all duration-300 hover:scale-110" fill="currentColor" viewBox="0 0 24 24"><path d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/></svg>
+                <!-- Container dinâmico de copos (Renderizado via JS) -->
+                <div class="flex justify-center flex-wrap gap-3 mb-4" id="container-copos">
+                    <!-- Os copos de 500ml vão aparecer aqui -->
                 </div>
 
-                <p class="text-2xl font-bold text-textoEscuro mt-4"><span id="agua-consumida">0</span> <span class="text-sm font-medium text-textoClaro">ml</span></p>
+                <!-- Valor consumido com botão de editar -->
+                <div class="flex items-center justify-center mt-6 group">
+                    <p class="text-3xl font-bold text-textoEscuro cursor-pointer hover:text-verdeSalvia transition" id="texto-agua-consumida" onclick="editarAguaManual()" title="Clique para digitar o valor">
+                        0 ml
+                    </p>
+                    <button onclick="editarAguaManual()" class="ml-3 w-8 h-8 rounded-full bg-gray-50 text-textoClaro hover:bg-amareloMostarda hover:text-white transition flex items-center justify-center shadow-sm">
+                        <i class="fa-solid fa-pen text-xs"></i>
+                    </button>
+                </div>
+                <p class="text-[10px] text-textoClaro mt-2 font-medium">Cada copo = 500ml</p>
             </div>
 
             <div class="bg-verdeSalvia text-white p-8 rounded-[2rem] shadow-lg relative overflow-hidden">

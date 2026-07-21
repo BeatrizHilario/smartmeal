@@ -214,51 +214,82 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// --- LÓGICA DE HIDRATAÇÃO DINÂMICA ---
-document.addEventListener("DOMContentLoaded", () => {
-    const containerCopos = document.getElementById("container-copos");
+// --- LÓGICA DE HIDRATAÇÃO DINÂMICA (Copos de 500ml e Edição) ---
+document.addEventListener('DOMContentLoaded', () => {
+    const card = document.getElementById('card-hidratacao');
+    if(!card) return;
 
-    if (containerCopos) {
-        const copos = containerCopos.querySelectorAll(".copo-agua");
-        const spanConsumida = document.getElementById("agua-consumida");
-        const spanFaltante = document.getElementById("agua-faltante");
+    // Pega a meta do usuário que veio do Java (padrão 2000 caso dê erro)
+    const metaAgua = parseInt(card.getAttribute('data-meta')) || 2000;
+    let aguaConsumida = 0;
 
-        const metaTotal = parseInt(containerCopos.getAttribute("data-meta")) || 2000;
-        const mlPorCopo = Math.round(metaTotal / copos.length);
-        let consumidoTotal = 0;
+    const elFaltante = document.getElementById('texto-agua-faltante');
+    const elConsumida = document.getElementById('texto-agua-consumida');
+    const containerCopos = document.getElementById('container-copos');
 
-        copos.forEach(copo => {
-            copo.addEventListener("click", function() {
-                // Efeito visual de clique rápido
-                this.classList.add("scale-125");
-                setTimeout(() => this.classList.remove("scale-125"), 150);
+    // Função mágica que converte ml para Litros se for >= 1000
+    const formatarVolume = (ml) => {
+        if (ml >= 1000) {
+            return (ml / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' L';
+        }
+        return ml + ' ml';
+    };
 
-                // SE O COPO ESTÁ VAZIO (Cinza) -> Vamos encher
-                if (this.classList.contains("text-gray-200")) {
-                    this.classList.remove("text-gray-200");
-                    this.classList.add("text-verdeSalvia");
-                    consumidoTotal += mlPorCopo;
+    const renderizarAgua = () => {
+        let faltam = metaAgua - aguaConsumida;
+        if (faltam < 0) faltam = 0;
+
+        elFaltante.textContent = formatarVolume(faltam);
+        elConsumida.textContent = formatarVolume(aguaConsumida);
+
+        // Calcula quantos copos de 500ml a meta exige
+        const totalCopos = Math.ceil(metaAgua / 500);
+        containerCopos.innerHTML = '';
+
+        for (let i = 1; i <= totalCopos; i++) {
+            const copoValor = i * 500;
+
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("viewBox", "0 0 24 24");
+            svg.setAttribute("class", "w-8 h-10 cursor-pointer transition-all duration-300 hover:scale-110 hover:-translate-y-1");
+
+            // Pinta de azul se a água já alcançou esse copo
+            if (aguaConsumida >= copoValor) {
+                svg.classList.add("text-[#4CB5F9]", "drop-shadow-md");
+            } else {
+                svg.classList.add("text-gray-200");
+            }
+
+            svg.innerHTML = '<path fill="currentColor" d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/>';
+
+            svg.onclick = () => {
+                if (aguaConsumida === copoValor) {
+                    aguaConsumida = copoValor - 500;
+                } else {
+                    aguaConsumida = copoValor;
                 }
-                // SE O COPO ESTÁ CHEIO (Verde) -> Vamos esvaziar
-                else {
-                    this.classList.remove("text-verdeSalvia");
-                    this.classList.add("text-gray-200");
-                    consumidoTotal -= mlPorCopo;
+                renderizarAgua();
+            };
 
-                    // Impede que o número desça abaixo de zero por bugs de arredondamento
-                    if (consumidoTotal < 0) consumidoTotal = 0;
-                }
+            containerCopos.appendChild(svg);
+        }
+    };
 
-                // Recalcula o que falta
-                let faltante = metaTotal - consumidoTotal;
-                if (faltante < 0) faltante = 0;
+    // Função ativada pelo ícone de lápis ou ao clicar no número
+    window.editarAguaManual = () => {
+        const input = prompt("Digite a quantidade exata de água consumida (em ml):\nEx: 1250", aguaConsumida);
+        if (input !== null) {
+            // Remove letras, deixando só números
+            const valor = parseInt(input.replace(/\D/g, ''));
+            if (!isNaN(valor)) {
+                aguaConsumida = valor;
+                renderizarAgua();
+            }
+        }
+    };
 
-                // Atualiza a tela imediatamente
-                spanConsumida.innerText = consumidoTotal;
-                spanFaltante.innerText = faltante;
-            });
-        });
-    }
+    // Roda a primeira vez para desenhar a tela
+    renderizarAgua();
 });
 
 // --- LÓGICA DO MODAL DE EDITAR PERFIL ---
