@@ -356,3 +356,20 @@ body {
 
     .modal-titulo { font-size: 2.8rem; }
 }
+    /* --- AJUSTES RESPONSIVOS DOS MODAIS --- */
+    /* Cria uma zona de segurança para o texto não encostar no X */
+    .modal-titulo {
+        padding-right: 35px;
+        line-height: 1.3;
+    }
+
+    /* No mobile, empurra o conteúdo um pouco mais para baixo para o X respirar */
+    @media (max-width: 768px) {
+        .modal-card {
+            padding-top: 35px;
+        }
+        .btn-fechar {
+            top: 12px;
+            right: 15px;
+        }
+    }
