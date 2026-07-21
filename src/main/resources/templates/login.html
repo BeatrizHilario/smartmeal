@@ -119,44 +119,39 @@
     </div>
 </div>
 
-<div id="toast-container" class="fixed top-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
+<!-- Container dos Toasts -->
+<div id="toast-container" class="toast-container"></div>
 
-<!-- Script Dinâmico para Notificações Elegantes (Toasts) -->
+<!-- Script Dinâmico para Notificações Elegantes -->
 <script th:inline="javascript">
     function mostrarToast(mensagem, tipo) {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
 
-        // Estilo base do toast
-        toast.className = `flex items-center gap-3 px-5 py-4 bg-white rounded-2xl shadow-xl transform transition-all duration-500 translate-x-full opacity-0 max-w-sm w-full border-l-4 pointer-events-auto`;
+        // Define a classe CSS baseada no tipo (erro ou sucesso)
+        toast.className = 'toast ' + (tipo === 'erro' ? 'toast-erro' : 'toast-sucesso');
 
-        let icone = '';
-        if (tipo === 'erro') {
-            toast.classList.add('border-red-500');
-            icone = `<div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center text-red-500 shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></div>`;
-        } else {
-            toast.classList.add('border-[#84A98C]'); // Verde Salvia
-            icone = `<div class="w-8 h-8 rounded-full bg-[#84A98C]/10 flex items-center justify-center text-[#84A98C] shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div>`;
-        }
+        // Escolhe o ícone de (X) ou (V)
+        let iconeSVG = tipo === 'erro'
+            ? '<svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>'
+            : '<svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>';
 
-        // Monta o visual interno do toast
-        toast.innerHTML = `${icone} <p class="text-sm font-medium text-gray-700 font-sans">${mensagem}</p>`;
+        // Monta o HTML interno do balãozinho
+        toast.innerHTML = `<div class="toast-icone">${iconeSVG}</div><p class="toast-mensagem">${mensagem}</p>`;
 
         container.appendChild(toast);
 
-        // Dispara a animação de entrada
-        setTimeout(() => {
-            toast.classList.remove('translate-x-full', 'opacity-0');
-        }, 100);
+        // Dá um tempinho mínimo e adiciona a classe "mostrar" para iniciar a animação
+        setTimeout(() => toast.classList.add('mostrar'), 50);
 
-        // Remove automaticamente após 4 segundos
+        // Conta 4 segundos, remove a classe "mostrar" (faz ele sair) e depois apaga o elemento
         setTimeout(() => {
-            toast.classList.add('translate-x-full', 'opacity-0');
-            setTimeout(() => toast.remove(), 500);
+            toast.classList.remove('mostrar');
+            setTimeout(() => toast.remove(), 400);
         }, 4000);
     }
 
-    /* O Thymeleaf injeta o valor do Java aqui, pois agora estamos no HTML! */
+    /* Recebendo as mensagens do Java */
     var mensagemErro = /*[[${erro}]]*/ null;
     if (mensagemErro) mostrarToast(mensagemErro, 'erro');
 

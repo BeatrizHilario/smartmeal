@@ -394,3 +394,80 @@ body {
             right: 15px;
         }
     }
+
+    /* ================= COMPONENTES DOS TOASTS (NOTIFICAÇÕES) ================= */
+    .toast-container {
+        position: fixed;
+        top: 25px;
+        right: 25px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        pointer-events: none; /* Não bloqueia cliques nos elementos de baixo */
+    }
+
+    .toast {
+        background-color: var(--cor-branco);
+        min-width: 280px;
+        max-width: 380px;
+        padding: 15px 20px;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        border-left: 5px solid transparent;
+        transform: translateX(120%); /* Começa escondido fora da tela */
+        opacity: 0;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        pointer-events: auto; /* Permite clicar no próprio toast */
+    }
+
+    /* Classe que o JS adiciona para fazer o Toast entrar na tela */
+    .toast.mostrar {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    .toast-erro {
+        border-left-color: #EF4444; /* Vermelho erro */
+    }
+    .toast-erro .toast-icone {
+        color: #EF4444;
+        background-color: #FEF2F2;
+    }
+
+    .toast-sucesso {
+        border-left-color: var(--cor-verde); /* Seu verde oficial */
+    }
+    .toast-sucesso .toast-icone {
+        color: var(--cor-verde);
+        background-color: #F0FDF4;
+    }
+
+    .toast-icone {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+    }
+
+    .toast-icone svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+    }
+
+    .toast-mensagem {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--cor-texto-cinza);
+        margin: 0;
+        line-height: 1.4;
+    }
