@@ -57,7 +57,7 @@
         <form class="grid-form" th:action="@{/cadastrar}" method="post">
             <div class="form-group"><label>Nome</label><input type="text" name="nome" placeholder="Seu nome completo" required></div>
             <div class="form-group"><label>Email</label><input type="email" name="email" placeholder="seu@email.com" required></div>
-            <div class="form-group"><label>Senha</label><input type="password" name="senha" placeholder="Sua senha segura" required></div>
+            <div class="form-group"><label>Senha</label><input type="text" name="senha" placeholder="Sua senha segura" required></div>
             <div class="form-group"><label>Idade</label><input type="number" name="idade" placeholder="Ex: 22" required></div>
             <div class="form-group col-total">
                 <label>Estado (UF)</label>
@@ -102,7 +102,19 @@
         <h2 class="modal-titulo">Login</h2>
         <form class="vertical-form" th:action="@{/fazerLogin}" method="post">
             <div class="form-group"><label>Email</label><input type="email" name="email" placeholder="seu@email.com" required></div>
-            <div class="form-group"><label>Senha</label><input type="password" name="senha" placeholder="Digite sua senha" required></div>
+            <div class="form-group">
+                <label>Senha</label>
+                <div class="input-com-icone">
+                    <input type="password" id="senha-login" name="senha" placeholder="Digite sua senha" required>
+                    <button type="button" class="btn-revelar" onclick="toggleSenhaLogin()" title="Mostrar/Ocultar Senha">
+                        <!-- Ícone SVG de Olho Aberto -->
+                        <svg id="icone-olho" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+            </div>
             <div class="form-acoes"><button type="submit" class="btn btn-acao">Entrar</button></div>
         </form>
     </div>

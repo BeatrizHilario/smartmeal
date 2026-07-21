@@ -471,3 +471,48 @@ body {
         margin: 0;
         line-height: 1.4;
     }
+
+    /* ================= OLHO DE SENHA CUSTOMIZADO ================= */
+    /* 1. Esconde o olho nativo que o navegador tenta colocar */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear,
+    input[type="password"]::-webkit-contacts-auto-fill-button {
+        display: none !important;
+    }
+
+    /* 2. Cria o container relativo para o nosso ícone ficar por cima */
+    .input-com-icone {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    /* 3. Dá um padding extra na direita para o texto não ficar embaixo do ícone */
+    .input-com-icone input {
+        padding-right: 45px;
+    }
+
+    /* 4. Estiliza o nosso botão de olho para ficar sempre visível */
+    .btn-revelar {
+        position: absolute;
+        right: 12px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--cor-texto-cinza);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        transition: color 0.2s;
+    }
+
+    .btn-revelar:hover {
+        color: var(--cor-verde);
+    }
+
+    .btn-revelar svg {
+        width: 20px;
+        height: 20px;
+    }
