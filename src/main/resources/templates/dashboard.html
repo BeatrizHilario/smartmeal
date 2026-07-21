@@ -436,6 +436,70 @@
     </div>
 </div>
 
+<!-- MODAL DE VISUALIZAR MÉTRICAS (Leitura Apenas) -->
+<div id="modal-visualizar-dados" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
+    <div class="bg-white rounded-[2rem] shadow-xl w-full max-w-sm relative transform transition-transform scale-95 flex flex-col max-h-[95vh] overflow-hidden border-2 border-verdeSalvia/30">
+
+        <button id="btn-fechar-visualizar" onclick="document.getElementById('modal-visualizar-dados').classList.add('opacity-0'); document.getElementById('modal-visualizar-dados').querySelector('div').classList.add('scale-95'); setTimeout(() => document.getElementById('modal-visualizar-dados').classList.add('hidden'), 300);" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-20">&times;</button>
+
+        <div class="text-center p-6 border-b border-gray-100 shrink-0 bg-white z-10">
+            <div class="w-12 h-12 rounded-full bg-verdeSalvia/10 text-verdeSalvia flex items-center justify-center text-xl mx-auto mb-3">
+                <i class="fa-solid fa-clipboard-user"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-textoEscuro mb-1">Métricas Atuais</h3>
+            <p class="text-textoClaro font-medium text-xs">Visão geral do seu perfil corporal.</p>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/50">
+            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-verdeSalvia/10 text-verdeSalvia flex items-center justify-center"><i class="fa-solid fa-weight-scale"></i></div>
+                    <div>
+                        <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Peso Atual</p>
+                        <p class="text-lg font-bold text-textoEscuro" th:text="${usuario.pesoKg} + ' kg'">0 kg</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-amareloMostarda/10 text-amareloMostarda flex items-center justify-center"><i class="fa-solid fa-bullseye"></i></div>
+                    <div>
+                        <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Objetivo</p>
+                        <p class="text-sm font-bold text-textoEscuro capitalize" th:text="${usuario.objetivo}">Objetivo</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"><i class="fa-solid fa-person-running"></i></div>
+                    <div>
+                        <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Atividade</p>
+                        <p class="text-sm font-bold text-textoEscuro capitalize" th:text="${usuario.nivelAtividade}">Nível</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-fire"></i></div>
+                    <div>
+                        <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Meta Calórica Diária</p>
+                        <p class="text-lg font-bold text-textoEscuro" th:text="${usuario.metaCaloricaKcal} + ' kcal'">0 kcal</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-gray-100 bg-white shrink-0 z-10 rounded-b-[2rem]">
+            <button onclick="document.getElementById('btn-fechar-visualizar').click(); document.getElementById('btn-abrir-editar-perfil').click();" class="w-full text-textoClaro px-4 py-2.5 rounded-xl font-bold hover:bg-gray-100 hover:text-textoEscuro transition flex items-center justify-center text-sm border border-gray-200">
+                <i class="fa-solid fa-user-pen mr-2"></i> Alterar nas configurações
+            </button>
+        </div>
+    </div>
+</div>
+
 <div id="modal-editar-perfil" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300">
 
     <div class="bg-cardBranco rounded-[2.5rem] shadow-xl w-full max-w-3xl relative transform transition-transform scale-95 border-2 border-verdeSalvia/30 max-h-[85vh] flex flex-col overflow-hidden">
