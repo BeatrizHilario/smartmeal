@@ -119,18 +119,7 @@
     </div>
 </div>
 
-<script th:inline="javascript">
-    /* O Thymeleaf injeta o valor do Java aqui. Se não houver nada, fica nulo. */
-    var mensagemErro = /*[[${erro}]]*/ null;
-    if (mensagemErro) {
-        alert("⚠️ Ops: " + mensagemErro);
-    }
-
-    var mensagemSucesso = /*[[${sucesso}]]*/ null;
-    if (mensagemSucesso) {
-        alert("✅ Sucesso: " + mensagemSucesso);
-    }
-</script>
+<div id="toast-container" class="fixed top-6 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
 
 <script th:src="@{/login.js}"></script>
 </body>
