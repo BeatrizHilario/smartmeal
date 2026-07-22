@@ -516,3 +516,19 @@ body {
         width: 20px;
         height: 20px;
     }
+
+    /* ================= LINK ESQUECI MINHA SENHA ================= */
+    .link-esqueci-senha {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.85rem;
+        color: var(--cor-verde);
+        text-align: right;
+        text-decoration: none;
+        margin-top: 5px;
+        transition: color 0.3s;
+    }
+
+    .link-esqueci-senha:hover {
+        color: var(--cor-texto-cinza);
+        text-decoration: underline;
+    }
