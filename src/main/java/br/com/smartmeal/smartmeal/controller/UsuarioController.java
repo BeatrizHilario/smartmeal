@@ -29,9 +29,6 @@ public class UsuarioController {
     @Autowired
     private DietaService dietaService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @PostMapping("/cadastrar")
     public String cadastrar(Usuario usuario, RedirectAttributes redirectAttributes) {
         try {
@@ -233,13 +230,14 @@ public class UsuarioController {
 
     @PostMapping("/salvar-nova-senha")
     public String salvarNovaSenha(@RequestParam("email") String email, @RequestParam("novaSenha") String novaSenha, RedirectAttributes redirectAttributes) {
+
         Usuario usuario = usuarioRepository.findByEmail(email);
 
         if (usuario != null) {
-            String senhaCriptografada = passwordEncoder.encode(novaSenha);
+            String senhaCriptografada = SenhaUtils.criptografar(novaSenha);
             usuario.setSenha(senhaCriptografada);
             usuarioRepository.save(usuario);
-            
+
             redirectAttributes.addFlashAttribute("sucesso", "Senha alterada com sucesso! Faça seu login.");
         }else {
             redirectAttributes.addFlashAttribute("erro", "Erro: O e-mail informado não está cadastrado.");
