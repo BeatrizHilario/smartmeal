@@ -243,7 +243,7 @@ public class UsuarioController {
             redirectAttributes.addFlashAttribute("erro", "Erro: O e-mail informado não está cadastrado.");
         }
 
-        return "redirect:/";
+        return "redirect:/login";
     }
 
 }
