@@ -8,6 +8,7 @@ import br.com.smartmeal.smartmeal.service.DietaService;
 import br.com.smartmeal.smartmeal.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import br.com.smartmeal.smartmeal.config.SenhaUtils;
@@ -27,6 +28,9 @@ public class UsuarioController {
 
     @Autowired
     private DietaService dietaService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/cadastrar")
     public String cadastrar(Usuario usuario, RedirectAttributes redirectAttributes) {
@@ -232,8 +236,10 @@ public class UsuarioController {
         Usuario usuario = usuarioRepository.findByEmail(email);
 
         if (usuario != null) {
-            usuario.setSenha(novaSenha);
+            String senhaCriptografada = passwordEncoder.encode(novaSenha);
+            usuario.setSenha(senhaCriptografada);
             usuarioRepository.save(usuario);
+            
             redirectAttributes.addFlashAttribute("sucesso", "Senha alterada com sucesso! Faça seu login.");
         }else {
             redirectAttributes.addFlashAttribute("erro", "Erro: O e-mail informado não está cadastrado.");
