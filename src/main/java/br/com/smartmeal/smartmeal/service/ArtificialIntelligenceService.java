@@ -33,18 +33,20 @@ public class ArtificialIntelligenceService {
             -Peso Atual: %.2f kg
             -Altura: %d cm
             -Objetivo Principal: %s
+            -Restrições Alimentares: %s
             -Orçamento Máximo Mensal para Alimentação: R$ %.2f
             
             Regras escritas de negócio:
                 1. PROIBIDO gerar cardápios diários ou semanais. Gere APENAS UMA única sugestão de %s.
-                2. O custo estimado dos ingredientes deve respeitar o orçamento informado.
-                3. Priorize alimentos sazonais e acessíveis.
-                4. Responda APENAS usando marcação HTML limpa (tags <h3>, <ul>, <li>, <p>, <b>).\s
-                5. PROIBIDO USAR FORMATO JSON. Não coloque tags <html> ou <body>, apenas o conteúdo formatado.
-                6. Não dê justificativas nem faça introduções, apenas escreva a sugestão de refeição. 
-                7. SEJA EXTREMAMENTE DIRETO. Responda APENAS com o nome do prato e a lista de ingredientes com quantidades.
-                8. PROIBIDO escrever introduções, conclusões, saudações ou justificativas.
-                9. Você DEVE retornar EXATAMENTE o bloco de código HTML abaixo, substituindo APENAS as informações entre colchetes [ ] pelos dados calculados da refeição:
+                2. RESTRIÇÃO ABSOLUTA: Respeite rigorosamente as restrições alimentares informadas. É estritamente PROIBIDO utilizar ou recomendar qualquer ingrediente, derivado ou alimento que esteja listado em '-Restrições Alimentares'.
+                3. PROIBIDO USAR ADJETIVOS: Não utilize adjetivos para descrever os pratos ou receitas (como 'simples', 'rústico', 'rápido', 'gourmet', 'artesanal', 'fit', 'delicioso', etc.). O nome do prato deve ser direto e objetivo.
+                4. O custo estimado dos ingredientes deve respeitar o orçamento informado.
+                5. Priorize alimentos sazonais e acessíveis.
+                6. Responda APENAS usando marcação HTML limpa (tags <h3>, <ul>, <li>, <p>, <b>). 
+                7. PROIBIDO USAR FORMATO JSON. Não coloque tags <html> ou <body>, apenas o conteúdo formatado.
+                8. SEJA EXTREMAMENTE DIRETO. Responda APENAS com o nome do prato e a lista de ingredientes com quantidades.
+                9. PROIBIDO escrever introduções, conclusões, saudações ou justificativas.
+                10. Você DEVE retornar EXATAMENTE o bloco de código HTML abaixo, substituindo APENAS as informações entre colchetes [ ] pelos dados calculados da refeição:
                 
                                    <div class="flex flex-col md:flex-row items-start justify-between gap-6">
                                        <div class="flex-1 w-full text-textoClaro font-medium text-sm leading-relaxed max-h-[400px] overflow-y-auto pr-4">
@@ -72,9 +74,10 @@ public class ArtificialIntelligenceService {
                 usuario.getPesoKg() != null ? usuario.getPesoKg().doubleValue() : 0.0,
                 usuario.getAlturaCm() != null ? usuario.getAlturaCm() : 0,
                 usuario.getObjetivo() != null ? usuario.getObjetivo() : "Saúde geral",
+                (usuario.getRestricaoAlimentar() != null && !usuario.getRestricaoAlimentar().trim().isEmpty()) ? usuario.getRestricaoAlimentar() : "Nenhuma",
                 usuario.getOrcamentoMaxMensal() != null ? usuario.getOrcamentoMaxMensal().doubleValue() : 0.0,
                 tipoRefeicao
-            );
+        );
 
         Map<String, Object> requestBody = new HashMap<>();
 
@@ -180,7 +183,6 @@ public class ArtificialIntelligenceService {
             String urlCompleta = apiUrl + "?key=" + apiKey;
             ResponseEntity<Map> response = restTemplate.postForEntity(urlCompleta, entity, Map.class);
 
-            // Destrinchando a resposta usando o seu exato algoritmo das linhas 78-83
             List candidates = (List) response.getBody().get("candidates");
             Map firstCandidate = (Map) candidates.get(0);
             Map content = (Map) firstCandidate.get("content");
@@ -196,10 +198,10 @@ public class ArtificialIntelligenceService {
         } catch (org.springframework.web.client.HttpClientErrorException e) {
             System.err.println("=== ERRO DETALHADO DO GOOGLE NA SUGESTAO ===");
             System.err.println(e.getResponseBodyAsString());
-            return getReceitaFallback(tipoRefeicao); // <-- Passando a refeição aqui
+            return getReceitaFallback(tipoRefeicao);
         } catch (Exception e) {
             e.printStackTrace();
-            return getReceitaFallback(tipoRefeicao); // <-- E aqui
+            return getReceitaFallback(tipoRefeicao);
         }
     }
 
@@ -230,10 +232,10 @@ public class ArtificialIntelligenceService {
                 macros = "<span class=\"bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-red-500 mr-2\"></div> 35g Proteína</span><span class=\"bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-blue-500 mr-2\"></div> 30g Carbo</span><span class=\"bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-yellow-500 mr-2\"></div> 12g Gordura</span>";
                 break;
             default: // Café da Manhã
-                titulo = "Crepioca Proteica de Frango";
-                calorias = "280 kcal";
-                ingredientes = "<li class=\"mb-2\">2 colheres de sopa de goma de tapioca</li><li class=\"mb-2\">1 ovo inteiro</li><li class=\"mb-2\">3 colheres de frango desfiado</li><li class=\"mb-2\">1 colher de chá de azeite</li><li class=\"mb-2\">Sal e orégano a gosto</li>";
-                macros = "<span class=\"bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-red-500 mr-2\"></div> 22g Proteína</span><span class=\"bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-blue-500 mr-2\"></div> 18g Carbo</span><span class=\"bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-yellow-500 mr-2\"></div> 10g Gordura</span>";
+                titulo = "Crepioca com Requeijão Light";
+                calorias = "220 kcal";
+                ingredientes = "<li class=\"mb-2\">2 colheres de sopa de goma de tapioca</li><li class=\"mb-2\">1 ovo inteiro</li><li class=\"mb-2\">1 colher de sopa de requeijão light</li><li class=\"mb-2\">1 pitada de sal</li>";
+                macros = "<span class=\"bg-red-50 text-red-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-red-500 mr-2\"></div> 10g Proteína</span><span class=\"bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-blue-500 mr-2\"></div> 18g Carbo</span><span class=\"bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center\"><div class=\"w-2 h-2 rounded-full bg-yellow-500 mr-2\"></div> 8g Gordura</span>";
                 break;
         }
 
@@ -245,7 +247,7 @@ public class ArtificialIntelligenceService {
                 <p class="text-xs text-orange-600 mt-1">Devido ao alto volume de testes, atingimos o limite de buscas. Enquanto ela descansa uns minutinhos, preparamos esta receita clássica para você:</p>
             </div>
         
-            <!-- Receita Curinga Fixa -->
+            <!-- Receita Fixa -->
             <div class="bg-white border border-gray-100 rounded-3xl shadow-sm overflow-hidden">
                 <div class="bg-verdeSalvia/10 px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
                     <h4 class="font-bold text-lg text-verdeSalvia text-center md:text-left w-full md:w-auto">%s</h4>
