@@ -121,6 +121,27 @@
     </div>
 </div>
 
+<!-- MODAL DIRETO DE NOVA SENHA -->
+<div class="modal-overlay" id="modal-nova-senha">
+    <div class="modal-card modal-estreito">
+        <button class="btn-fechar">&times;</button>
+        <h2 class="modal-titulo">Nova Senha</h2>
+        <form class="vertical-form" th:action="@{/salvar-nova-senha}" method="post">
+
+            <!-- Campo invisível que o JS vai preencher com o email do login -->
+            <input type="hidden" id="email-escondido" name="email">
+
+            <div class="form-group">
+                <label>Digite a nova senha</label>
+                <input type="text" name="novaSenha" placeholder="No mínimo 6 caracteres" required>
+            </div>
+            <div class="form-acoes">
+                <button type="submit" class="btn btn-acao">Salvar Senha</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- MODAL SOBRE O SMARTMEAL -->
 <div class="modal-overlay" id="modal-about">
     <div class="modal-card modal-medio">

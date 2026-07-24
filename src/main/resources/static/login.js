@@ -3,6 +3,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnRegistrar = document.getElementById('open-register');
     const btnLogin = document.getElementById('open-login');
     const linkSaberMais = document.getElementById('open-about');
+    const linkRecuperar = document.getElementById('open-recuperar');
+    const modalNovaSenha = document.getElementById('modal-nova-senha');
+    const inputEmailLogin = document.querySelector('#modal-login input[name="email"]');
+    const inputEmailEscondido = document.getElementById('email-escondido');
 
     // Seletores dos Modais Overlays
     const modalRegister = document.getElementById('modal-register');
@@ -40,6 +44,24 @@ document.addEventListener("DOMContentLoaded", () => {
             if(e.target === overlay) fecharModais();
         });
     });
+   if (linkRecuperar) {
+       linkRecuperar.addEventListener('click', (e) => {
+           e.preventDefault();
+
+           // 1. Verifica se a pessoa digitou o email no login
+           if (inputEmailLogin.value.trim() === '') {
+               mostrarToast('Por favor, digite seu email no campo de login primeiro.', 'erro');
+               return; // Para o código aqui e não abre a tela
+           }
+
+           // 2. Copia o email digitado para o campo invisível do nosso novo modal
+           inputEmailEscondido.value = inputEmailLogin.value;
+
+           // 3. Fecha o login e abre a tela de nova senha
+           fecharModais();
+           abrirModal(modalNovaSenha);
+       });
+   }
 });
 
 // Função para alternar a visibilidade da senha no Login
