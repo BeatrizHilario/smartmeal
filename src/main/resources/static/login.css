@@ -129,9 +129,11 @@ body {
     text-decoration: none;
     border-bottom: 2px solid var(--cor-texto-cinza); 
     padding-bottom: 2px;
+    transition: color 0.3s ease, border-color 0.3s ease;
 }
 .link-saber-mais:hover {
-    color: var(--cor-branco);
+    color: var(--cor-verde);
+    border-bottom-color: var(--cor-verde)
 }
 /* ================= COMPONENTES DOS MODAIS ================= */
 
@@ -196,8 +198,9 @@ body {
     font-size: 2.5rem;
     color: var(--cor-verde);
     cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
 }
-.btn-fechar:hover { color: #000; }
+.btn-fechar:hover { color: var(--cor-amarelo); transform: scale(1.1); }
 
 /* Formulários e Inputs Modernizados */
 .grid-form {
