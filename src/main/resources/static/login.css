@@ -400,7 +400,7 @@ body {
     /* --- AJUSTES RESPONSIVOS DOS MODAIS --- */
     /* Cria uma zona de segurança para o texto não encostar no X */
     .modal-titulo {
-        padding: 0 35px;
+        padding: 0px;
         line-height: 1.3;
     }
 
