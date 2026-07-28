@@ -130,7 +130,9 @@ body {
     border-bottom: 2px solid var(--cor-texto-cinza); 
     padding-bottom: 2px;
 }
-
+.link-saber-mais:hover {
+    color: #000;
+}
 /* ================= COMPONENTES DOS MODAIS ================= */
 
 .modal-overlay {
