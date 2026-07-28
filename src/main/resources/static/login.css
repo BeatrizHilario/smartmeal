@@ -219,8 +219,11 @@ body {
 }
 
 .form-group label {
-    font-size: 1.8rem;
+    font-family: 'Poppins', sans-serif; /* Trocando para uma fonte limpa */
+    font-size: 1rem; /* Reduzindo o tamanho (Poppins é naturalmente maior) */
+    font-weight: 500; /* Deixando levemente em negrito para destacar */
     color: var(--cor-texto-cinza);
+    margin-left: 5px; /* Um pequeno respiro charmoso à esquerda */
 }
 
 .form-group input, .form-group select {
@@ -355,6 +358,29 @@ body {
     }
 
     .modal-titulo { font-size: 2.8rem; }
+
+    /* --- COMPACTANDO O FORMULÁRIO NO MOBILE --- */
+
+        /* Reduz o buraco enorme entre os campos */
+        .grid-form, .vertical-form {
+            gap: 12px; /* Antes era 20px */
+        }
+
+        /* Reduz o espaço entre o título "Email" e a caixinha de digitar */
+        .form-group {
+            gap: 2px; /* Antes era 5px */
+        }
+
+        /* Afina levemente a altura dos inputs para caber mais info na tela */
+        .form-group input, .form-group select {
+            padding: 10px 15px;
+            font-size: 0.95rem;
+        }
+
+        /* Aproxima o botão "Registrar-se" dos campos */
+        .form-acoes {
+            margin-top: 5px;
+        }
 }
     /* --- AJUSTES RESPONSIVOS DOS MODAIS --- */
     /* Cria uma zona de segurança para o texto não encostar no X */
