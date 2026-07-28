@@ -131,7 +131,7 @@ body {
     padding-bottom: 2px;
 }
 .link-saber-mais:hover {
-    color: #000;
+    color: var(--cor-branco);
 }
 /* ================= COMPONENTES DOS MODAIS ================= */
 
