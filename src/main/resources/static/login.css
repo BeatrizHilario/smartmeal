@@ -174,9 +174,9 @@ body {
 
 .modal-titulo {
     font-size: 2.2rem;
-    color: var(--cor-texto-cinza);
+    color: var(--cor-verde);
     margin-bottom: 20px;
-    border-bottom: 3px solid var(--cor-texto-cinza);
+    border-bottom: 3px solid var(--cor-amarelo);
     padding-bottom: 0px;
     font-weight: normal;
 }
@@ -192,7 +192,7 @@ body {
     background: none;
     border: none;
     font-size: 2.5rem;
-    color: var(--cor-texto-cinza);
+    color: var(--cor-verde);
     cursor: pointer;
 }
 .btn-fechar:hover { color: #000; }
@@ -222,7 +222,7 @@ body {
     font-family: 'Poppins', sans-serif; /* Trocando para uma fonte limpa */
     font-size: 1rem; /* Reduzindo o tamanho (Poppins é naturalmente maior) */
     font-weight: 500; /* Deixando levemente em negrito para destacar */
-    color: var(--cor-texto-cinza);
+    color: var(--cor-verde);
     margin-left: 5px; /* Um pequeno respiro charmoso à esquerda */
 }
 
