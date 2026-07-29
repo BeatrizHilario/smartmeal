@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diário Alimentar - SmartMeal</title>
+    <!-- Tailwind CSS para estilização rápida -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para os ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Rancho&display=swap" rel="stylesheet">
+    <!-- Link para o arquivo CSS modularizado -->
+    <link rel="stylesheet" th:href="@{/dashboard.css}">
+    <link rel="shortcut icon" th:href="@{/imagens/favicon.png}" type="image/png">
+</head>
+<body class="text-textoEscuro font-sans h-[100dvh] flex flex-col md:flex-row">
+
+<!-- Ondas Decorativas de Fundo -->
+<svg class="ondas-bg" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#84A98C" fill-opacity="0.5" d="M0,224L48,229.3C96,235,192,245,288,234.7C384,224,480,192,576,192C672,192,768,224,864,250.7C960,277,1056,299,1152,282.7C1248,267,1344,213,1392,186.7L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    <path fill="#84A98C" d="M0,288L60,282.7C120,277,240,267,360,240C480,213,600,171,720,170.7C840,171,960,213,1080,240C1200,267,1320,277,1380,282.7L1440,288L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+</svg>
+
+<!-- MENU LATERAL (SIDEBAR) -->
+<aside class="hidden md:flex w-72 bg-verdeSalvia text-white rounded-r-[3rem] shadow-xl z-20 flex-col py-10 my-4 ml-0 relative transition-transform duration-300">
+    <div class="px-8 mb-12 flex justify-center items-center w-full">
+        <h1 class="text-5xl font-cursiva text-center">
+            Smart<span class="text-amareloMostarda">Meal</span>
+        </h1>
+    </div>
+
+    <nav class="flex-1 px-4 space-y-2">
+        <!-- Dashboard agora fica como link normal -->
+        <a th:href="@{/dashboard}" class="flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
+            <i class="fa-solid fa-house w-6 text-xl"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <!-- Diário Alimentar ganha o destaque de aba ativa -->
+        <a href="#" class="flex items-center space-x-4 px-6 py-4 bg-white/20 rounded-2xl transition hover:bg-white/30 text-white font-medium shadow-sm">
+            <i class="fa-solid fa-book-open w-6 text-xl"></i>
+            <span>Diário Alimentar</span>
+        </a>
+
+        <a href="javascript:void(0)" class="link-em-breve flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
+            <i class="fa-solid fa-wallet w-6 text-xl"></i>
+            <span>Orçamento e Compras</span>
+        </a>
+
+        <a href="#" id="btn-abrir-editar-perfil" class="flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
+            <i class="fa-solid fa-user-gear w-6 text-xl"></i>
+            <span>Perfil e Restrições</span>
+        </a>
+    </nav>
+
+    <!-- Card de Meta Dinâmico com base no objetivo mapeado da IA -->
+    <div class="bg-black/15 p-4 rounded-2xl mt-auto mx-4 mb-2">
+        <div class="flex items-center text-amareloMostarda font-bold mb-1 text-sm">
+            <i class="fa-solid fa-bullseye mr-2 animate-pulse"></i> Foco Atual
+        </div>
+        <p class="text-white text-sm font-semibold capitalize">
+            <span th:if="${usuario.objetivo == 'emagrecer'}">Emagrecer</span>
+            <span th:if="${usuario.objetivo == 'manter'}">Manter Peso</span>
+            <span th:if="${usuario.objetivo == 'hipertrofia'}">Ganhar Massa</span>
+        </p>
+    </div>
+</aside>
+
+<!-- CONTEÚDO PRINCIPAL (A TELA DO DIÁRIO) -->
+<main class="flex-1 px-4 md:px-12 py-6 md:py-10 h-full overflow-y-auto z-10 relative pb-24 md:pb-10 w-full bg-[#FAFAFA] md:bg-transparent">
+
+    <!-- HEADER DO DIÁRIO ALIMENTAR -->
+    <header class="flex flex-col mb-8 md:mb-10 mt-0 gap-2">
+        <div class="flex justify-between items-start md:items-center w-full">
+            <div>
+                <h2 class="text-3xl md:text-5xl font-cursiva text-textoEscuro leading-none">
+                    Seu Diário Alimentar <i class="fa-solid fa-book-open text-amareloMostarda ml-2"></i>
+                </h2>
+                <p class="text-textoClaro text-sm md:text-base font-medium mt-2 pr-4">
+                    Registre suas refeições do dia e mantenha seu progresso no caminho certo.
+                </p>
+            </div>
+
+            <!-- Avatar com Menu Dropdown -->
+            <div class="relative shrink-0 z-50">
+                <div id="btn-avatar-perfil" onclick="document.getElementById('dropdown-perfil').classList.toggle('hidden')" class="flex items-center space-x-3 md:space-x-4 md:bg-cardBranco md:py-2 md:px-4 md:rounded-full md:shadow-sm md:border border-verdeSalvia/20 cursor-pointer transition hover:bg-gray-50 select-none">
+                    <span class="hidden md:block font-semibold text-sm whitespace-nowrap" th:text="${usuario.nome}">Usuário</span>
+                    <div class="w-10 h-10 rounded-full bg-verdeSalvia text-white flex items-center justify-center font-bold shadow-md uppercase text-base shrink-0"
+                         th:text="${usuario.nome != null && !usuario.nome.isEmpty()} ? ${usuario.nome.substring(0,1)} : 'U'">U</div>
+                </div>
+
+                <div id="dropdown-perfil" class="hidden absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden">
+                    <button onclick="document.getElementById('dropdown-perfil').classList.add('hidden'); document.getElementById('modal-visualizar-dados').classList.remove('hidden'); setTimeout(() => { document.getElementById('modal-visualizar-dados').classList.remove('opacity-0'); document.getElementById('modal-visualizar-dados').querySelector('div').classList.remove('scale-95'); }, 10);"
+                            class="w-full text-left px-5 py-3 text-sm font-medium text-textoEscuro hover:bg-gray-50 hover:text-verdeSalvia transition flex items-center border-b border-gray-50">
+                        <i class="fa-solid fa-chart-line w-5 text-center mr-2"></i> Minhas Métricas
+                    </button>
+                    <a th:href="@{/sair}" class="w-full text-left px-5 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition flex items-center">
+                        <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center mr-2"></i> Sair da Conta
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- GRID DOS CARTÕES DAS 4 REFEIÇÕES -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
+
+        <!-- CARTÃO: CAFÉ DA MANHÃ -->
+        <div class="bg-cardBranco p-6 md:p-8 rounded-[2rem] shadow-sm border border-verdeSalvia/10 flex flex-col gap-4 transform transition hover:-translate-y-1">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center text-xl shadow-sm">
+                        <i class="fa-solid fa-mug-hot"></i>
+                    </div>
+                    <h3 class="font-bold text-xl text-textoEscuro">Café da Manhã</h3>
+                </div>
+                <button onclick="abrirModalManual('Café da Manhã')" class="bg-verdeSalvia/10 text-verdeSalvia hover:bg-verdeSalvia hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Registrar
+                </button>
+            </div>
+            <div class="text-textoClaro text-sm font-medium pl-2">
+                <p class="italic opacity-60"><i class="fa-regular fa-clock mr-1"></i> Pendente</p>
+            </div>
+        </div>
+
+        <!-- CARTÃO: ALMOÇO -->
+        <div class="bg-cardBranco p-6 md:p-8 rounded-[2rem] shadow-sm border border-verdeSalvia/10 flex flex-col gap-4 transform transition hover:-translate-y-1">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-yellow-50 text-amareloMostarda flex items-center justify-center text-xl shadow-sm">
+                        <i class="fa-solid fa-sun"></i>
+                    </div>
+                    <h3 class="font-bold text-xl text-textoEscuro">Almoço</h3>
+                </div>
+                <button onclick="abrirModalManual('Almoço')" class="bg-verdeSalvia/10 text-verdeSalvia hover:bg-verdeSalvia hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Registrar
+                </button>
+            </div>
+            <div class="text-textoClaro text-sm font-medium pl-2">
+                <p class="italic opacity-60"><i class="fa-regular fa-clock mr-1"></i> Pendente</p>
+            </div>
+        </div>
+
+        <!-- CARTÃO: LANCHE -->
+        <div class="bg-cardBranco p-6 md:p-8 rounded-[2rem] shadow-sm border border-verdeSalvia/10 flex flex-col gap-4 transform transition hover:-translate-y-1">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center text-xl shadow-sm">
+                        <i class="fa-solid fa-apple-whole"></i>
+                    </div>
+                    <h3 class="font-bold text-xl text-textoEscuro">Lanche</h3>
+                </div>
+                <button onclick="abrirModalManual('Lanche')" class="bg-verdeSalvia/10 text-verdeSalvia hover:bg-verdeSalvia hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Registrar
+                </button>
+            </div>
+            <div class="text-textoClaro text-sm font-medium pl-2">
+                <p class="italic opacity-60"><i class="fa-regular fa-clock mr-1"></i> Pendente</p>
+            </div>
+        </div>
+
+        <!-- CARTÃO: JANTAR -->
+        <div class="bg-cardBranco p-6 md:p-8 rounded-[2rem] shadow-sm border border-verdeSalvia/10 flex flex-col gap-4 transform transition hover:-translate-y-1">
+            <div class="flex justify-between items-center border-b border-gray-100 pb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center text-xl shadow-sm">
+                        <i class="fa-solid fa-moon"></i>
+                    </div>
+                    <h3 class="font-bold text-xl text-textoEscuro">Jantar</h3>
+                </div>
+                <button onclick="abrirModalManual('Jantar')" class="bg-verdeSalvia/10 text-verdeSalvia hover:bg-verdeSalvia hover:text-white px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Registrar
+                </button>
+            </div>
+            <div class="text-textoClaro text-sm font-medium pl-2">
+                <p class="italic opacity-60"><i class="fa-regular fa-clock mr-1"></i> Pendente</p>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- MENU MOBILE (FUNDO DE TELA) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-white rounded-t-[2rem] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] px-6 py-4 flex justify-between items-center z-40">
+    <a th:href="@{/dashboard}" class="flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition">
+        <div class="p-2 mb-1">
+            <i class="fa-solid fa-house text-lg"></i>
+        </div>
+        <span class="text-[10px] font-medium">Início</span>
+    </a>
+
+    <!-- Ícone ativo do Diário no mobile -->
+    <a href="#" class="flex flex-col items-center text-verdeSalvia">
+        <div class="bg-verdeSalvia/10 p-2 rounded-xl mb-1">
+            <i class="fa-solid fa-book-open text-lg"></i>
+        </div>
+        <span class="text-[10px] font-bold">Diário</span>
+    </a>
+
+    <div class="relative -top-3">
+        <a href="#" class="w-14 h-14 bg-textoEscuro text-white rounded-full flex items-center justify-center shadow-lg transition border-4 border-[#FAFAFA]">
+            <i class="fa-solid fa-plus text-2xl text-amareloMostarda"></i>
+        </a>
+    </div>
+
+    <a href="javascript:void(0)" class="link-em-breve flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition">
+        <div class="p-2 mb-1">
+            <i class="fa-solid fa-wallet text-lg"></i>
+        </div>
+        <span class="text-[10px] font-medium">Compras</span>
+    </a>
+
+    <a href="#" id="btn-abrir-editar-perfil-mobile" class="flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition">
+        <div class="p-2 mb-1">
+            <i class="fa-solid fa-user-gear text-lg"></i>
+        </div>
+        <span class="text-[10px] font-medium">Perfil</span>
+    </a>
+</nav>
+
+
+<!-- ================= MODAIS DO SISTEMA ================= -->
+
+<!-- NOVO MODAL: REGISTRO MANUAL COM IA -->
+<div id="modal-registro-manual" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
+    <div class="bg-white rounded-[2.5rem] shadow-xl w-full max-w-lg relative transform transition-transform scale-95 flex flex-col border-2 border-verdeSalvia/30">
+
+        <button onclick="fecharModalManual()" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-20">&times;</button>
+
+        <div class="text-center p-6 md:p-8 border-b border-gray-100 bg-verdeSalvia/5 rounded-t-[2.5rem]">
+            <h3 class="text-2xl font-bold text-textoEscuro mb-1">Registrar <span id="titulo-tipo-refeicao" class="text-verdeSalvia">Refeição</span></h3>
+            <p class="text-textoClaro font-medium text-sm">O que você comeu? A IA vai estimar as calorias para você.</p>
+        </div>
+
+        <form th:action="@{/diario/registrar-manual}" method="post" class="p-6 md:p-8 flex flex-col gap-6">
+            <!-- Campo oculto que envia o tipo para o Java -->
+            <input type="hidden" id="input-tipo-refeicao" name="tipoRefeicao" value="">
+
+            <div class="flex flex-col">
+                <label class="text-textoClaro font-bold text-sm mb-2">Descreva sua refeição:</label>
+                <textarea name="descricao" rows="3" required placeholder="Ex: Um prato fundo de arroz com feijão, 2 bifes grelhados e salada de alface." class="px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none focus:border-verdeSalvia resize-none text-textoEscuro bg-gray-50"></textarea>
+            </div>
+
+            <div class="bg-amareloMostarda/10 border border-amareloMostarda/30 p-4 rounded-2xl flex items-center gap-3">
+                <i class="fa-solid fa-wand-magic-sparkles text-amareloMostarda text-xl"></i>
+                <p class="text-xs text-textoEscuro font-medium">Não se preocupe com quantidades exatas, o SmartMeal fará o cálculo aproximado!</p>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="fecharModalManual()" class="w-1/3 py-3 rounded-full text-textoClaro font-bold hover:bg-gray-100 transition">Cancelar</button>
+                <button type="submit" class="w-2/3 bg-verdeSalvia text-white py-3 rounded-full font-bold hover:bg-verdeEscuro transition shadow-md flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-brain"></i> Calcular e Salvar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL DE VISUALIZAR MÉTRICAS -->
+<div id="modal-visualizar-dados" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
+    <div class="bg-white rounded-[2rem] shadow-xl w-full max-w-sm relative transform transition-transform scale-95 flex flex-col max-h-[95vh] overflow-hidden border-2 border-verdeSalvia/30">
+
+        <button id="btn-fechar-visualizar" onclick="document.getElementById('modal-visualizar-dados').classList.add('opacity-0'); document.getElementById('modal-visualizar-dados').querySelector('div').classList.add('scale-95'); setTimeout(() => document.getElementById('modal-visualizar-dados').classList.add('hidden'), 300);" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-20">&times;</button>
+
+        <div class="text-center p-6 border-b border-gray-100 shrink-0 bg-white z-10">
+            <div class="w-12 h-12 rounded-full bg-verdeSalvia/10 text-verdeSalvia flex items-center justify-center text-xl mx-auto mb-3">
+                <i class="fa-solid fa-clipboard-user"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-textoEscuro mb-1">Métricas Atuais</h3>
+            <p class="text-textoClaro font-medium text-xs">Visão geral do seu perfil corporal.</p>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/50">
+            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-verdeSalvia/10 text-verdeSalvia flex items-center justify-center"><i class="fa-solid fa-weight-scale"></i></div>
+                    <div>
+                        <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Peso Atual</p>
+                        <p class="text-lg font-bold text-textoEscuro" th:text="${usuario.pesoKg} + ' kg'">0 kg</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-amareloMostarda/10 text-amareloMostarda flex items-center justify-center"><i class="fa-solid fa-bullseye"></i></div>
+                    <div>
+                        <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Objetivo</p>
+                        <p class="text-sm font-bold text-textoEscuro capitalize" th:text="${usuario.objetivo}">Objetivo</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"><i class="fa-solid fa-person-running"></i></div>
+                    <div>
+                        <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Atividade</p>
+                        <p class="text-sm font-bold text-textoEscuro capitalize" th:text="${usuario.nivelAtividade}">Nível</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-fire"></i></div>
+                    <div>
+                        <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Meta Calórica</p>
+                        <p class="text-lg font-bold text-textoEscuro" th:text="${usuario.metaCaloricaKcal} + ' kcal'">0 kcal</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-gray-100 bg-white shrink-0 z-10 rounded-b-[2rem]">
+            <button onclick="document.getElementById('btn-fechar-visualizar').click(); document.getElementById('btn-abrir-editar-perfil').click();" class="w-full text-textoClaro px-4 py-2.5 rounded-xl font-bold hover:bg-gray-100 hover:text-textoEscuro transition flex items-center justify-center text-sm border border-gray-200">
+                <i class="fa-solid fa-user-pen mr-2"></i> Alterar nas configurações
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDITAR PERFIL COMPLETO -->
+<div id="modal-editar-perfil" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300">
+    <div class="bg-cardBranco rounded-[2.5rem] shadow-xl w-full max-w-3xl relative transform transition-transform scale-95 border-2 border-verdeSalvia/30 max-h-[85vh] flex flex-col overflow-hidden">
+        <button id="btn-fechar-editar-perfil" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-10">&times;</button>
+        <div class="text-center p-8 pb-4 border-b border-gray-100 shrink-0">
+            <h3 class="text-3xl font-rancho font-bold text-textoEscuro mb-1">Configurações da Conta</h3>
+            <p class="text-textoClaro font-medium text-sm">Mantenha suas métricas atualizadas para a IA calcular tudo com precisão.</p>
+        </div>
+        <form th:action="@{/atualizarPerfil}" method="post" class="flex flex-col flex-1 min-h-0 bg-white rounded-b-[2.5rem]">
+            <div class="flex-1 overflow-y-auto p-6 md:p-8 pt-4 space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Nome Completo</label>
+                        <input type="text" name="nome" th:value="${usuario.nome}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">E-mail</label>
+                        <input type="email" name="email" th:value="${usuario.email}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Estado (UF)</label>
+                        <input type="text" name="estado" th:value="${usuario.estado}" placeholder="Ex: PA, SP, RJ" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Nova Senha (opcional)</label>
+                        <input type="password" name="novaSenha" placeholder="Deixe em branco para manter" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50">
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Altura (cm)</label>
+                        <input type="number" name="alturaCm" th:value="${usuario.alturaCm}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Peso Atual (kg)</label>
+                        <input type="number" step="0.1" name="pesoKg" th:value="${usuario.pesoKg}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Gênero Biológico</label>
+                        <select name="genero" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white">
+                            <option value="M" th:selected="${usuario.genero == 'M'}">Masculino</option>
+                            <option value="F" th:selected="${usuario.genero == 'F'}">Feminino</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Frequência de Atividade</label>
+                        <select name="nivelAtividade" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white">
+                            <option value="sedentario" th:selected="${usuario.nivelAtividade == 'sedentario'}">Sedentário (Nenhuma)</option>
+                            <option value="leve" th:selected="${usuario.nivelAtividade == 'leve'}">Leve (1-3 dias/sem)</option>
+                            <option value="moderado" th:selected="${usuario.nivelAtividade == 'moderado'}">Moderado (3-5 dias/sem)</option>
+                            <option value="intenso" th:selected="${usuario.nivelAtividade == 'intenso'}">Intenso (6-7 dias/sem)</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Objetivo Principal</label>
+                        <select name="objetivo" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white">
+                            <option value="emagrecer" th:selected="${usuario.objetivo == 'emagrecer'}">Emagrecer / Secar</option>
+                            <option value="manter" th:selected="${usuario.objetivo == 'manter'}">Manter peso</option>
+                            <option value="hipertrofia" th:selected="${usuario.objetivo == 'hipertrofia'}">Ganhar Massa Muscular</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
+                        <input type="text" name="restricaoAlimentar" th:value="${usuario.restricaoAlimentar}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
+                    </div>
+                    <div class="flex flex-col md:col-span-2">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Orçamento Mensal para Alimentação (R$)</label>
+                        <input type="number" step="0.01" name="orcamentoMaxMensal" th:value="${usuario.orcamentoMaxMensal}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full md:w-1/2">
+                    </div>
+                </div>
+                <!-- Zona de Perigo -->
+                <div class="bg-red-50 border border-red-200 rounded-2xl p-6 mt-6 mb-4">
+                    <h4 class="text-red-600 font-bold mb-2"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Atenção!</h4>
+                    <p class="text-sm text-red-500/80 mb-4">Ao excluir sua conta, seu perfil será apagado e todas as dietas geradas pela IA serão excluídas permanentemente. Esta ação é irreversível.</p>
+                    <a th:href="@{/deletarConta}"
+                       onclick="return confirm('ATENÇÃO: Tem certeza absoluta? Seu perfil e histórico de IA serão destruídos para sempre.');"
+                       class="inline-flex items-center bg-red-500 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-red-600 transition duration-200 cursor-pointer">
+                        <i class="fa-solid fa-trash-can mr-2"></i> Excluir Minha Conta Permanentemente
+                    </a>
+                </div>
+            </div>
+            <div class="p-4 pb-6 md:p-6 border-t border-gray-100 bg-white shrink-0 z-20 flex justify-end w-full rounded-b-[2.5rem]">
+                <button type="button" class="px-6 py-2 rounded-full text-textoClaro hover:text-textoEscuro font-bold transition mr-2" onclick="document.getElementById('btn-fechar-editar-perfil').click()">Cancelar</button>
+                <button type="submit" class="bg-verdeSalvia text-white px-8 py-2.5 rounded-full font-bold shadow-md hover:bg-verdeEscuro transition">
+                    Salvar Alterações
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="modal-em-breve" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300">
+    <div class="bg-cardBranco p-8 rounded-[2rem] shadow-xl w-full max-w-md text-center transform transition-transform scale-95 border-2 border-verdeSalvia/30">
+        <div class="text-6xl mb-4">🚧</div>
+        <h3 class="text-2xl font-rancho font-bold text-textoEscuro mb-2">Em Desenvolvimento!</h3>
+        <p class="text-textoClaro text-sm mb-6">Esta funcionalidade estará disponível em breve.</p>
+        <button id="btn-fechar-em-breve" class="bg-verdeSalvia text-white px-8 py-2.5 rounded-full font-bold shadow-md hover:bg-verdeEscuro transition w-full">
+            Entendi
+        </button>
+    </div>
+</div>
+
+<!-- SCRIPT ADICIONAL APENAS PARA A TELA DO DIÁRIO -->
+<script>
+    function abrirModalManual(tipoDaRefeicao) {
+        const modal = document.getElementById('modal-registro-manual');
+        document.getElementById('titulo-tipo-refeicao').innerText = tipoDaRefeicao;
+        document.getElementById('input-tipo-refeicao').value = tipoDaRefeicao;
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modal.querySelector('div').classList.remove('scale-95');
+        }, 10);
+    }
+
+    function fecharModalManual() {
+        const modal = document.getElementById('modal-registro-manual');
+        modal.classList.add('opacity-0');
+        modal.querySelector('div').classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+</script>
+
+<!-- Script modularizado original do sistema -->
+<script th:src="@{/dashboard.js}"></script>
+</body>
+</html>

@@ -268,4 +268,45 @@ public class ArtificialIntelligenceService {
             </div>
             """.formatted(titulo, calorias, ingredientes, macros);
     }
+
+    public Integer estimarCaloriasRefeicaoLivre(String descricao) {
+        String prompt = String.format("Atue como nutricionista. Estime o total aproximado de calorias para a seguinte refeição: '%s'. Retorne APENAS o número inteiro de calorias, sem textos adicionais, sem formatação, sem a palavra 'kcal'.", descricao);
+
+        try {
+            String respostaIA = chamarApiGemini(prompt);
+            return Integer.parseInt(respostaIA.replaceAll("[^0-9]", ""));
+        }catch (Exception e) {
+            System.err.println("Erro ao estimar calorias via IA: " + e.getMessage());
+            return 0;
+        }
+    }
+
+    public String chamarApiGemini(String prompt) {
+        Map<String, Object> requestBody = new HashMap<>();
+        Map<String, Object> textPart = new HashMap<>();
+        textPart.put("text", prompt);
+
+        Map<String, Object> parts = new HashMap<>();
+        parts.put("parts", Collections.singletonList(textPart));
+
+        Map<String, Object> contents = new HashMap<>();
+        contents.put("contents", Collections.singletonList(parts));
+
+        requestBody.put("contents", contents.get("contents"));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+        String urlCompleta = apiUrl + "?key=" + apiKey;
+        ResponseEntity<Map> response = restTemplate.postForEntity(urlCompleta, entity, Map.class);
+
+        List candidates = (List) response.getBody().get("candidates");
+        Map firstCandidate = (Map) candidates.get(0);
+        Map content = (Map) firstCandidate.get("content");
+        List responseParts = (List) content.get("parts");
+        Map firstPart = (Map) responseParts.get(0);
+
+        return (String) firstPart.get("text");
+    }
 }
