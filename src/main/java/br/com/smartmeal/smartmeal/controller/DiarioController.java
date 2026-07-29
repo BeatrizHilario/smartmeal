@@ -38,10 +38,31 @@ public class DiarioController {
 
     @PostMapping("registrar-sugestao")
     public String registrarSugestao(@RequestParam String tipoRefeicao, @RequestParam String descricao, @RequestParam Integer calorias, HttpSession session) {
+
+        System.out.println("=== NOVA TENTATIVA DE REGISTRO ===");
+        System.out.println("Tipo: " + tipoRefeicao);
+        System.out.println("Prato: " + descricao);
+        System.out.println("Calorias: " + calorias);
+
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
-        if (usuario != null) {
-            diarioService.registrarRefeicaoSugerida(usuario.getIdUsuario().toString(), tipoRefeicao, descricao, calorias);
+        if (usuario == null) {
+            System.out.println("AVISO: 'usuarioLogado' está nulo. Tentando buscar usuário...");
+            usuario = (Usuario) session.getAttribute("usuario");
+
         }
+
+        if (usuario != null) {
+            try {
+                diarioService.registrarRefeicaoSugerida(usuario.getIdUsuario().toString(), tipoRefeicao, descricao, calorias);
+                System.out.println("SUCESSO: Refeição salva no MongoDB para o usuário ID: " + usuario.getIdUsuario());
+            }catch (Exception e){
+                System.out.println("ERRO AO SALVAR NO BANCO: " + e.getMessage());
+            }
+        }else {
+            System.out.println("ERRO FATAL: Usuário  não foi encontrado na sessão. Ação abortada.");
+        }
+        System.out.println("=========================");
+
         return "redirect:/dashboard";
     }
 
