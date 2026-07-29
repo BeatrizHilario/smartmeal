@@ -74,4 +74,13 @@ public class DiarioController {
         }
         return "redirect:/diario";
     }
+
+    @PostMapping("/excluir")
+    public String excluirRefeicao(@RequestParam String registroId, HttpSession session) {
+        Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuario != null) {
+            diarioService.excluirRefeicao(registroId);
+        }
+        return "redirect:/diario";
+    }
 }

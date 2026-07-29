@@ -51,4 +51,8 @@ public class DiarioService {
         RegistroDiario refeicao = repository.findByUsuarioIdAndDataAndTipoRefeicao(usuarioId, data, tipoRefeicao);
         return refeicao != null;
     }
+
+    public void excluirRefeicao(String registroId) {
+        repository.deleteById(registroId);
+    }
 }
