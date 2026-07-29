@@ -205,10 +205,14 @@
                     </div>
                     <p class="text-textoClaro font-medium mb-1">Calorias Consumidas</p>
                     <h3 class="text-3xl font-bold text-textoEscuro">
-                        0 <span class="text-lg text-textoClaro font-medium">/ <span th:text="${usuario.metaCaloricaKcal}"></span> kcal</span>
+                        <!-- Exibe a soma real de calorias -->
+                        <span th:text="${caloriasConsumidas != null ? caloriasConsumidas : 0}">0</span>
+                        <span class="text-lg text-textoClaro font-medium">/ <span th:text="${usuario.metaCaloricaKcal}"></span> kcal</span>
                     </h3>
                     <div class="w-full bg-gray-100 rounded-full h-3 mt-4">
-                        <div class="bg-orange-400 h-3 rounded-full transition-all duration-1000" style="width: 65%;"></div>
+                        <!-- Calcula a porcentagem para preencher a barrinha laranja automaticamente! -->
+                        <div class="bg-orange-400 h-3 rounded-full transition-all duration-1000"
+                             th:style="'width: ' + (${usuario.metaCaloricaKcal != null and usuario.metaCaloricaKcal > 0 ? (caloriasConsumidas * 100 / usuario.metaCaloricaKcal) : 0}) + '%; max-width: 100%;'"></div>
                     </div>
                 </div>
 
@@ -307,22 +311,39 @@
                 <h3 class="font-bold text-xl mb-6 relative z-10">Refeições de Hoje</h3>
 
                 <ul class="space-y-4 relative z-10 font-medium opacity-90">
-                    <li class="flex items-center text-white/50">
-                        <i class="fa-regular fa-circle text-xl mr-3"></i>
-                        <span>Café da Manhã <span class="text-sm font-normal">(Pendente)</span></span>
+
+                    <!-- CAFÉ DA MANHÃ -->
+                    <li class="flex items-center"
+                        th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Café da Manhã'])}"
+                        th:classappend="${feito ? 'text-white' : 'text-white/50'}">
+                        <i th:class="${feito ? 'fa-solid fa-check-circle text-xl mr-3 text-amareloMostarda' : 'fa-regular fa-circle text-xl mr-3'}"></i>
+                        <span>Café da Manhã <span th:unless="${feito}" class="text-sm font-normal">(Pendente)</span></span>
                     </li>
-                    <li class="flex items-center text-white/50">
-                        <i class="fa-regular fa-circle text-xl mr-3"></i>
-                        <span>Lanche <span class="text-sm font-normal">(Pendente)</span></span>
+
+                    <!-- ALMOÇO -->
+                    <li class="flex items-center"
+                        th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Almoço'])}"
+                        th:classappend="${feito ? 'text-white' : 'text-white/50'}">
+                        <i th:class="${feito ? 'fa-solid fa-check-circle text-xl mr-3 text-amareloMostarda' : 'fa-regular fa-circle text-xl mr-3'}"></i>
+                        <span>Almoço <span th:unless="${feito}" class="text-sm font-normal">(Pendente)</span></span>
                     </li>
-                    <li class="flex items-center text-white/50">
-                        <i class="fa-regular fa-circle text-xl mr-3"></i>
-                        <span>Almoço <span class="text-sm font-normal">(Pendente)</span></span>
+
+                    <!-- LANCHE -->
+                    <li class="flex items-center"
+                        th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Lanche'])}"
+                        th:classappend="${feito ? 'text-white' : 'text-white/50'}">
+                        <i th:class="${feito ? 'fa-solid fa-check-circle text-xl mr-3 text-amareloMostarda' : 'fa-regular fa-circle text-xl mr-3'}"></i>
+                        <span>Lanche <span th:unless="${feito}" class="text-sm font-normal">(Pendente)</span></span>
                     </li>
-                    <li class="flex items-center text-white/50">
-                        <i class="fa-regular fa-circle text-xl mr-3"></i>
-                        <span>Jantar <span class="text-sm font-normal">(Pendente)</span></span>
+
+                    <!-- JANTAR -->
+                    <li class="flex items-center"
+                        th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Jantar'])}"
+                        th:classappend="${feito ? 'text-white' : 'text-white/50'}">
+                        <i th:class="${feito ? 'fa-solid fa-check-circle text-xl mr-3 text-amareloMostarda' : 'fa-regular fa-circle text-xl mr-3'}"></i>
+                        <span>Jantar <span th:unless="${feito}" class="text-sm font-normal">(Pendente)</span></span>
                     </li>
+
                 </ul>
             </div>
 

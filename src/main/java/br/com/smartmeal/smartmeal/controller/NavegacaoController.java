@@ -3,7 +3,9 @@ package br.com.smartmeal.smartmeal.controller;
 import br.com.smartmeal.smartmeal.model.Usuario;
 import br.com.smartmeal.smartmeal.model.dto.DietaResponseDTO;
 import br.com.smartmeal.smartmeal.model.nosql.DietaRecomendada;
+import br.com.smartmeal.smartmeal.model.nosql.RegistroDiario;
 import br.com.smartmeal.smartmeal.service.ArtificialIntelligenceService;
+import br.com.smartmeal.smartmeal.service.DiarioService;
 import br.com.smartmeal.smartmeal.service.DietaService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Controller
 public class NavegacaoController {
 
@@ -22,6 +27,9 @@ public class NavegacaoController {
 
     @Autowired
     private ArtificialIntelligenceService artificialIntelligenceService;
+
+    @Autowired
+    private DiarioService diarioService;
 
     @GetMapping({"/", "/login"})
     public String abrirLogin() {
@@ -47,6 +55,15 @@ public class NavegacaoController {
             var dietaPersonalizada = dietaService.buscarPorIdUsuario(usuario.getIdUsuario());
             model.addAttribute("dietaReal", dietaPersonalizada);
         }
+
+        LocalDate hoje = LocalDate.now();
+        List<RegistroDiario> refeicoesHoje = diarioService.buscarRefeicoesDoDia(usuario.getIdUsuario().toString(), hoje);
+
+        int caloriasConsumidas = refeicoesHoje.stream().mapToInt(RegistroDiario::getCalorias).sum();
+
+        model.addAttribute("refeicoes", refeicoesHoje);
+        model.addAttribute("caloriasConsumidas", caloriasConsumidas);
+
         return "dashboard";
     }
 
