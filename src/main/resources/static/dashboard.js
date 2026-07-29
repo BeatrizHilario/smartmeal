@@ -452,3 +452,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Envia a sugestão atual direto para o banco
+function consumirSugestaoIA() {
+    const container = document.getElementById("container-dieta-ia");
+
+    // Captura o título e as calorias do HTML gerado pela IA
+    const tituloEl = container.querySelector("h4");
+    const kcalEl = container.querySelector("span.text-xl");
+
+    if (!tituloEl || !kcalEl) {
+        alert("Gere uma sugestão primeiro!");
+        return;
+    }
+
+    // Pega os valores da tela
+    const descricaoPrato = tituloEl.innerText.trim();
+    // Extrai apenas os números da caloria
+    const caloriasNum = parseInt(kcalEl.innerText.replace(/\D/g, '')) || 0;
+
+    // Como saber se é Almoço ou Jantar? Pegamos do botão que está selecionado na tela!
+    const botaoAtivo = document.querySelector(".meal-btn.bg-verdeSalvia");
+    const tipo = botaoAtivo ? botaoAtivo.getAttribute("data-tipo") : "Refeição";
+
+    // Preenche o formulário invisível e envia
+    document.getElementById("input-sug-tipo").value = tipo;
+    document.getElementById("input-sug-desc").value = descricaoPrato;
+    document.getElementById("input-sug-kcal").value = caloriasNum;
+
+    document.getElementById("form-sugestao-ia").submit();
+}

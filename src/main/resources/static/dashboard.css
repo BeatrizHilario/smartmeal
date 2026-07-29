@@ -55,3 +55,13 @@ body {
     pointer-events: none;
     opacity: 0.8;
 }
+
+/* Animação suave para entrada de página */
+@keyframes entraSuave {
+    0% { opacity: 0; transform: translateY(15px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.anima-conteudo {
+    animation: entraSuave 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}

@@ -68,8 +68,7 @@
 </aside>
 
 <!-- CONTEÚDO PRINCIPAL (A TELA DO DIÁRIO) -->
-<main class="flex-1 px-4 md:px-12 py-6 md:py-10 h-full overflow-y-auto z-10 relative pb-24 md:pb-10 w-full bg-[#FAFAFA] md:bg-transparent">
-
+<main class="flex-1 px-4 md:px-12 py-6 md:py-10 h-full overflow-y-auto z-10 relative pb-24 md:pb-10 w-full bg-[#FAFAFA] md:bg-transparent anima-conteudo">
     <!-- HEADER DO DIÁRIO ALIMENTAR -->
     <header class="flex flex-col mb-8 md:mb-10 mt-0 gap-2">
         <div class="flex justify-between items-start md:items-center w-full">
@@ -223,39 +222,152 @@
 <!-- ================= MODAIS DO SISTEMA ================= -->
 
 <!-- NOVO MODAL: REGISTRO MANUAL COM IA -->
+<!-- MODAL DE REGISTRO MANUAL COM LISTA DINÂMICA -->
 <div id="modal-registro-manual" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
-    <div class="bg-white rounded-[2.5rem] shadow-xl w-full max-w-lg relative transform transition-transform scale-95 flex flex-col border-2 border-verdeSalvia/30">
+    <div class="bg-white rounded-[2.5rem] shadow-xl w-full max-w-lg relative transform transition-transform scale-95 flex flex-col border-2 border-verdeSalvia/30 max-h-[90vh]">
 
         <button onclick="fecharModalManual()" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-20">&times;</button>
 
-        <div class="text-center p-6 md:p-8 border-b border-gray-100 bg-verdeSalvia/5 rounded-t-[2.5rem]">
+        <div class="text-center p-6 border-b border-gray-100 bg-verdeSalvia/5 rounded-t-[2.5rem] shrink-0">
             <h3 class="text-2xl font-bold text-textoEscuro mb-1">Registrar <span id="titulo-tipo-refeicao" class="text-verdeSalvia">Refeição</span></h3>
-            <p class="text-textoClaro font-medium text-sm">O que você comeu? A IA vai estimar as calorias para você.</p>
+            <p class="text-textoClaro font-medium text-sm">Adicione o que você comeu item por item.</p>
         </div>
 
-        <form th:action="@{/diario/registrar-manual}" method="post" class="p-6 md:p-8 flex flex-col gap-6">
-            <!-- Campo oculto que envia o tipo para o Java -->
+        <form id="form-registro-manual" th:action="@{/diario/registrar-manual}" method="post" class="flex flex-col flex-1 min-h-0">
             <input type="hidden" id="input-tipo-refeicao" name="tipoRefeicao" value="">
+            <!-- O JS vai juntar todos os itens aqui antes de enviar pro Java -->
+            <input type="hidden" id="input-descricao-final" name="descricao" value="">
 
-            <div class="flex flex-col">
-                <label class="text-textoClaro font-bold text-sm mb-2">Descreva sua refeição:</label>
-                <textarea name="descricao" rows="3" required placeholder="Ex: Um prato fundo de arroz com feijão, 2 bifes grelhados e salada de alface." class="px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none focus:border-verdeSalvia resize-none text-textoEscuro bg-gray-50"></textarea>
-            </div>
+            <!-- Área com Scroll para os ingredientes -->
+            <div class="p-6 overflow-y-auto flex-1">
+                <div id="lista-ingredientes" class="flex flex-col gap-3">
 
-            <div class="bg-amareloMostarda/10 border border-amareloMostarda/30 p-4 rounded-2xl flex items-center gap-3">
-                <i class="fa-solid fa-wand-magic-sparkles text-amareloMostarda text-xl"></i>
-                <p class="text-xs text-textoEscuro font-medium">Não se preocupe com quantidades exatas, o SmartMeal fará o cálculo aproximado!</p>
-            </div>
+                    <!-- Linha Padrão (Nunca é apagada) -->
+                    <div class="flex gap-2 items-center linha-ingrediente">
+                        <input type="number" step="0.1" min="0" class="qtd-input w-20 px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia text-sm bg-gray-50" placeholder="Qtd" required>
 
-            <div class="flex gap-3 pt-2">
-                <button type="button" onclick="fecharModalManual()" class="w-1/3 py-3 rounded-full text-textoClaro font-bold hover:bg-gray-100 transition">Cancelar</button>
-                <button type="submit" class="w-2/3 bg-verdeSalvia text-white py-3 rounded-full font-bold hover:bg-verdeEscuro transition shadow-md flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-brain"></i> Calcular e Salvar
+                        <select class="medida-input w-28 px-2 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia text-sm bg-gray-50">
+                            <option value="g">gramas (g)</option>
+                            <option value="ml">ml</option>
+                            <option value="colher(es) de sopa">colher (sopa)</option>
+                            <option value="unidade(s)">unidade</option>
+                            <option value="fatia(s)">fatia</option>
+                            <option value="concha(s)">concha</option>
+                        </select>
+
+                        <input type="text" class="alimento-input flex-1 px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia text-sm bg-gray-50" placeholder="O que comeu? Ex: Arroz" required>
+
+                        <!-- Ícone de lixeira invisível na primeira linha -->
+                        <div class="w-8"></div>
+                    </div>
+
+                </div>
+
+                <button type="button" onclick="adicionarLinha()" class="mt-4 text-verdeSalvia font-bold text-sm flex items-center gap-2 hover:opacity-80 transition w-max">
+                    <div class="w-6 h-6 rounded-full bg-verdeSalvia/20 flex items-center justify-center"><i class="fa-solid fa-plus text-xs"></i></div>
+                    Adicionar outro item
                 </button>
+            </div>
+
+            <div class="p-6 border-t border-gray-100 bg-white shrink-0 z-10 rounded-b-[2.5rem]">
+                <div class="flex gap-3">
+                    <button type="button" onclick="fecharModalManual()" class="w-1/3 py-3 rounded-full text-textoClaro font-bold hover:bg-gray-100 transition">Cancelar</button>
+                    <!-- Mudamos type="submit" para button para o JS interceptar -->
+                    <button type="button" onclick="prepararEEnviarFormulario()" class="w-2/3 bg-verdeSalvia text-white py-3 rounded-full font-bold hover:bg-verdeEscuro transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-brain"></i> Calcular e Salvar
+                    </button>
+                </div>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+    // Gerenciamento do Modal Dinâmico
+    function abrirModalManual(tipoDaRefeicao) {
+        const modal = document.getElementById('modal-registro-manual');
+        document.getElementById('titulo-tipo-refeicao').innerText = tipoDaRefeicao;
+        document.getElementById('input-tipo-refeicao').value = tipoDaRefeicao;
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modal.querySelector('div').classList.remove('scale-95');
+        }, 10);
+    }
+
+    function fecharModalManual() {
+        const modal = document.getElementById('modal-registro-manual');
+        modal.classList.add('opacity-0');
+        modal.querySelector('div').classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 300);
+
+        // Limpa os campos se fechar
+        setTimeout(() => {
+            const lista = document.getElementById('lista-ingredientes');
+            // Mantém só o primeiro elemento e limpa ele
+            lista.innerHTML = lista.firstElementChild.outerHTML;
+            lista.querySelector('.qtd-input').value = '';
+            lista.querySelector('.alimento-input').value = '';
+        }, 300);
+    }
+
+    // Adiciona nova linha clonando a estrutura
+    function adicionarLinha() {
+        const lista = document.getElementById('lista-ingredientes');
+
+        const novaLinha = document.createElement('div');
+        novaLinha.className = "flex gap-2 items-center linha-ingrediente mt-2";
+        novaLinha.innerHTML = `
+            <input type="number" step="0.1" min="0" class="qtd-input w-20 px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia text-sm bg-gray-50" placeholder="Qtd" required>
+            <select class="medida-input w-28 px-2 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia text-sm bg-gray-50">
+                <option value="g">gramas (g)</option>
+                <option value="ml">ml</option>
+                <option value="colher(es) de sopa">colher (sopa)</option>
+                <option value="unidade(s)">unidade</option>
+                <option value="fatia(s)">fatia</option>
+                <option value="concha(s)">concha</option>
+            </select>
+            <input type="text" class="alimento-input flex-1 px-3 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia text-sm bg-gray-50" placeholder="O que comeu?" required>
+            <button type="button" onclick="this.parentElement.remove()" class="w-8 h-8 rounded-full bg-red-50 text-red-400 hover:text-red-600 hover:bg-red-100 flex items-center justify-center transition shrink-0"><i class="fa-solid fa-trash text-xs"></i></button>
+        `;
+        lista.appendChild(novaLinha);
+    }
+
+    // Junta as linhas em uma frase só e envia pro Java
+    function prepararEEnviarFormulario() {
+        const form = document.getElementById('form-registro-manual');
+        const linhas = document.querySelectorAll('.linha-ingrediente');
+
+        let validacaoOk = true;
+        let fraseFinal = [];
+
+        linhas.forEach(linha => {
+            const qtd = linha.querySelector('.qtd-input').value;
+            const medida = linha.querySelector('.medida-input').value;
+            const alimento = linha.querySelector('.alimento-input').value;
+
+            // Se algum campo estiver vazio, barra o envio
+            if (!qtd || !alimento) {
+                validacaoOk = false;
+                linha.querySelector('.qtd-input').classList.add('border-red-400');
+            } else {
+                linha.querySelector('.qtd-input').classList.remove('border-red-400');
+                // Monta o pedaço da frase: "150 g de Frango"
+                fraseFinal.push(`${qtd} ${medida} de ${alimento}`);
+            }
+        });
+
+        if (!validacaoOk) {
+            alert("Preencha todas as quantidades e alimentos!");
+            return;
+        }
+
+        // Exemplo de resultado final: "150 g de Frango, 2 colher(es) de sopa de Arroz"
+        document.getElementById('input-descricao-final').value = fraseFinal.join(', ');
+        form.submit();
+    }
+</script>
 
 <!-- MODAL DE VISUALIZAR MÉTRICAS -->
 <div id="modal-visualizar-dados" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
