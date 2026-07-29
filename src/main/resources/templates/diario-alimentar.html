@@ -119,7 +119,21 @@
                 </button>
             </div>
             <div class="text-textoClaro text-sm font-medium pl-2">
-                <p class="italic opacity-60"><i class="fa-regular fa-clock mr-1"></i> Pendente</p>
+                <!-- Busca na lista de refeições se tem alguma do tipo Café da Manhã -->
+                <th:block th:with="temRefeicao=${!#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Café da Manhã'])}">
+
+                    <!-- Se NÃO tiver, mostra Pendente -->
+                    <p th:if="${!temRefeicao}" class="italic opacity-60"><i class="fa-regular fa-clock mr-1"></i> Pendente</p>
+
+                    <!-- Se TIVER, faz um loop e exibe o que a pessoa comeu -->
+                    <div th:if="${temRefeicao}" class="flex flex-col gap-3 mt-2">
+                        <div th:each="ref : ${refeicoes.?[tipoRefeicao == 'Café da Manhã']}" class="flex justify-between items-start text-verdeSalvia border-b border-gray-50 pb-2 last:border-0">
+                            <p class="pr-4 leading-snug"><i class="fa-solid fa-check-circle mr-1"></i> <span th:text="${ref.descricao}">Mingau</span></p>
+                            <span class="font-bold text-textoEscuro shrink-0" th:text="${ref.calorias} + ' kcal'">315 kcal</span>
+                        </div>
+                    </div>
+
+                </th:block>
             </div>
         </div>
 
@@ -137,7 +151,21 @@
                 </button>
             </div>
             <div class="text-textoClaro text-sm font-medium pl-2">
-                <p class="italic opacity-60"><i class="fa-regular fa-clock mr-1"></i> Pendente</p>
+                <!-- Busca na lista de refeições se tem alguma do tipo Café da Manhã -->
+                <th:block th:with="temRefeicao=${!#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Almoço'])}">
+
+                    <!-- Se NÃO tiver, mostra Pendente -->
+                    <p th:if="${!temRefeicao}" class="italic opacity-60"><i class="fa-regular fa-clock mr-1"></i> Pendente</p>
+
+                    <!-- Se TIVER, faz um loop e exibe o que a pessoa comeu -->
+                    <div th:if="${temRefeicao}" class="flex flex-col gap-3 mt-2">
+                        <div th:each="ref : ${refeicoes.?[tipoRefeicao == 'Almoço']}" class="flex justify-between items-start text-verdeSalvia border-b border-gray-50 pb-2 last:border-0">
+                            <p class="pr-4 leading-snug"><i class="fa-solid fa-check-circle mr-1"></i> <span th:text="${ref.descricao}">Mingau</span></p>
+                            <span class="font-bold text-textoEscuro shrink-0" th:text="${ref.calorias} + ' kcal'">315 kcal</span>
+                        </div>
+                    </div>
+
+                </th:block>
             </div>
         </div>
 
@@ -155,7 +183,21 @@
                 </button>
             </div>
             <div class="text-textoClaro text-sm font-medium pl-2">
-                <p class="italic opacity-60"><i class="fa-regular fa-clock mr-1"></i> Pendente</p>
+                <!-- Busca na lista de refeições se tem alguma do tipo Café da Manhã -->
+                <th:block th:with="temRefeicao=${!#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Lanche'])}">
+
+                    <!-- Se NÃO tiver, mostra Pendente -->
+                    <p th:if="${!temRefeicao}" class="italic opacity-60"><i class="fa-regular fa-clock mr-1"></i> Pendente</p>
+
+                    <!-- Se TIVER, faz um loop e exibe o que a pessoa comeu -->
+                    <div th:if="${temRefeicao}" class="flex flex-col gap-3 mt-2">
+                        <div th:each="ref : ${refeicoes.?[tipoRefeicao == 'Lanche']}" class="flex justify-between items-start text-verdeSalvia border-b border-gray-50 pb-2 last:border-0">
+                            <p class="pr-4 leading-snug"><i class="fa-solid fa-check-circle mr-1"></i> <span th:text="${ref.descricao}">Mingau</span></p>
+                            <span class="font-bold text-textoEscuro shrink-0" th:text="${ref.calorias} + ' kcal'">315 kcal</span>
+                        </div>
+                    </div>
+
+                </th:block>
             </div>
         </div>
 
@@ -173,7 +215,21 @@
                 </button>
             </div>
             <div class="text-textoClaro text-sm font-medium pl-2">
-                <p class="italic opacity-60"><i class="fa-regular fa-clock mr-1"></i> Pendente</p>
+                <!-- Busca na lista de refeições se tem alguma do tipo Café da Manhã -->
+                <th:block th:with="temRefeicao=${!#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Jantar'])}">
+
+                    <!-- Se NÃO tiver, mostra Pendente -->
+                    <p th:if="${!temRefeicao}" class="italic opacity-60"><i class="fa-regular fa-clock mr-1"></i> Pendente</p>
+
+                    <!-- Se TIVER, faz um loop e exibe o que a pessoa comeu -->
+                    <div th:if="${temRefeicao}" class="flex flex-col gap-3 mt-2">
+                        <div th:each="ref : ${refeicoes.?[tipoRefeicao == 'Jantar']}" class="flex justify-between items-start text-verdeSalvia border-b border-gray-50 pb-2 last:border-0">
+                            <p class="pr-4 leading-snug"><i class="fa-solid fa-check-circle mr-1"></i> <span th:text="${ref.descricao}">Mingau</span></p>
+                            <span class="font-bold text-textoEscuro shrink-0" th:text="${ref.calorias} + ' kcal'">315 kcal</span>
+                        </div>
+                    </div>
+
+                </th:block>
             </div>
         </div>
 
