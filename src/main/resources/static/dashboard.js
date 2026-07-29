@@ -457,9 +457,9 @@ document.addEventListener('DOMContentLoaded', () => {
 function consumirSugestaoIA() {
     const container = document.getElementById("container-dieta-ia");
 
-    // Captura o título e as calorias do HTML gerado pela IA
-    const tituloEl = container.querySelector("h4");
-    const kcalEl = container.querySelector("span.text-xl");
+    // Agora o JS busca pelas classes exatas do HTML gerado pelo seu ArtificialIntelligenceService
+    const tituloEl = container.querySelector("p.text-base") || container.querySelector("h4");
+    const kcalEl = container.querySelector("p.text-3xl") || container.querySelector("span.text-xl");
 
     if (!tituloEl || !kcalEl) {
         alert("Gere uma sugestão primeiro!");
@@ -468,17 +468,18 @@ function consumirSugestaoIA() {
 
     // Pega os valores da tela
     const descricaoPrato = tituloEl.innerText.trim();
-    // Extrai apenas os números da caloria
+    // Extrai apenas os números da caloria (remove o texto "kcal")
     const caloriasNum = parseInt(kcalEl.innerText.replace(/\D/g, '')) || 0;
 
-    // Como saber se é Almoço ou Jantar? Pegamos do botão que está selecionado na tela!
+    // Descobre qual botão de refeição está ativo no momento (verde)
     const botaoAtivo = document.querySelector(".meal-btn.bg-verdeSalvia");
-    const tipo = botaoAtivo ? botaoAtivo.getAttribute("data-tipo") : "Refeição";
+    const tipo = botaoAtivo ? botaoAtivo.getAttribute("data-tipo") : "Refeição Sugerida";
 
-    // Preenche o formulário invisível e envia
+    // Preenche o formulário invisível
     document.getElementById("input-sug-tipo").value = tipo;
     document.getElementById("input-sug-desc").value = descricaoPrato;
     document.getElementById("input-sug-kcal").value = caloriasNum;
 
+    // Envia para o Java!
     document.getElementById("form-sugestao-ia").submit();
 }
