@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const modal = document.getElementById('modal-editar-agua');
         const input = document.getElementById('input-agua-manual');
 
-        input.value = aguaConsumida;
+        input.value = '';
 
         modal.classList.remove('hidden');
         setTimeout(() => {
@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const valor = parseInt(input.value.replace(/\D/g, ''));
 
         if (!isNaN(valor)) {
-            aguaConsumida = valor;
+            aguaConsumida += valor;
             localStorage.setItem("agua_consumida", aguaConsumida); // Salva na memória
             renderizarAgua();
         }
