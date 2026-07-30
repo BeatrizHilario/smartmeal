@@ -485,37 +485,20 @@ function consumirSugestaoIA() {
     document.getElementById("form-sugestao-ia").submit();
 }
 
-// --- SISTEMA DE TRANSIÇÃO SUAVE (LOADER UNIVERSAL) ---
+// --- SISTEMA DE TRANSIÇÃO SUAVE (APENAS PARA PROCESSAMENTO PESADO) ---
 document.addEventListener("DOMContentLoaded", () => {
     const loader = document.getElementById("loader-global");
+    if (!loader) return;
 
-    // 1. Intercepta TODOS os cliques na tela
-    document.addEventListener("click", (e) => {
-        // Tenta achar um link <a> em volta de onde o usuário clicou (ex: se ele clicou no ícone da casinha)
-        const link = e.target.closest("a");
-
-        // Se for um link de navegação válido (ignora botões de modais que usam "#" ou "javascript")
-        if (link && link.href && !link.href.includes("#") && !link.href.includes("javascript") && link.target !== "_blank") {
-            if (loader) {
-                loader.classList.remove("hidden");
-                loader.classList.add("flex");
-            }
-        }
-    });
-
-    // Bônus: Mostra o loader ao salvar os formulários pesados (como o de perfil)
+    // O loader animado agora SÓ vai aparecer quando você enviar um formulário pesado (ex: IA ou Salvar Perfil)
     document.addEventListener("submit", () => {
-        if (loader) {
-            loader.classList.remove("hidden");
-            loader.classList.add("flex");
-        }
+        loader.classList.remove("hidden");
+        loader.classList.add("flex");
     });
 
-    // 2. Esconde o loader quando a nova página finalmente aparecer ou se o usuário clicar em "Voltar"
+    // Garante que o loader suma caso o usuário clique em "Voltar" no navegador
     window.addEventListener("pageshow", () => {
-        if (loader) {
-            loader.classList.add("hidden");
-            loader.classList.remove("flex");
-        }
+        loader.classList.add("hidden");
+        loader.classList.remove("flex");
     });
 });
