@@ -263,10 +263,10 @@ document.addEventListener('DOMContentLoaded', () => {
             svg.innerHTML = '<path fill="currentColor" d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/>';
 
             svg.onclick = () => {
-                if (aguaConsumida === copoValor) {
-                    aguaConsumida = copoValor - 500;
+                if (aguaConsumida >= copoValor) {
+                    aguaConsumida = Math.max(0, aguaConsumida - 500);
                 } else {
-                    aguaConsumida = copoValor;
+                    aguaConsumida += 500;
                 }
                 renderizarAgua();
             };

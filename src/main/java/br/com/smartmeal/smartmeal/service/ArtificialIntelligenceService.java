@@ -25,6 +25,7 @@ public class ArtificialIntelligenceService {
 
         String instrucaoPrompt = """
             Você é um nutricionista especialista em IA e orçamento familiar.
+            DATA DE HOJE: %s.
             Gere UMA ÚNICA sugestão de %s personalizada para o paciente abaixo.
             
             -Nome: %s
@@ -39,14 +40,16 @@ public class ArtificialIntelligenceService {
             Regras escritas de negócio:
                 1. PROIBIDO gerar cardápios diários ou semanais. Gere APENAS UMA única sugestão de %s.
                 2. RESTRIÇÃO ABSOLUTA: Respeite rigorosamente as restrições alimentares informadas. É estritamente PROIBIDO utilizar ou recomendar qualquer ingrediente, derivado ou alimento que esteja listado em '-Restrições Alimentares'.
-                3. PROIBIDO USAR ADJETIVOS: Não utilize adjetivos para descrever os pratos ou receitas (como 'simples', 'rústico', 'rápido', 'gourmet', 'artesanal', 'fit', 'delicioso', etc.). O nome do prato deve ser direto e objetivo.
+                3. PROIBIDO USAR ADJETIVOS: Não utilize adjetivos para descrever os pratos ou receitas. O nome do prato deve ser direto e objetivo.
                 4. O custo estimado dos ingredientes deve respeitar o orçamento informado.
                 5. Priorize alimentos sazonais e acessíveis.
                 6. Responda APENAS usando marcação HTML limpa (tags <h3>, <ul>, <li>, <p>, <b>). 
                 7. PROIBIDO USAR FORMATO JSON. Não coloque tags <html> ou <body>, apenas o conteúdo formatado.
                 8. SEJA EXTREMAMENTE DIRETO. Responda APENAS com o nome do prato e a lista de ingredientes com quantidades.
                 9. PROIBIDO escrever introduções, conclusões, saudações ou justificativas.
-                10. Você DEVE retornar EXATAMENTE o bloco de código HTML abaixo, substituindo APENAS as informações entre colchetes [ ] pelos dados calculados da refeição:
+                10. VARIEDADE: Como hoje é %s, seja criativo e não repita sugestões genéricas dos dias anteriores. Mude as fontes de proteína e carboidrato em relação a dietas padrão.
+                11. REGRA CULTURAL RIGOROSA: Se a refeição for 'Café da Manhã', você DEVE sugerir alimentos tradicionais matinais brasileiros (ex: pão, ovos, queijos, frutas, café, leite, iogurte, aveia, tapioca). É ESTRITAMENTE PROIBIDO sugerir frango, carnes, peixes, almoços pesados ou batata doce no café da manhã, independentemente do objetivo do usuário.
+                12. Você DEVE retornar EXATAMENTE o bloco de código HTML abaixo, substituindo APENAS as informações entre colchetes [ ] pelos dados calculados da refeição:
                 
                                    <div class="flex flex-col md:flex-row items-start justify-between gap-6">
                                        <div class="flex-1 w-full text-textoClaro font-medium text-sm leading-relaxed max-h-[400px] overflow-y-auto pr-4">
@@ -67,6 +70,7 @@ public class ArtificialIntelligenceService {
                                        </div>
                                    </div> 
             """.formatted(
+                java.time.LocalDate.now().toString(),
                 tipoRefeicao,
                 usuario.getNome() != null ? usuario.getNome() : "Sem nome",
                 usuario.getIdade() != null ? usuario.getIdade() : 0,
@@ -76,7 +80,7 @@ public class ArtificialIntelligenceService {
                 usuario.getObjetivo() != null ? usuario.getObjetivo() : "Saúde geral",
                 (usuario.getRestricaoAlimentar() != null && !usuario.getRestricaoAlimentar().trim().isEmpty()) ? usuario.getRestricaoAlimentar() : "Nenhuma",
                 usuario.getOrcamentoMaxMensal() != null ? usuario.getOrcamentoMaxMensal().doubleValue() : 0.0,
-                tipoRefeicao
+                tipoRefeicao, java.time.LocalDate.now().getDayOfWeek().toString()
         );
 
         Map<String, Object> requestBody = new HashMap<>();

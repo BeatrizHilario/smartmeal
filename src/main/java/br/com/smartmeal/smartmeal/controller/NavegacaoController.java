@@ -51,8 +51,29 @@ public class NavegacaoController {
         if(perfilIncompleto) {
             String ideiasReceitas = artificialIntelligenceService.gerarIdeiasEconomicasDoDia("Café da Manhã");
             model.addAttribute("ideiasReceitas", ideiasReceitas);
-        }else {
+        } else {
             var dietaPersonalizada = dietaService.buscarPorIdUsuario(usuario.getIdUsuario());
+
+            // VERIFICAÇÃO DO TEMPO: Se a dieta existir mas for de ontem (ou mais antiga), gera uma nova!
+            if (dietaPersonalizada != null && dietaPersonalizada.getDataGeracao().toLocalDate().isBefore(LocalDate.now())) {
+
+                // Pede uma nova dieta pro Gemini focada em Café da Manhã (já que virou o dia)
+                String novaDietaHtml = artificialIntelligenceService.gerarDietaPelaIA(usuario, "Café da Manhã");
+
+                // Salva a nova dieta no MongoDB
+                DietaRecomendada novaDieta = new DietaRecomendada();
+                novaDieta.setIdUsuario(usuario.getIdUsuario());
+                novaDieta.setDataGeracao(java.time.LocalDateTime.now());
+                novaDieta.setPlanoAlimentar(novaDietaHtml);
+                novaDieta.setCustoEstimado(usuario.getOrcamentoMaxMensal().doubleValue());
+
+                // Salva no banco (substituindo a antiga ou criando uma nova dependendo da sua regra de negócio no service)
+                dietaService.salvarDieta(novaDieta);
+
+                // Substitui a dieta velha pela nova para mostrar na tela
+                dietaPersonalizada = novaDieta;
+            }
+
             model.addAttribute("dietaReal", dietaPersonalizada);
         }
 
