@@ -156,6 +156,16 @@
 <!-- Container dos Toasts -->
 <div id="toast-container" class="toast-container"></div>
 
+<!-- LOADER GLOBAL DE TRANSIÇÃO -->
+<div id="loader-global" class="fixed inset-0 bg-white/60 backdrop-blur-md z-[9999] hidden flex-col justify-center items-center">
+    <div class="relative flex justify-center items-center mb-4">
+        <div class="absolute animate-ping w-16 h-16 rounded-full bg-verdeSalvia/30"></div>
+        <i class="fa-solid fa-utensils text-4xl text-verdeSalvia relative z-10 animate-bounce"></i>
+    </div>
+    <h2 class="text-3xl font-cursiva text-textoEscuro animate-pulse">Carregando...</h2>
+    <p class="text-textoClaro text-xs mt-2 font-medium">Buscando seus dados nutritivos</p>
+</div>
+
 <!-- Script Dinâmico para Notificações Elegantes -->
 <script th:inline="javascript">
     function mostrarToast(mensagem, tipo) {

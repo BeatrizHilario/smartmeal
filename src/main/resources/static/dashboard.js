@@ -491,7 +491,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!loader) return;
 
     // Captura os cliques nos botões que vão para o Dashboard ou para o Diário
-    const linksDeNavegacao = document.querySelectorAll('a[href="/dashboard"], a[href="/diario"]');
+    const linksDeNavegacao = document.querySelectorAll('a[href*="/dashboard"], a[href*="/diario"]');
 
     linksDeNavegacao.forEach(link => {
         link.addEventListener("click", (e) => {
