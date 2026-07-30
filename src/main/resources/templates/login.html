@@ -156,14 +156,18 @@
 <!-- Container dos Toasts -->
 <div id="toast-container" class="toast-container"></div>
 
-<!-- LOADER GLOBAL DE TRANSIÇÃO -->
-<div id="loader-global" class="fixed inset-0 bg-white/60 backdrop-blur-md z-[9999] hidden flex-col justify-center items-center">
-    <div class="relative flex justify-center items-center mb-4">
-        <div class="absolute animate-ping w-16 h-16 rounded-full bg-verdeSalvia/30"></div>
-        <i class="fa-solid fa-utensils text-4xl text-verdeSalvia relative z-10 animate-bounce"></i>
+<!-- LOADER GLOBAL DE TRANSIÇÃO (Versão CSS Puro) -->
+<div id="loader-global" class="loader-overlay oculto">
+    <div class="loader-icon-container">
+        <div class="loader-ping"></div>
+        <svg class="loader-utensils" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+            <path d="M7 2v20"></path>
+            <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
+        </svg>
     </div>
-    <h2 class="text-3xl font-cursiva text-textoEscuro animate-pulse">Carregando...</h2>
-    <p class="text-textoClaro text-xs mt-2 font-medium">Buscando seus dados nutritivos</p>
+    <h2 class="loader-titulo">Carregando...</h2>
+    <p class="loader-subtitulo">Buscando seus dados nutritivos</p>
 </div>
 
 <!-- Script Dinâmico para Notificações Elegantes -->

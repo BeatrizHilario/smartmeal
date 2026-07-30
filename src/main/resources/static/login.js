@@ -87,14 +87,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // No Login, a transição para o Dashboard acontece ao enviar o FORMULÁRIO (submit)
     document.addEventListener("submit", () => {
-        // Mostra a tela de carregamento IMEDIATAMENTE ao clicar em Entrar ou Registrar
-        loader.classList.remove("hidden");
-        loader.classList.add("flex");
+        // Remove a classe "oculto" para mostrar o loader com o efeito blur
+        loader.classList.remove("oculto");
     });
 
-    // Medida de segurança: se o usuário clicar no botão "Voltar" do navegador, o loader some
+    // Medida de segurança: se o usuário clicar no botão "Voltar" do navegador
     window.addEventListener("pageshow", () => {
-        loader.classList.add("hidden");
-        loader.classList.remove("flex");
+        loader.classList.add("oculto");
     });
 });
