@@ -80,20 +80,16 @@ function toggleSenhaLogin() {
     }
 }
 
-// --- LÓGICA DE TRANSIÇÃO DE TELAS (MASCARANDO A LENTIDÃO DO SERVIDOR) ---
+// --- LÓGICA DE TRANSIÇÃO DE TELAS NO LOGIN ---
 document.addEventListener("DOMContentLoaded", () => {
     const loader = document.getElementById("loader-global");
     if (!loader) return;
 
-    // Captura os cliques nos botões que vão para o Dashboard ou para o Diário
-    const linksDeNavegacao = document.querySelectorAll('a[href="/login"], a[href="/dashboard"]');
-
-    linksDeNavegacao.forEach(link => {
-        link.addEventListener("click", (e) => {
-            // Mostra a tela de carregamento IMEDIATAMENTE ao clicar
-            loader.classList.remove("hidden");
-            loader.classList.add("flex");
-        });
+    // No Login, a transição para o Dashboard acontece ao enviar o FORMULÁRIO (submit)
+    document.addEventListener("submit", () => {
+        // Mostra a tela de carregamento IMEDIATAMENTE ao clicar em Entrar ou Registrar
+        loader.classList.remove("hidden");
+        loader.classList.add("flex");
     });
 
     // Medida de segurança: se o usuário clicar no botão "Voltar" do navegador, o loader some
