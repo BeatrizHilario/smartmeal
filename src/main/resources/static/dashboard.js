@@ -147,19 +147,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnGerarOutra = document.getElementById("btn-gerar-sugestao");
     const containerDieta = document.getElementById("container-dieta-ia");
 
-    let tipoAtual = "Café da Manhã";
+    if (!containerDieta || mealBtns.length === 0) return;
+
+    // 1. Recupera qual era a última aba que o usuário estava vendo (ou o padrão)
+    let tipoAtual = localStorage.getItem("ultima_aba_refeicao") || "Café da Manhã";
+
+    // 2. Arruma as cores dos botões assim que a página carrega
+    mealBtns.forEach(b => {
+        b.classList.remove("bg-verdeSalvia", "text-white", "shadow-md");
+        b.classList.add("bg-gray-100", "text-textoClaro");
+        if (b.getAttribute("data-tipo") === tipoAtual) {
+            b.classList.remove("bg-gray-100", "text-textoClaro");
+            b.classList.add("bg-verdeSalvia", "text-white", "shadow-md");
+        }
+    });
+
+    // 3. Força a tela a mostrar o que está na memória
+    const cacheKeyIncial = "dieta_" + tipoAtual;
+    if (localStorage.getItem(cacheKeyIncial)) {
+        containerDieta.innerHTML = localStorage.getItem(cacheKeyIncial);
+    } else {
+        // Se for a primeira vez no dia, salva o que veio do Java na memória
+        const htmlBackend = containerDieta.innerHTML;
+        if (htmlBackend && htmlBackend.trim() !== "") {
+            localStorage.setItem(cacheKeyIncial, htmlBackend);
+        }
+    }
 
     // Função que verifica o cache antes de incomodar a IA
     async function buscarSugestaoIA(tipo, forcarNova = false) {
-        const cacheKey = "dieta_" + tipo; // Ex: dieta_Almoço
+        const cacheKey = "dieta_" + tipo;
 
-        // 1. Se NÃO forçou nova receita e já existe no cache, carrega instantâneo!
+        // Se NÃO forçou nova receita e já existe no cache, carrega instantâneo!
         if (!forcarNova && localStorage.getItem(cacheKey)) {
             containerDieta.innerHTML = localStorage.getItem(cacheKey);
             return;
         }
 
-        // 2. Se não tem no cache, mostra a animação de carregamento
+        // Se não tem no cache, mostra a animação de carregamento
         containerDieta.style.opacity = "0.5";
         containerDieta.innerHTML = `<div class="flex flex-col items-center justify-center py-10">
             <i class="fa-solid fa-spinner fa-spin text-3xl text-verdeSalvia mb-3"></i>
@@ -179,7 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const htmlGerado = await resposta.text();
 
-            // 3. Salva a resposta na memória do dia e joga na tela
+            // Salva a resposta na memória do dia e joga na tela
             localStorage.setItem(cacheKey, htmlGerado);
             containerDieta.innerHTML = htmlGerado;
         } catch (erro) {
@@ -191,6 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Clique nos botões de refeição
     mealBtns.forEach(btn => {
         btn.addEventListener("click", (e) => {
             mealBtns.forEach(b => {
@@ -203,13 +229,15 @@ document.addEventListener("DOMContentLoaded", () => {
             botaoClicado.classList.add("bg-verdeSalvia", "text-white", "shadow-md");
 
             tipoAtual = botaoClicado.getAttribute("data-tipo");
-            buscarSugestaoIA(tipoAtual); // Usa o cache por padrão
+            localStorage.setItem("ultima_aba_refeicao", tipoAtual); // <--- Memoriza a aba!
+
+            buscarSugestaoIA(tipoAtual);
         });
     });
 
     if (btnGerarOutra) {
         btnGerarOutra.addEventListener("click", () => {
-            buscarSugestaoIA(tipoAtual, true); // O 'true' ignora o cache e força nova requisição
+            buscarSugestaoIA(tipoAtual, true);
         });
     }
 });
