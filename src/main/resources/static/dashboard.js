@@ -242,15 +242,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// --- LÓGICA DE HIDRATAÇÃO DINÂMICA COM LOCALSTORAGE ---
+// --- LÓGICA DE HIDRATAÇÃO DINÂMICA (EDIÇÃO DO ÚLTIMO COPO) ---
 document.addEventListener('DOMContentLoaded', () => {
     const card = document.getElementById('card-hidratacao');
     if(!card) return;
 
     const metaAgua = parseInt(card.getAttribute('data-meta')) || 2000;
 
-    // Inicializa a água recuperando da memória
+    // Inicializa recuperando da memória o total E o último copo
     let aguaConsumida = parseInt(localStorage.getItem("agua_consumida")) || 0;
+    let ultimoConsumo = parseInt(localStorage.getItem("agua_ultimo_registro")) || 0;
 
     const elFaltante = document.getElementById('texto-agua-faltante');
     const elConsumida = document.getElementById('texto-agua-consumida');
@@ -288,14 +289,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             svg.innerHTML = '<path fill="currentColor" d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/>';
 
-            // NOVA LÓGICA: Adição e Subtração dinâmica salvando no cache
+            // Lógica do clique na tela principal
             svg.onclick = () => {
                 if (aguaConsumida >= copoValor) {
+                    // Remover água desmarcando o copo
                     aguaConsumida = Math.max(0, aguaConsumida - 500);
+                    ultimoConsumo = 0; // Se desmarcou, quebra a corrente de edição
                 } else {
+                    // Adicionou um copo novo
                     aguaConsumida += 500;
+                    ultimoConsumo = 500; // Memoriza que o último copo teve 500ml
                 }
-                localStorage.setItem("agua_consumida", aguaConsumida); // Salva o novo total
+
+                localStorage.setItem("agua_consumida", aguaConsumida);
+                localStorage.setItem("agua_ultimo_registro", ultimoConsumo);
                 renderizarAgua();
             };
 
@@ -303,11 +310,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Abre o modal preenchido com o valor do último copo!
     window.editarAguaManual = () => {
         const modal = document.getElementById('modal-editar-agua');
         const input = document.getElementById('input-agua-manual');
 
-        input.value = '';
+        input.value = ultimoConsumo > 0 ? ultimoConsumo : '';
 
         modal.classList.remove('hidden');
         setTimeout(() => {
@@ -323,26 +331,34 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => modal.classList.add('hidden'), 300);
     };
 
+    // A MÁGICA: Substitui o valor do último copo sem mexer no resto!
     window.salvarAguaManual = () => {
-            const input = document.getElementById('input-agua-manual');
-            // Pega o número digitado
-            const valor = parseInt(input.value);
+        const input = document.getElementById('input-agua-manual');
+        const novoValorEditado = parseInt(input.value.replace(/\D/g, ''));
 
-            if (!isNaN(valor)) {
-                if (valor === 0) {
-                    // A sua ideia na prática: se digitar 0, ele zera o contador inteiro!
-                    aguaConsumida = 0;
-                } else if (valor > 0) {
-                    // Se digitar qualquer outro número, ele soma
-                    aguaConsumida += valor;
-                }
+        if (!isNaN(novoValorEditado)) {
+            // Conta mágica: Pega o total, arranca fora o último copo e bota o valor novo!
+            aguaConsumida = aguaConsumida - ultimoConsumo + novoValorEditado;
+            if (aguaConsumida < 0) aguaConsumida = 0;
 
-                // Salva na memória e atualiza a tela
-                localStorage.setItem("agua_consumida", aguaConsumida);
-                renderizarAgua();
-            }
-            fecharModalAgua();
-        };
+            ultimoConsumo = novoValorEditado; // Atualiza a memória
+
+            localStorage.setItem("agua_consumida", aguaConsumida);
+            localStorage.setItem("agua_ultimo_registro", ultimoConsumo);
+            renderizarAgua();
+        }
+        fecharModalAgua();
+    };
+
+    // Botão de emergência para limpar resíduos
+    window.zerarAgua = () => {
+        aguaConsumida = 0;
+        ultimoConsumo = 0;
+        localStorage.setItem("agua_consumida", 0);
+        localStorage.setItem("agua_ultimo_registro", 0);
+        renderizarAgua();
+        fecharModalAgua();
+    };
 
     renderizarAgua();
 });
