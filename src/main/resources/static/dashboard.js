@@ -324,16 +324,25 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.salvarAguaManual = () => {
-        const input = document.getElementById('input-agua-manual');
-        const valor = parseInt(input.value.replace(/\D/g, ''));
+            const input = document.getElementById('input-agua-manual');
+            // Pega o número digitado
+            const valor = parseInt(input.value);
 
-        if (!isNaN(valor)) {
-            aguaConsumida += valor;
-            localStorage.setItem("agua_consumida", aguaConsumida); // Salva na memória
-            renderizarAgua();
-        }
-        fecharModalAgua();
-    };
+            if (!isNaN(valor)) {
+                if (valor === 0) {
+                    // A sua ideia na prática: se digitar 0, ele zera o contador inteiro!
+                    aguaConsumida = 0;
+                } else if (valor > 0) {
+                    // Se digitar qualquer outro número, ele soma
+                    aguaConsumida += valor;
+                }
+
+                // Salva na memória e atualiza a tela
+                localStorage.setItem("agua_consumida", aguaConsumida);
+                renderizarAgua();
+            }
+            fecharModalAgua();
+        };
 
     renderizarAgua();
 });
