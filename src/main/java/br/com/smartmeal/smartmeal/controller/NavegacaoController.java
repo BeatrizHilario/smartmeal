@@ -54,24 +54,18 @@ public class NavegacaoController {
         } else {
             var dietaPersonalizada = dietaService.buscarPorIdUsuario(usuario.getIdUsuario());
 
-            // VERIFICAÇÃO DO TEMPO: Se a dieta existir mas for de ontem (ou mais antiga), gera uma nova!
+            // VERIFICAÇÃO DO TEMPO
             if (dietaPersonalizada != null && dietaPersonalizada.getDataGeracao().toLocalDate().isBefore(LocalDate.now())) {
 
-                // Pede uma nova dieta pro Gemini focada em Café da Manhã (já que virou o dia)
+                // A tela vai travar por 10 seg apenas na PRIMEIRA vez do dia para buscar a dieta
                 String novaDietaHtml = artificialIntelligenceService.gerarDietaPelaIA(usuario, "Café da Manhã");
 
-                // Salva a nova dieta no MongoDB
-                DietaRecomendada novaDieta = new DietaRecomendada();
-                novaDieta.setIdUsuario(usuario.getIdUsuario());
-                novaDieta.setDataGeracao(java.time.LocalDateTime.now());
-                novaDieta.setPlanoAlimentar(novaDietaHtml);
-                novaDieta.setCustoEstimado(usuario.getOrcamentoMaxMensal().doubleValue());
+                // A CORREÇÃO MÁGICA: Atualizamos o objeto que JÁ VEIO do banco, preservando o ID dele!
+                dietaPersonalizada.setDataGeracao(java.time.LocalDateTime.now());
+                dietaPersonalizada.setPlanoAlimentar(novaDietaHtml);
 
-                // Salva no banco (substituindo a antiga ou criando uma nova dependendo da sua regra de negócio no service)
-                dietaService.salvarDieta(novaDieta);
-
-                // Substitui a dieta velha pela nova para mostrar na tela
-                dietaPersonalizada = novaDieta;
+                // Como o objeto tem ID, o Spring faz um UPDATE limpo em vez de criar lixo no banco
+                dietaService.salvarDieta(dietaPersonalizada);
             }
 
             model.addAttribute("dietaReal", dietaPersonalizada);
