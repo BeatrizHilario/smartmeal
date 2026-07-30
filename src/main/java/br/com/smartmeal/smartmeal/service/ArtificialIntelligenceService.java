@@ -48,7 +48,7 @@ public class ArtificialIntelligenceService {
                 8. SEJA EXTREMAMENTE DIRETO. Responda APENAS com o nome do prato e a lista de ingredientes com quantidades.
                 9. PROIBIDO escrever introduções, conclusões, saudações ou justificativas.
                 10. VARIEDADE: Como hoje é %s, seja criativo e não repita sugestões genéricas dos dias anteriores. Mude as fontes de proteína e carboidrato em relação a dietas padrão.
-                11. REGRA CULTURAL RIGOROSA: Se a refeição for 'Café da Manhã', você DEVE sugerir alimentos tradicionais matinais brasileiros (ex: pão, ovos, queijos, frutas, café, leite, iogurte, aveia, tapioca). É ESTRITAMENTE PROIBIDO sugerir frango, carnes, peixes, almoços pesados ou batata doce no café da manhã, independentemente do objetivo do usuário.
+                11. REGRA CULTURAL RIGOROSA: Se a refeição for 'Café da Manhã', você DEVE sugerir alimentos tradicionais matinais brasileiros (ex: pão francês, ovos, queijo minas, frutas, café, leite, iogurte, aveia, tapioca). É ESTRITAMENTE PROIBIDO sugerir AÇAÍ, FRANGO, qualquer tipo de CARNE, peixes, BATATA DOCE, legumes de almoço ou refeições pesadas no café da manhã, independentemente do objetivo do usuário.
                 12. Você DEVE retornar EXATAMENTE o bloco de código HTML abaixo, substituindo APENAS as informações entre colchetes [ ] pelos dados calculados da refeição:
                 
                                    <div class="flex flex-col md:flex-row items-start justify-between gap-6">
@@ -80,7 +80,8 @@ public class ArtificialIntelligenceService {
                 usuario.getObjetivo() != null ? usuario.getObjetivo() : "Saúde geral",
                 (usuario.getRestricaoAlimentar() != null && !usuario.getRestricaoAlimentar().trim().isEmpty()) ? usuario.getRestricaoAlimentar() : "Nenhuma",
                 usuario.getOrcamentoMaxMensal() != null ? usuario.getOrcamentoMaxMensal().doubleValue() : 0.0,
-                tipoRefeicao, java.time.LocalDate.now().getDayOfWeek().toString()
+                tipoRefeicao,
+                java.time.LocalDate.now().getDayOfWeek().toString()
         );
 
         Map<String, Object> requestBody = new HashMap<>();
