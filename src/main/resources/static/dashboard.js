@@ -485,25 +485,37 @@ function consumirSugestaoIA() {
     document.getElementById("form-sugestao-ia").submit();
 }
 
-// --- LÓGICA DE TRANSIÇÃO DE TELAS (MASCARANDO A LENTIDÃO DO SERVIDOR) ---
+// --- SISTEMA DE TRANSIÇÃO SUAVE (LOADER UNIVERSAL) ---
 document.addEventListener("DOMContentLoaded", () => {
     const loader = document.getElementById("loader-global");
-    if (!loader) return;
 
-    // Captura os cliques nos botões que vão para o Dashboard ou para o Diário
-    const linksDeNavegacao = document.querySelectorAll('a[href*="/dashboard"], a[href*="/diario"]');
+    // 1. Intercepta TODOS os cliques na tela
+    document.addEventListener("click", (e) => {
+        // Tenta achar um link <a> em volta de onde o usuário clicou (ex: se ele clicou no ícone da casinha)
+        const link = e.target.closest("a");
 
-    linksDeNavegacao.forEach(link => {
-        link.addEventListener("click", (e) => {
-            // Mostra a tela de carregamento IMEDIATAMENTE ao clicar
-            loader.classList.remove("hidden");
-            loader.classList.add("flex");
-        });
+        // Se for um link de navegação válido (ignora botões de modais que usam "#" ou "javascript")
+        if (link && link.href && !link.href.includes("#") && !link.href.includes("javascript") && link.target !== "_blank") {
+            if (loader) {
+                loader.classList.remove("hidden");
+                loader.classList.add("flex");
+            }
+        }
     });
 
-    // Medida de segurança: se o usuário clicar no botão "Voltar" do navegador, o loader some
+    // Bônus: Mostra o loader ao salvar os formulários pesados (como o de perfil)
+    document.addEventListener("submit", () => {
+        if (loader) {
+            loader.classList.remove("hidden");
+            loader.classList.add("flex");
+        }
+    });
+
+    // 2. Esconde o loader quando a nova página finalmente aparecer ou se o usuário clicar em "Voltar"
     window.addEventListener("pageshow", () => {
-        loader.classList.add("hidden");
-        loader.classList.remove("flex");
+        if (loader) {
+            loader.classList.add("hidden");
+            loader.classList.remove("flex");
+        }
     });
 });
