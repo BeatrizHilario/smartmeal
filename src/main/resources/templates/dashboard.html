@@ -24,14 +24,16 @@
 </svg>
 
 <!-- MENU LATERAL (SIDEBAR) -->
-<aside class="hidden md:flex w-72 bg-verdeSalvia text-white rounded-r-[3rem] shadow-xl z-20 flex-col py-10 my-4 ml-0 relative transition-transform duration-300">    <div class="px-8 mb-12 flex justify-center items-center w-full">
-    <h1 class="text-5xl font-cursiva text-center">
-        Smart<span class="text-amareloMostarda">Meal</span>
-    </h1>
-</div>
+<aside class="hidden md:flex w-72 bg-verdeSalvia text-white rounded-r-[3rem] shadow-xl z-20 flex-col py-10 my-4 ml-0 relative transition-transform duration-300">
+    <div class="px-8 mb-12 flex justify-center items-center w-full">
+        <h1 class="text-5xl font-cursiva text-center">
+            Smart<span class="text-amareloMostarda">Meal</span>
+        </h1>
+    </div>
 
-    <nav class="flex-1 px-4 space-y-2">
-        <a href="#" class="flex items-center space-x-4 px-6 py-4 bg-white/20 rounded-2xl transition hover:bg-white/30 text-white font-medium">
+    <!-- Espaçamento vertical ajustado (space-y-4) para preencher melhor a barra -->
+    <nav class="flex-1 px-4 space-y-4">
+        <a href="#" class="flex items-center space-x-4 px-6 py-4 bg-white/20 rounded-2xl transition hover:bg-white/30 text-white font-medium shadow-sm">
             <i class="fa-solid fa-house w-6 text-xl"></i>
             <span>Dashboard</span>
         </a>
@@ -47,7 +49,7 @@
         </a>
     </nav>
 
-    <!-- Card de Meta Dinâmico com base no objetivo mapeado da IA -->
+    <!-- Card de Meta Dinâmico -->
     <div class="bg-black/15 p-4 rounded-2xl mt-auto mx-4 mb-2">
         <div class="flex items-center text-amareloMostarda font-bold mb-1 text-sm">
             <i class="fa-solid fa-bullseye mr-2 animate-pulse"></i> Foco Atual
@@ -61,25 +63,23 @@
 </aside>
 
 <!-- CONTEÚDO PRINCIPAL -->
-<main class="flex-1 px-4 md:px-12 py-6 md:py-10 h-full overflow-y-auto z-10 relative pb-24 md:pb-10 w-full bg-[#FAFAFA] md:bg-transparent anima-conteudo">    <div th:if="${erroIA}" class="bg-red-50 border-l-[6px] border-red-500 text-red-700 p-4 mb-6 rounded-r-2xl shadow-sm flex items-center animate-fade-in" role="alert">
-    <i class="fa-solid fa-triangle-exclamation text-2xl mr-4 text-red-500"></i>
-    <div>
-        <h4 class="font-bold">Ops! Tivemos um contratempo.</h4>
-        <p class="text-sm font-medium" th:text="${erroIA}"></p>
+<main class="flex-1 px-4 md:px-12 py-6 md:py-10 h-full overflow-y-auto z-10 relative pb-24 md:pb-10 w-full bg-[#FAFAFA] md:bg-transparent anima-conteudo">
+    <div th:if="${erroIA}" class="bg-red-50 border-l-[6px] border-red-500 text-red-700 p-4 mb-6 rounded-r-2xl shadow-sm flex items-center animate-fade-in" role="alert">
+        <i class="fa-solid fa-triangle-exclamation text-2xl mr-4 text-red-500"></i>
+        <div>
+            <h4 class="font-bold">Ops! Tivemos um contratempo.</h4>
+            <p class="text-sm font-medium" th:text="${erroIA}"></p>
+        </div>
     </div>
-</div>
 
     <!-- HEADER DO CONTEÚDO -->
-    <header class="flex flex-col mb-4 md:mb-10 mt-0 md:mt-0 gap-1 md:gap-4">
-
+    <header class="flex flex-col mb-4 md:mb-8 mt-0 md:mt-0 gap-1 md:gap-4">
         <div class="flex justify-between items-start md:items-center w-full">
             <div>
-                <!-- Título menor no mobile (text-3xl) e sem margens extras (leading-none) -->
                 <h2 class="text-3xl md:text-5xl font-cursiva text-textoEscuro leading-none"
                     th:text="'Bem-vindo(a), ' + ${usuario.nome} + '!'">
                     Bem-vindo(a)!
                 </h2>
-                <!-- Subtítulo exclusivo do Mobile reduzido -->
                 <p th:if="${perfilIncompleto}" class="md:hidden text-textoClaro text-xs mt-1 font-medium leading-snug pr-4">
                     Ficamos felizes em ajudar você a cozinhar melhor e economizar!
                 </p>
@@ -87,8 +87,6 @@
 
             <!-- Avatar com Menu Dropdown -->
             <div class="relative shrink-0 z-50">
-
-                <!-- Botão do Avatar (Clicável e sem a setinha) -->
                 <div id="btn-avatar-perfil" onclick="document.getElementById('dropdown-perfil').classList.toggle('hidden')" class="flex items-center space-x-3 md:space-x-4 md:bg-cardBranco md:py-2 md:px-4 md:rounded-full md:shadow-sm md:border border-verdeSalvia/20 cursor-pointer transition hover:bg-gray-50 select-none">
                     <span class="hidden md:block font-semibold text-sm whitespace-nowrap" th:text="${usuario.nome}">Usuário</span>
                     <div class="w-10 h-10 rounded-full bg-verdeSalvia text-white flex items-center justify-center font-bold shadow-md uppercase text-base shrink-0"
@@ -97,17 +95,13 @@
                     </div>
                 </div>
 
-                <!-- O Menu Dropdown -->
                 <div id="dropdown-perfil" class="hidden absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden">
-
-                    <!-- Opção "Minhas Métricas" (Abre o modal de leitura) -->
                     <button th:unless="${perfilIncompleto}"
                             onclick="document.getElementById('dropdown-perfil').classList.add('hidden'); document.getElementById('modal-visualizar-dados').classList.remove('hidden'); setTimeout(() => { document.getElementById('modal-visualizar-dados').classList.remove('opacity-0'); document.getElementById('modal-visualizar-dados').querySelector('div').classList.remove('scale-95'); }, 10);"
                             class="w-full text-left px-5 py-3 text-sm font-medium text-textoEscuro hover:bg-gray-50 hover:text-verdeSalvia transition flex items-center border-b border-gray-50">
                         <i class="fa-solid fa-chart-line w-5 text-center mr-2"></i> Minhas Métricas
                     </button>
 
-                    <!-- Opção "Sair" -->
                     <a th:href="@{/sair}" class="w-full text-left px-5 py-3 text-sm font-medium text-red-600 hover:bg-red-50 transition flex items-center">
                         <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center mr-2"></i> Sair da Conta
                     </a>
@@ -115,7 +109,6 @@
             </div>
         </div>
 
-        <!-- Textos e Botão antigos (Visíveis apenas no Desktop) -->
         <div class="hidden md:flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 w-full mt-2">
             <div class="flex-1">
                 <p th:if="${perfilIncompleto}" class="text-textoClaro font-medium text-base">
@@ -131,12 +124,9 @@
         </div>
     </header>
 
-    <!-- SEÇÃO PERFIL INCOMPLETO (Mobile: Creme + Sombra Forte | Desktop: Branco) -->
+    <!-- SEÇÃO PERFIL INCOMPLETO -->
     <div th:if="${perfilIncompleto}" class="flex flex-col gap-4 mb-16 md:mb-0 mt-4 md:mt-6">
-
-        <!-- Card Principal -->
         <div class="rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.06)] md:shadow-md md:border-l-[12px] border-verdeSalvia bg-[#FDF7DF] md:bg-cardBranco max-w-5xl mx-auto w-full">
-
             <div class="flex flex-col md:flex-row justify-between items-center mb-4 md:border-b border-gray-100 pb-3">
                 <h3 class="font-bold text-[1.1rem] md:text-2xl text-textoEscuro text-center md:text-left mb-3 md:mb-0 leading-tight">
                     Ideias Saudáveis e Econômicas<i class="hidden md:inline fa-solid fa-lightbulb text-amareloMostarda ml-2"></i>
@@ -146,7 +136,6 @@
                 </button>
             </div>
 
-            <!-- Botões de Refeição (justify-start garante que NUNCA corte à esquerda) -->
             <div class="flex gap-2 mb-4 overflow-x-auto pb-2 no-scrollbar justify-start">
                 <button class="meal-btn-incompleto shrink-0 whitespace-nowrap bg-verdeSalvia text-white px-4 py-1.5 md:px-5 md:py-2 rounded-full text-xs md:text-sm font-bold shadow-sm transition transform hover:scale-105" data-tipo="Café da Manhã">Café da Manhã</button>
                 <button class="meal-btn-incompleto shrink-0 whitespace-nowrap bg-white md:bg-gray-100 text-textoClaro hover:bg-gray-50 md:hover:bg-gray-200 px-4 py-1.5 md:px-5 md:py-2 rounded-full text-xs md:text-sm font-bold shadow-sm md:shadow-none transition transform hover:scale-105" data-tipo="Almoço">Almoço</button>
@@ -154,7 +143,6 @@
                 <button class="meal-btn-incompleto shrink-0 whitespace-nowrap bg-white md:bg-gray-100 text-textoClaro hover:bg-gray-50 md:hover:bg-gray-200 px-4 py-1.5 md:px-5 md:py-2 rounded-full text-xs md:text-sm font-bold shadow-sm md:shadow-none transition transform hover:scale-105" data-tipo="Jantar">Jantar</button>
             </div>
 
-            <!-- "Card" Interno da IA (Branco) -->
             <div class="bg-white md:bg-transparent rounded-[1.5rem] md:rounded-none p-5 md:p-0 shadow-sm md:shadow-none">
                 <div id="texto-ideitas-ia" class="text-textoEscuro md:text-textoClaro font-medium text-sm md:text-base leading-relaxed w-full" th:utext="${ideiasReceitas}">
                     Carregando sugestões inteligentes...
@@ -166,71 +154,90 @@
             </p>
         </div>
 
-        <!-- Banner Laranja (Único e Compacto) -->
         <div onclick="document.getElementById('modal-completar-perfil').classList.remove('hidden'); setTimeout(() => { document.getElementById('modal-completar-perfil').classList.remove('opacity-0'); document.getElementById('modal-completar-perfil').querySelector('div').classList.remove('scale-95'); }, 10);"
              class="md:hidden bg-gradient-to-r from-amareloMostarda to-[#E0A10D] rounded-[1.25rem] p-3 px-4 flex items-center justify-between shadow-md cursor-pointer transform transition hover:scale-105 mx-auto w-full max-w-md">
-
             <div class="flex items-center gap-2 flex-1 pr-2">
                 <i class="fa-solid fa-lock text-white/80 text-sm shrink-0"></i>
                 <p class="text-white text-[10px] font-medium leading-tight">
                     Complete seu perfil para opções personalizadas e desbloquear as receitas!
                 </p>
             </div>
-
             <button class="bg-white text-amareloMostarda font-bold text-[10px] px-3 py-1.5 rounded-full shadow-sm whitespace-nowrap shrink-0 pointer-events-none">
                 Completar Perfil
             </button>
         </div>
-
     </div>
 
     <!-- GRIDS DE INFORMAÇÃO -->
-    <div th:unless="${perfilIncompleto}" class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+    <div th:unless="${perfilIncompleto}" class="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
 
+        <!-- COLUNA PRINCIPAL (ESQUERDA - 2 COLUNAS) -->
         <div class="xl:col-span-2 space-y-8">
 
-            <!-- Card de Calorias Consumidas Ocupando 100% da Largura -->
-            <div class="grid grid-cols-1 gap-6">
+            <!-- LINHA 1: CALORIAS + HIDRATAÇÃO LADO A LADO -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center text-xl">
-                            <i class="fa-solid fa-fire"></i>
+                <!-- CARD CALORIAS -->
+                <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-fire"></i>
+                            </div>
+                            <span class="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs font-bold">HOJE</span>
                         </div>
-                        <span class="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs font-bold">HOJE</span>
+                        <p class="text-textoClaro font-medium mb-1 text-sm">Calorias Consumidas</p>
+                        <h3 class="text-3xl font-bold text-textoEscuro">
+                            <span th:text="${caloriasConsumidas != null ? caloriasConsumidas : 0}">0</span>
+                            <span class="text-base text-textoClaro font-medium">/ <span th:text="${usuario.metaCaloricaKcal}"></span> kcal</span>
+                        </h3>
                     </div>
-                    <p class="text-textoClaro font-medium mb-1">Calorias Consumidas</p>
-                    <h3 class="text-3xl font-bold text-textoEscuro">
-                        <!-- Exibe a soma real de calorias -->
-                        <span th:text="${caloriasConsumidas != null ? caloriasConsumidas : 0}">0</span>
-                        <span class="text-lg text-textoClaro font-medium">/ <span th:text="${usuario.metaCaloricaKcal}"></span> kcal</span>
-                    </h3>
-                    <div class="w-full bg-gray-100 rounded-full h-3 mt-4">
-                        <!-- Calcula a porcentagem para preencher a barrinha laranja automaticamente! -->
+                    <div class="w-full bg-gray-100 rounded-full h-3 mt-5">
                         <div class="bg-orange-400 h-3 rounded-full transition-all duration-1000"
                              th:style="'width: ' + (${usuario.metaCaloricaKcal != null and usuario.metaCaloricaKcal > 0 ? (caloriasConsumidas * 100 / usuario.metaCaloricaKcal) : 0}) + '%; max-width: 100%;'"></div>
                     </div>
                 </div>
 
+                <!-- CARD HIDRATAÇÃO NO TOPO -->
+                <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 text-center relative flex flex-col justify-between" id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-[#4CB5F9] flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-droplet"></i>
+                            </div>
+                            <p class="text-xs font-medium text-textoClaro">Faltam <span id="texto-agua-faltante" class="font-bold text-verdeSalvia">...</span></p>
+                        </div>
+                        <!-- Copos dinâmicos -->
+                        <div class="flex justify-center flex-wrap gap-2 my-2" id="container-copos"></div>
+                    </div>
+
+                    <div class="flex items-center justify-center mt-2 group">
+                        <p class="text-2xl font-bold text-textoEscuro cursor-pointer hover:text-verdeSalvia transition" id="texto-agua-consumida" onclick="editarAguaManual()" title="Clique para editar">
+                            0 ml
+                        </p>
+                        <button onclick="editarAguaManual()" class="ml-2 w-7 h-7 rounded-full bg-gray-50 text-textoClaro hover:bg-amareloMostarda hover:text-white transition flex items-center justify-center shadow-sm">
+                            <i class="fa-solid fa-pen text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+
             </div>
 
+            <!-- LINHA 2: SUGESTÃO INTELIGENTE ESTICADA -->
             <div class="bg-cardBranco rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 shadow-md border-t-8 md:border-t-0 md:border-l-[12px] border-amareloMostarda relative">
                 <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-3">
                     <h3 id="titulo-refeicao-ia" class="font-bold text-2xl text-textoEscuro">
                         Sugestão Inteligente <i class="fa-solid fa-wand-magic-sparkles text-amareloMostarda ml-1"></i>
                     </h3>
-                    <button id="btn-gerar-sugestao" class="hidden md:flex text-verdeSalvia hover:text-verdeEscuro bg-verdeSalvia/10 px-3 py-1.5 rounded-lg font-bold text-sm items-center gap-1.5 transition">                        <i class="fa-solid fa-arrows-rotate"></i> Gerar Outra
+                    <button id="btn-gerar-sugestao" class="hidden md:flex text-verdeSalvia hover:text-verdeEscuro bg-verdeSalvia/10 px-3 py-1.5 rounded-lg font-bold text-sm items-center gap-1.5 transition">
+                        <i class="fa-solid fa-arrows-rotate"></i> Gerar Outra
                     </button>
                 </div>
 
-                <!-- ATUALIZE A DIV E OS BOTÕES PARA FICAREM ASSIM (Faça isso nos 2 blocos onde os botões aparecem): -->
                 <div class="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar">
                     <button class="meal-btn shrink-0 whitespace-nowrap bg-verdeSalvia text-white px-5 py-2 rounded-full text-sm font-bold shadow-md transition transform hover:scale-105" data-tipo="Café da Manhã">Café da Manhã</button>
-
                     <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Almoço">Almoço</button>
-
                     <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Lanche">Lanche</button>
-
                     <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Jantar">Jantar</button>
                 </div>
 
@@ -247,7 +254,6 @@
                 </div>
 
                 <form id="form-sugestao-ia" th:action="@{/diario/registrar-sugestao}" method="post" class="mt-6 w-full flex justify-end">
-                    <!-- Campos invisíveis que o JS vai preencher -->
                     <input type="hidden" name="tipoRefeicao" id="input-sug-tipo">
                     <input type="hidden" name="descricao" id="input-sug-desc">
                     <input type="hidden" name="calorias" id="input-sug-kcal">
@@ -256,41 +262,17 @@
                         <i class="fa-solid fa-check-circle text-lg"></i> Consumi esta Sugestão!
                     </button>
                 </form>
-
             </div>
 
         </div>
 
+        <!-- COLUNA LATERAL DIREITA: REFEIÇÕES DE HOJE SUBIU PARA O TOPO -->
         <div class="space-y-8">
-
-            <div class="bg-cardBranco p-8 rounded-[2rem] shadow-sm border border-verdeSalvia/10 text-center relative" id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
-                <h3 class="font-bold text-xl text-textoEscuro mb-2">Hidratação</h3>
-
-                <p class="text-sm font-medium text-textoClaro mb-6">Faltam <span id="texto-agua-faltante" class="font-bold text-verdeSalvia">calculando...</span> para a meta</p>
-
-                <!-- Container dinâmico de copos (Renderizado via JS) -->
-                <div class="flex justify-center flex-wrap gap-3 mb-4" id="container-copos">
-                    <!-- Os copos de 500ml vão aparecer aqui -->
-                </div>
-
-                <!-- Valor consumido com botão de editar -->
-                <div class="flex items-center justify-center mt-6 group">
-                    <p class="text-3xl font-bold text-textoEscuro cursor-pointer hover:text-verdeSalvia transition" id="texto-agua-consumida" onclick="editarAguaManual()" title="Clique para digitar o valor">
-                        0 ml
-                    </p>
-                    <button onclick="editarAguaManual()" class="ml-3 w-8 h-8 rounded-full bg-gray-50 text-textoClaro hover:bg-amareloMostarda hover:text-white transition flex items-center justify-center shadow-sm">
-                        <i class="fa-solid fa-pen text-xs"></i>
-                    </button>
-                </div>
-                <p class="text-[10px] text-textoClaro mt-2 font-medium">Cada copo = 500ml</p>
-            </div>
-
             <div class="bg-verdeSalvia text-white p-8 rounded-[2rem] shadow-lg relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10"></div>
                 <h3 class="font-bold text-xl mb-6 relative z-10">Refeições de Hoje</h3>
 
                 <ul class="space-y-4 relative z-10 font-medium opacity-90">
-
                     <!-- CAFÉ DA MANHÃ -->
                     <li class="flex items-center"
                         th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Café da Manhã'])}"
@@ -322,17 +304,15 @@
                         <i th:class="${feito ? 'fa-solid fa-check-circle text-xl mr-3 text-amareloMostarda' : 'fa-regular fa-circle text-xl mr-3'}"></i>
                         <span>Jantar <span th:unless="${feito}" class="text-sm font-normal">(Pendente)</span></span>
                     </li>
-
                 </ul>
             </div>
-
         </div>
+
     </div>
 </main>
 
-<!-- Substitua a tag <nav> e o bloco do botão central por este código: -->
+<!-- MENU MOBILE -->
 <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white rounded-t-[2rem] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] px-6 py-4 flex justify-between items-center z-40">
-
     <a href="#" class="flex flex-col items-center text-verdeSalvia">
         <div class="bg-verdeSalvia/10 p-2 rounded-xl mb-1">
             <i class="fa-solid fa-house text-lg"></i>
@@ -347,7 +327,6 @@
         <span class="text-[10px] font-medium">Diário</span>
     </a>
 
-    <!-- Botão Central Ajustado (-top-3 em vez de -top-6) -->
     <div class="relative -top-3">
         <a href="javascript:void(0)" id="btn-fab-gerar" class="w-14 h-14 bg-textoEscuro text-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition transform border-4 border-[#FAFAFA]">
             <i class="fa-solid fa-wand-magic-sparkles text-2xl text-amareloMostarda"></i>
@@ -362,26 +341,17 @@
     </a>
 </nav>
 
+<!-- MODAIS -->
 <div id="modal-completar-perfil" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
-
-    <!-- Wrapper do Modal (com max-h-[95vh] e fundo garantido) -->
     <div class="bg-white rounded-[2rem] shadow-xl w-full max-w-2xl relative transform transition-transform scale-95 flex flex-col max-h-[95vh] overflow-hidden border-2 border-verdeSalvia/30">
-
-        <!-- Botão Fechar -->
         <button id="btn-fechar-perfil" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-20">&times;</button>
-
-        <!-- Cabeçalho Fixo -->
         <div class="text-center p-6 border-b border-gray-100 shrink-0 bg-white z-10">
             <h3 class="text-2xl md:text-3xl font-bold text-textoEscuro mb-1">Finalize seu Perfil</h3>
             <p class="text-textoClaro font-medium text-sm md:text-base">A Inteligência Artificial precisa dessas métricas para os cálculos.</p>
         </div>
 
-        <!-- Formulário (Adicionado min-h-0 para permitir a rolagem correta) -->
         <form th:action="@{/completarPerfil}" method="post" class="flex flex-col flex-1 min-h-0">
-
-            <!-- Área de Rolagem do Formulário -->
             <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-4 md:space-y-0 md:grid md:grid-cols-2 gap-4">
-
                 <div class="flex flex-col">
                     <label class="text-textoClaro font-bold text-sm mb-1">Altura (cm)</label>
                     <input type="number" name="alturaCm" placeholder="Ex: 165" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
@@ -425,27 +395,21 @@
                     <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
                     <input type="text" name="restricaoAlimentar" placeholder="Ex: Nenhuma, Vegano, Lactose..." required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
                 </div>
-
             </div>
 
-            <!-- Rodapé Fixo (Fora da área de rolagem) -->
             <div class="p-4 md:px-6 border-t border-gray-100 bg-white shrink-0 z-10">
                 <button type="submit" class="bg-amareloMostarda text-white px-10 py-3 rounded-full font-bold text-lg hover:opacity-90 transition shadow-md w-full">
                     Finalizar Perfil
                 </button>
             </div>
-
         </form>
-
     </div>
 </div>
 
-<!-- MODAL DE VISUALIZAR MÉTRICAS (Leitura Apenas) -->
+<!-- MODAL VISUALIZAR DADOS -->
 <div id="modal-visualizar-dados" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
     <div class="bg-white rounded-[2rem] shadow-xl w-full max-w-sm relative transform transition-transform scale-95 flex flex-col max-h-[95vh] overflow-hidden border-2 border-verdeSalvia/30">
-
         <button id="btn-fechar-visualizar" onclick="document.getElementById('modal-visualizar-dados').classList.add('opacity-0'); document.getElementById('modal-visualizar-dados').querySelector('div').classList.add('scale-95'); setTimeout(() => document.getElementById('modal-visualizar-dados').classList.add('hidden'), 300);" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-20">&times;</button>
-
         <div class="text-center p-6 border-b border-gray-100 shrink-0 bg-white z-10">
             <div class="w-12 h-12 rounded-full bg-verdeSalvia/10 text-verdeSalvia flex items-center justify-center text-xl mx-auto mb-3">
                 <i class="fa-solid fa-clipboard-user"></i>
@@ -504,22 +468,17 @@
     </div>
 </div>
 
+<!-- MODAL EDITAR PERFIL -->
 <div id="modal-editar-perfil" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300">
-
     <div class="bg-cardBranco rounded-[2.5rem] shadow-xl w-full max-w-3xl relative transform transition-transform scale-95 border-2 border-verdeSalvia/30 max-h-[85vh] flex flex-col overflow-hidden">
-
         <button id="btn-fechar-editar-perfil" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-10">&times;</button>
-
         <div class="text-center p-8 pb-4 border-b border-gray-100 shrink-0">
             <h3 class="text-3xl font-rancho font-bold text-textoEscuro mb-1">Configurações da Conta</h3>
             <p class="text-textoClaro font-medium text-sm">Mantenha suas métricas atualizadas para a IA calcular tudo com precisão.</p>
         </div>
 
         <form th:action="@{/atualizarPerfil}" method="post" class="flex flex-col flex-1 min-h-0 bg-white rounded-b-[2.5rem]">
-
-            <!-- 1. ÁREA DE ROLAGEM INTERNA -->
             <div class="flex-1 overflow-y-auto p-6 md:p-8 pt-4 space-y-6">
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="flex flex-col">
                         <label class="text-textoClaro font-bold text-sm mb-1">Nome Completo</label>
@@ -599,20 +558,17 @@
                 </div>
             </div>
 
-            <!-- 2. RODAPÉ FIXO (Isolado e com padding inferior de sobra 'pb-6') -->
             <div class="p-4 pb-6 md:p-6 border-t border-gray-100 bg-white shrink-0 z-20 flex justify-end w-full rounded-b-[2.5rem]">
                 <button type="button" class="px-6 py-2 rounded-full text-textoClaro hover:text-textoEscuro font-bold transition mr-2" onclick="document.getElementById('btn-fechar-editar-perfil').click()">Cancelar</button>
                 <button type="submit" class="bg-verdeSalvia text-white px-8 py-2.5 rounded-full font-bold shadow-md hover:bg-verdeEscuro transition">
                     Salvar Alterações
                 </button>
             </div>
-
         </form>
-
     </div>
 </div>
 
-<!-- MODAL EDITAR ÁGUA (COPO INDIVIDUAL) -->
+<!-- MODAL EDITAR ÁGUA -->
 <div id="modal-editar-agua" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
     <div class="bg-white rounded-[2rem] shadow-xl w-full max-w-xs relative transform transition-transform scale-95 flex flex-col overflow-hidden border-2 border-verdeSalvia/30 p-6 text-center">
         <h3 class="text-xl font-bold text-textoEscuro mb-2">Editar Copo</h3>
@@ -620,7 +576,6 @@
 
         <input type="number" id="input-agua-manual" class="w-full text-center px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia text-xl font-bold text-textoEscuro mb-3" placeholder="Ex: 800">
 
-        <!-- Novo botão de emergência para zerar o dia -->
         <button onclick="zerarAgua()" class="text-xs text-red-400 hover:text-red-600 font-medium mb-5 transition underline">Quero zerar tudo</button>
 
         <div class="flex gap-3 w-full">
@@ -630,7 +585,7 @@
     </div>
 </div>
 
-<!-- LOADER GLOBAL DE TRANSIÇÃO -->
+<!-- LOADER GLOBAL -->
 <div id="loader-global" class="fixed inset-0 bg-white/60 backdrop-blur-md z-[9999] hidden flex-col justify-center items-center">
     <div class="relative flex justify-center items-center mb-4">
         <div class="absolute animate-ping w-16 h-16 rounded-full bg-verdeSalvia/30"></div>
@@ -640,7 +595,7 @@
     <p class="text-textoClaro text-xs mt-2 font-medium">Buscando seus dados nutritivos</p>
 </div>
 
-<!-- Script modularizado do Dashboard -->
+<!-- Script modularizado -->
 <script th:src="@{/dashboard.js}"></script>
 </body>
 </html>
