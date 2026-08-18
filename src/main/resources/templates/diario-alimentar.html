@@ -32,13 +32,11 @@
     </div>
 
     <nav class="flex-1 px-4 space-y-2">
-        <!-- Dashboard agora fica como link normal -->
         <a th:href="@{/dashboard}" class="flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
             <i class="fa-solid fa-house w-6 text-xl"></i>
             <span>Dashboard</span>
         </a>
 
-        <!-- Diário Alimentar ganha o destaque de aba ativa -->
         <a href="#" class="flex items-center space-x-4 px-6 py-4 bg-white/20 rounded-2xl transition hover:bg-white/30 text-white font-medium shadow-sm">
             <i class="fa-solid fa-book-open w-6 text-xl"></i>
             <span>Diário Alimentar</span>
@@ -505,7 +503,7 @@
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-fire"></i></div>
                     <div>
-                        <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Meta Calórica</p>
+                        <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Meta Calórica Diária</p>
                         <p class="text-lg font-bold text-textoEscuro" th:text="${usuario.metaCaloricaKcal} + ' kcal'">0 kcal</p>
                     </div>
                 </div>
@@ -528,67 +526,87 @@
             <h3 class="text-3xl font-rancho font-bold text-textoEscuro mb-1">Configurações da Conta</h3>
             <p class="text-textoClaro font-medium text-sm">Mantenha suas métricas atualizadas para a IA calcular tudo com precisão.</p>
         </div>
+
         <form th:action="@{/atualizarPerfil}" method="post" class="flex flex-col flex-1 min-h-0 bg-white rounded-b-[2.5rem]">
             <div class="flex-1 overflow-y-auto p-6 md:p-8 pt-4 space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="flex flex-col">
                         <label class="text-textoClaro font-bold text-sm mb-1">Nome Completo</label>
-                        <input type="text" name="nome" th:value="${usuario.nome}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50">
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="text-textoClaro font-bold text-sm mb-1">E-mail</label>
-                        <input type="email" name="email" th:value="${usuario.email}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50">
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="text-textoClaro font-bold text-sm mb-1">Estado (UF)</label>
-                        <input type="text" name="estado" th:value="${usuario.estado}" placeholder="Ex: PA, SP, RJ" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50">
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="text-textoClaro font-bold text-sm mb-1">Nova Senha (opcional)</label>
-                        <input type="password" name="novaSenha" placeholder="Deixe em branco para manter" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50">
+                        <input type="text" name="nome" th:value="${usuario.nome}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full">
                     </div>
 
                     <div class="flex flex-col">
-                        <label class="text-textoClaro font-bold text-sm mb-1">Altura (cm)</label>
-                        <input type="number" name="alturaCm" th:value="${usuario.alturaCm}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
+                        <label class="text-textoClaro font-bold text-sm mb-1">E-mail</label>
+                        <input type="email" name="email" th:value="${usuario.email}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full">
                     </div>
+
                     <div class="flex flex-col">
-                        <label class="text-textoClaro font-bold text-sm mb-1">Peso Atual (kg)</label>
-                        <input type="number" step="0.1" name="pesoKg" th:value="${usuario.pesoKg}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Estado (UF)</label>
+                        <input type="text" name="estado" th:value="${usuario.estado}" placeholder="Ex: PA, SP, RJ" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full">
                     </div>
+
                     <div class="flex flex-col">
-                        <label class="text-textoClaro font-bold text-sm mb-1">Gênero Biológico</label>
-                        <select name="genero" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white">
-                            <option value="M" th:selected="${usuario.genero == 'M'}">Masculino</option>
-                            <option value="F" th:selected="${usuario.genero == 'F'}">Feminino</option>
-                        </select>
+                        <label class="text-textoClaro font-bold text-sm mb-1">Nova Senha (opcional)</label>
+                        <input type="password" name="novaSenha" placeholder="Deixe em branco para manter" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full">
                     </div>
-                    <div class="flex flex-col">
-                        <label class="text-textoClaro font-bold text-sm mb-1">Frequência de Atividade</label>
-                        <select name="nivelAtividade" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white">
-                            <option value="sedentario" th:selected="${usuario.nivelAtividade == 'sedentario'}">Sedentário (Nenhuma)</option>
-                            <option value="leve" th:selected="${usuario.nivelAtividade == 'leve'}">Leve (1-3 dias/sem)</option>
-                            <option value="moderado" th:selected="${usuario.nivelAtividade == 'moderado'}">Moderado (3-5 dias/sem)</option>
-                            <option value="intenso" th:selected="${usuario.nivelAtividade == 'intenso'}">Intenso (6-7 dias/sem)</option>
-                        </select>
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="text-textoClaro font-bold text-sm mb-1">Objetivo Principal</label>
-                        <select name="objetivo" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white">
-                            <option value="emagrecer" th:selected="${usuario.objetivo == 'emagrecer'}">Emagrecer / Secar</option>
-                            <option value="manter" th:selected="${usuario.objetivo == 'manter'}">Manter peso</option>
-                            <option value="hipertrofia" th:selected="${usuario.objetivo == 'hipertrofia'}">Ganhar Massa Muscular</option>
-                        </select>
-                    </div>
-                    <div class="flex flex-col">
-                        <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
-                        <input type="text" name="restricaoAlimentar" th:value="${usuario.restricaoAlimentar}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
-                    </div>
+
+                    <th:block th:unless="${perfilIncompleto}">
+                        <div class="flex flex-col">
+                            <label class="text-textoClaro font-bold text-sm mb-1">Altura (cm)</label>
+                            <input type="number" name="alturaCm" th:value="${usuario.alturaCm}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-textoClaro font-bold text-sm mb-1">Peso Atual (kg)</label>
+                            <input type="number" step="0.1" name="pesoKg" th:value="${usuario.pesoKg}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full">
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-textoClaro font-bold text-sm mb-1">Gênero Biológico</label>
+                            <select name="genero" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white w-full">
+                                <option value="M" th:selected="${usuario.genero == 'M'}">Masculino</option>
+                                <option value="F" th:selected="${usuario.genero == 'F'}">Feminino</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-textoClaro font-bold text-sm mb-1">Frequência de Atividade</label>
+                            <select name="nivelAtividade" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white w-full">
+                                <option value="sedentario" th:selected="${usuario.nivelAtividade == 'sedentario'}">Sedentário (Nenhuma)</option>
+                                <option value="leve" th:selected="${usuario.nivelAtividade == 'leve'}">Leve (1-3 dias/sem)</option>
+                                <option value="moderado" th:selected="${usuario.nivelAtividade == 'moderado'}">Moderado (3-5 dias/sem)</option>
+                                <option value="intenso" th:selected="${usuario.nivelAtividade == 'intenso'}">Intenso (6-7 dias/sem)</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-textoClaro font-bold text-sm mb-1">Objetivo Principal</label>
+                            <select name="objetivo" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white w-full">
+                                <option value="emagrecer" th:selected="${usuario.objetivo == 'emagrecer'}">Emagrecer / Secar</option>
+                                <option value="manter" th:selected="${usuario.objetivo == 'manter'}">Manter peso</option>
+                                <option value="hipertrofia" th:selected="${usuario.objetivo == 'hipertrofia'}">Ganhar Massa Muscular</option>
+                            </select>
+                        </div>
+
+                        <!-- 10º ITEM -->
+                        <div class="flex flex-col">
+                            <label class="text-textoClaro font-bold text-sm mb-1">Orçamento Mensal (R$)</label>
+                            <input type="number" step="0.01" name="orcamentoMaxMensal" th:value="${usuario.orcamentoMaxMensal}" placeholder="Ex: 400.00" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full">
+                        </div>
+
+                        <!-- 11º ITEM (Esticado embaixo ocupando tudo) -->
+                        <div class="flex flex-col md:col-span-2">
+                            <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
+                            <input type="text" name="restricaoAlimentar" th:value="${usuario.restricaoAlimentar}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full">
+                        </div>
+                    </th:block>
                 </div>
+
                 <!-- Zona de Perigo -->
                 <div class="bg-red-50 border border-red-200 rounded-2xl p-6 mt-6 mb-4">
                     <h4 class="text-red-600 font-bold mb-2"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Atenção!</h4>
                     <p class="text-sm text-red-500/80 mb-4">Ao excluir sua conta, seu perfil será apagado e todas as dietas geradas pela IA serão excluídas permanentemente. Esta ação é irreversível.</p>
+
                     <a th:href="@{/deletarConta}"
                        onclick="return confirm('ATENÇÃO: Tem certeza absoluta? Seu perfil e histórico de IA serão destruídos para sempre.');"
                        class="inline-flex items-center bg-red-500 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-red-600 transition duration-200 cursor-pointer">
@@ -596,6 +614,7 @@
                     </a>
                 </div>
             </div>
+
             <div class="p-4 pb-6 md:p-6 border-t border-gray-100 bg-white shrink-0 z-20 flex justify-end w-full rounded-b-[2.5rem]">
                 <button type="button" class="px-6 py-2 rounded-full text-textoClaro hover:text-textoEscuro font-bold transition mr-2" onclick="document.getElementById('btn-fechar-editar-perfil').click()">Cancelar</button>
                 <button type="submit" class="bg-verdeSalvia text-white px-8 py-2.5 rounded-full font-bold shadow-md hover:bg-verdeEscuro transition">
@@ -606,7 +625,24 @@
     </div>
 </div>
 
-<!-- LOADER GLOBAL DE TRANSIÇÃO -->
+<!-- MODAL EDITAR ÁGUA -->
+<div id="modal-editar-agua" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
+    <div class="bg-white rounded-[2rem] shadow-xl w-full max-w-xs relative transform transition-transform scale-95 flex flex-col overflow-hidden border-2 border-verdeSalvia/30 p-6 text-center">
+        <h3 class="text-xl font-bold text-textoEscuro mb-2">Editar Copo</h3>
+        <p class="text-xs text-textoClaro mb-4">Ajuste a quantidade do último copo que você adicionou:</p>
+
+        <input type="number" id="input-agua-manual" class="w-full text-center px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia text-xl font-bold text-textoEscuro mb-3" placeholder="Ex: 800">
+
+        <button onclick="zerarAgua()" class="text-xs text-red-400 hover:text-red-600 font-medium mb-5 transition underline">Quero zerar tudo</button>
+
+        <div class="flex gap-3 w-full">
+            <button onclick="fecharModalAgua()" class="flex-1 py-2.5 rounded-xl text-textoClaro font-bold hover:bg-gray-100 transition">Cancelar</button>
+            <button onclick="salvarAguaManual()" class="flex-1 py-2.5 rounded-xl bg-verdeSalvia text-white font-bold hover:bg-verdeEscuro transition shadow-md">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- LOADER GLOBAL -->
 <div id="loader-global" class="fixed inset-0 bg-white/60 backdrop-blur-md z-[9999] hidden flex-col justify-center items-center">
     <div class="relative flex justify-center items-center mb-4">
         <div class="absolute animate-ping w-16 h-16 rounded-full bg-verdeSalvia/30"></div>
@@ -616,7 +652,7 @@
     <p class="text-textoClaro text-xs mt-2 font-medium">Buscando seus dados nutritivos</p>
 </div>
 
-<!-- Script modularizado original do sistema -->
+<!-- Script modularizado -->
 <script th:src="@{/dashboard.js}"></script>
 </body>
 </html>
