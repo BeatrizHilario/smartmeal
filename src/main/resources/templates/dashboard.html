@@ -169,143 +169,140 @@
     </div>
 
     <!-- GRIDS DE INFORMAÇÃO -->
-    <div th:unless="${perfilIncompleto}" class="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+    <div th:unless="${perfilIncompleto}" class="flex flex-col gap-6 md:gap-8 w-full">
 
-        <!-- COLUNA PRINCIPAL (ESQUERDA - 2 COLUNAS) -->
-        <div class="xl:col-span-2 space-y-8">
+        <!-- PRIMEIRA LINHA: 3 CARDS (Métricas e Refeições) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
 
-            <!-- LINHA 1: CALORIAS + HIDRATAÇÃO LADO A LADO -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                <!-- CARD CALORIAS -->
-                <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-center mb-4">
-                            <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center text-xl">
-                                <i class="fa-solid fa-fire"></i>
-                            </div>
-                            <span class="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs font-bold">HOJE</span>
+            <!-- CARD CALORIAS -->
+            <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 flex flex-col justify-between h-full">
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-fire"></i>
                         </div>
-                        <p class="text-textoClaro font-medium mb-1 text-sm">Calorias Consumidas</p>
-                        <h3 class="text-3xl font-bold text-textoEscuro">
-                            <span th:text="${caloriasConsumidas != null ? caloriasConsumidas : 0}">0</span>
-                            <span class="text-base text-textoClaro font-medium">/ <span th:text="${usuario.metaCaloricaKcal}"></span> kcal</span>
-                        </h3>
+                        <span class="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs font-bold shrink-0">HOJE</span>
                     </div>
-                    <div class="w-full bg-gray-100 rounded-full h-3 mt-5">
-                        <div class="bg-orange-400 h-3 rounded-full transition-all duration-1000"
-                             th:style="'width: ' + (${usuario.metaCaloricaKcal != null and usuario.metaCaloricaKcal > 0 ? (caloriasConsumidas * 100 / usuario.metaCaloricaKcal) : 0}) + '%; max-width: 100%;'"></div>
-                    </div>
+                    <p class="text-textoClaro font-medium mb-1 text-sm">Calorias Consumidas</p>
+                    <h3 class="text-3xl font-bold text-textoEscuro">
+                        <span th:text="${caloriasConsumidas != null ? caloriasConsumidas : 0}">0</span>
+                        <span class="text-base text-textoClaro font-medium">/ <span th:text="${usuario.metaCaloricaKcal}"></span> kcal</span>
+                    </h3>
                 </div>
-
-                <!-- CARD HIDRATAÇÃO NO TOPO -->
-                <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 text-center relative flex flex-col justify-between" id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
-                    <div>
-                        <div class="flex justify-between items-center mb-3">
-                            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-[#4CB5F9] flex items-center justify-center text-xl">
-                                <i class="fa-solid fa-droplet"></i>
-                            </div>
-                            <p class="text-xs font-medium text-textoClaro">Faltam <span id="texto-agua-faltante" class="font-bold text-verdeSalvia">...</span></p>
-                        </div>
-                        <!-- Copos dinâmicos -->
-                        <div class="flex justify-center flex-wrap gap-2 my-2" id="container-copos"></div>
-                    </div>
-
-                    <div class="flex items-center justify-center mt-2 group">
-                        <p class="text-2xl font-bold text-textoEscuro cursor-pointer hover:text-verdeSalvia transition" id="texto-agua-consumida" onclick="editarAguaManual()" title="Clique para editar">
-                            0 ml
-                        </p>
-                        <button onclick="editarAguaManual()" class="ml-2 w-7 h-7 rounded-full bg-gray-50 text-textoClaro hover:bg-amareloMostarda hover:text-white transition flex items-center justify-center shadow-sm">
-                            <i class="fa-solid fa-pen text-[10px]"></i>
-                        </button>
-                    </div>
+                <div class="w-full bg-gray-100 rounded-full h-3 mt-5">
+                    <div class="bg-orange-400 h-3 rounded-full transition-all duration-1000"
+                         th:style="'width: ' + (${usuario.metaCaloricaKcal != null and usuario.metaCaloricaKcal > 0 ? (caloriasConsumidas * 100 / usuario.metaCaloricaKcal) : 0}) + '%; max-width: 100%;'"></div>
                 </div>
-
             </div>
 
-            <!-- LINHA 2: SUGESTÃO INTELIGENTE ESTICADA -->
-            <div class="bg-cardBranco rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 shadow-md border-t-8 md:border-t-0 md:border-l-[12px] border-amareloMostarda relative">
-                <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-3">
-                    <h3 id="titulo-refeicao-ia" class="font-bold text-2xl text-textoEscuro">
-                        Sugestão Inteligente <i class="fa-solid fa-wand-magic-sparkles text-amareloMostarda ml-1"></i>
-                    </h3>
-                    <button id="btn-gerar-sugestao" class="hidden md:flex text-verdeSalvia hover:text-verdeEscuro bg-verdeSalvia/10 px-3 py-1.5 rounded-lg font-bold text-sm items-center gap-1.5 transition">
-                        <i class="fa-solid fa-arrows-rotate"></i> Gerar Outra
-                    </button>
-                </div>
-
-                <div class="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar">
-                    <button class="meal-btn shrink-0 whitespace-nowrap bg-verdeSalvia text-white px-5 py-2 rounded-full text-sm font-bold shadow-md transition transform hover:scale-105" data-tipo="Café da Manhã">Café da Manhã</button>
-                    <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Almoço">Almoço</button>
-                    <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Lanche">Lanche</button>
-                    <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Jantar">Jantar</button>
-                </div>
-
-                <div id="container-dieta-ia" th:utext="${dietaReal?.planoAlimentar}">
-                    <div class="animate-pulse flex space-x-4">
-                        <div class="flex-1 space-y-4 py-1">
-                            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-                            <div class="space-y-2">
-                                <div class="h-4 bg-gray-200 rounded"></div>
-                                <div class="h-4 bg-gray-200 rounded w-5/6"></div>
-                            </div>
+            <!-- CARD HIDRATAÇÃO -->
+            <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 text-center relative flex flex-col justify-between h-full" id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-[#4CB5F9] flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid fa-droplet"></i>
                         </div>
+                        <p class="text-xs font-medium text-textoClaro">Faltam <span id="texto-agua-faltante" class="font-bold text-verdeSalvia">...</span></p>
                     </div>
+                    <!-- Copos dinâmicos -->
+                    <div class="flex justify-center flex-wrap gap-2 my-2" id="container-copos"></div>
                 </div>
 
-                <form id="form-sugestao-ia" th:action="@{/diario/registrar-sugestao}" method="post" class="mt-6 w-full flex justify-end">
-                    <input type="hidden" name="tipoRefeicao" id="input-sug-tipo">
-                    <input type="hidden" name="descricao" id="input-sug-desc">
-                    <input type="hidden" name="calorias" id="input-sug-kcal">
-
-                    <button type="button" onclick="consumirSugestaoIA()" class="bg-amareloMostarda text-white px-6 py-3 rounded-full font-bold shadow-md hover:bg-amareloHover transition transform hover:scale-105 flex items-center gap-2">
-                        <i class="fa-solid fa-check-circle text-lg"></i> Consumi esta Sugestão!
+                <div class="flex items-center justify-center mt-2 group">
+                    <p class="text-2xl font-bold text-textoEscuro cursor-pointer hover:text-verdeSalvia transition" id="texto-agua-consumida" onclick="editarAguaManual()" title="Clique para editar">
+                        0 ml
+                    </p>
+                    <button onclick="editarAguaManual()" class="ml-2 w-7 h-7 rounded-full bg-gray-50 text-textoClaro hover:bg-amareloMostarda hover:text-white transition flex items-center justify-center shadow-sm shrink-0">
+                        <i class="fa-solid fa-pen text-[10px]"></i>
                     </button>
-                </form>
+                </div>
+            </div>
+
+            <!-- CARD REFEIÇÕES DE HOJE (Movido para a primeira linha) -->
+            <div class="bg-verdeSalvia text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden flex flex-col justify-between h-full transform hover:-translate-y-1 transition duration-300">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 pointer-events-none"></div>
+                <div>
+                    <h3 class="font-bold text-xl mb-4 relative z-10">Refeições de Hoje</h3>
+
+                    <ul class="space-y-3 relative z-10 font-medium opacity-90 text-sm">
+                        <!-- CAFÉ DA MANHÃ -->
+                        <li class="flex items-center"
+                            th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Café da Manhã'])}"
+                            th:classappend="${feito ? 'text-white' : 'text-white/60'}">
+                            <i th:class="${feito ? 'fa-solid fa-check-circle text-lg mr-3 text-amareloMostarda shrink-0' : 'fa-regular fa-circle text-lg mr-3 shrink-0'}"></i>
+                            <span class="truncate">Café da Manhã <span th:unless="${feito}" class="text-xs font-normal opacity-80">(Pendente)</span></span>
+                        </li>
+
+                        <!-- ALMOÇO -->
+                        <li class="flex items-center"
+                            th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Almoço'])}"
+                            th:classappend="${feito ? 'text-white' : 'text-white/60'}">
+                            <i th:class="${feito ? 'fa-solid fa-check-circle text-lg mr-3 text-amareloMostarda shrink-0' : 'fa-regular fa-circle text-lg mr-3 shrink-0'}"></i>
+                            <span class="truncate">Almoço <span th:unless="${feito}" class="text-xs font-normal opacity-80">(Pendente)</span></span>
+                        </li>
+
+                        <!-- LANCHE -->
+                        <li class="flex items-center"
+                            th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Lanche'])}"
+                            th:classappend="${feito ? 'text-white' : 'text-white/60'}">
+                            <i th:class="${feito ? 'fa-solid fa-check-circle text-lg mr-3 text-amareloMostarda shrink-0' : 'fa-regular fa-circle text-lg mr-3 shrink-0'}"></i>
+                            <span class="truncate">Lanche <span th:unless="${feito}" class="text-xs font-normal opacity-80">(Pendente)</span></span>
+                        </li>
+
+                        <!-- JANTAR -->
+                        <li class="flex items-center"
+                            th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Jantar'])}"
+                            th:classappend="${feito ? 'text-white' : 'text-white/60'}">
+                            <i th:class="${feito ? 'fa-solid fa-check-circle text-lg mr-3 text-amareloMostarda shrink-0' : 'fa-regular fa-circle text-lg mr-3 shrink-0'}"></i>
+                            <span class="truncate">Jantar <span th:unless="${feito}" class="text-xs font-normal opacity-80">(Pendente)</span></span>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
         </div>
 
-        <!-- COLUNA LATERAL DIREITA: REFEIÇÕES DE HOJE SUBIU PARA O TOPO -->
-        <div class="space-y-8">
-            <div class="bg-verdeSalvia text-white p-8 rounded-[2rem] shadow-lg relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10"></div>
-                <h3 class="font-bold text-xl mb-6 relative z-10">Refeições de Hoje</h3>
-
-                <ul class="space-y-4 relative z-10 font-medium opacity-90">
-                    <!-- CAFÉ DA MANHÃ -->
-                    <li class="flex items-center"
-                        th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Café da Manhã'])}"
-                        th:classappend="${feito ? 'text-white' : 'text-white/50'}">
-                        <i th:class="${feito ? 'fa-solid fa-check-circle text-xl mr-3 text-amareloMostarda' : 'fa-regular fa-circle text-xl mr-3'}"></i>
-                        <span>Café da Manhã <span th:unless="${feito}" class="text-sm font-normal">(Pendente)</span></span>
-                    </li>
-
-                    <!-- ALMOÇO -->
-                    <li class="flex items-center"
-                        th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Almoço'])}"
-                        th:classappend="${feito ? 'text-white' : 'text-white/50'}">
-                        <i th:class="${feito ? 'fa-solid fa-check-circle text-xl mr-3 text-amareloMostarda' : 'fa-regular fa-circle text-xl mr-3'}"></i>
-                        <span>Almoço <span th:unless="${feito}" class="text-sm font-normal">(Pendente)</span></span>
-                    </li>
-
-                    <!-- LANCHE -->
-                    <li class="flex items-center"
-                        th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Lanche'])}"
-                        th:classappend="${feito ? 'text-white' : 'text-white/50'}">
-                        <i th:class="${feito ? 'fa-solid fa-check-circle text-xl mr-3 text-amareloMostarda' : 'fa-regular fa-circle text-xl mr-3'}"></i>
-                        <span>Lanche <span th:unless="${feito}" class="text-sm font-normal">(Pendente)</span></span>
-                    </li>
-
-                    <!-- JANTAR -->
-                    <li class="flex items-center"
-                        th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Jantar'])}"
-                        th:classappend="${feito ? 'text-white' : 'text-white/50'}">
-                        <i th:class="${feito ? 'fa-solid fa-check-circle text-xl mr-3 text-amareloMostarda' : 'fa-regular fa-circle text-xl mr-3'}"></i>
-                        <span>Jantar <span th:unless="${feito}" class="text-sm font-normal">(Pendente)</span></span>
-                    </li>
-                </ul>
+        <!-- SEGUNDA LINHA: SUGESTÃO INTELIGENTE (Largura Total e Altura Compacta) -->
+        <div class="bg-cardBranco rounded-[2rem] p-5 md:p-6 shadow-sm border border-verdeSalvia/10 md:border-t-0 md:border-l-[12px] border-l-amareloMostarda relative flex flex-col justify-between">
+            <div class="flex justify-between items-center mb-3 border-b border-gray-100 pb-3">
+                <h3 id="titulo-refeicao-ia" class="font-bold text-xl md:text-2xl text-textoEscuro flex items-center">
+                    Sugestão Inteligente <i class="fa-solid fa-wand-magic-sparkles text-amareloMostarda ml-2 text-lg"></i>
+                </h3>
+                <button id="btn-gerar-sugestao" class="hidden md:flex text-verdeSalvia hover:text-verdeEscuro bg-verdeSalvia/10 px-3 py-1.5 rounded-lg font-bold text-xs items-center gap-1.5 transition">
+                    <i class="fa-solid fa-arrows-rotate"></i> Gerar Outra
+                </button>
             </div>
+
+            <!-- Botões de abas mais enxutos -->
+            <div class="flex gap-2 mb-4 overflow-x-auto pb-1 no-scrollbar">
+                <button class="meal-btn shrink-0 whitespace-nowrap bg-verdeSalvia text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-sm transition transform hover:scale-105" data-tipo="Café da Manhã">Café da Manhã</button>
+                <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-4 py-1.5 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Almoço">Almoço</button>
+                <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-4 py-1.5 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Lanche">Lanche</button>
+                <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-4 py-1.5 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Jantar">Jantar</button>
+            </div>
+
+            <div id="container-dieta-ia" class="flex-1" th:utext="${dietaReal?.planoAlimentar}">
+                <div class="animate-pulse flex space-x-4">
+                    <div class="flex-1 space-y-3 py-1">
+                        <div class="h-3 bg-gray-200 rounded w-3/4"></div>
+                        <div class="space-y-2">
+                            <div class="h-3 bg-gray-200 rounded"></div>
+                            <div class="h-3 bg-gray-200 rounded w-5/6"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="form-sugestao-ia" th:action="@{/diario/registrar-sugestao}" method="post" class="mt-4 w-full flex justify-end">
+                <input type="hidden" name="tipoRefeicao" id="input-sug-tipo">
+                <input type="hidden" name="descricao" id="input-sug-desc">
+                <input type="hidden" name="calorias" id="input-sug-kcal">
+
+                <!-- Botão de consumo um pouco menor e mais proporcional -->
+                <button type="button" onclick="consumirSugestaoIA()" class="bg-amareloMostarda text-white px-5 py-2.5 rounded-full font-bold shadow-md hover:bg-amareloHover transition transform hover:scale-105 flex items-center gap-2 text-sm">
+                    <i class="fa-solid fa-check-circle"></i> Consumi esta Sugestão!
+                </button>
+            </form>
         </div>
 
     </div>
