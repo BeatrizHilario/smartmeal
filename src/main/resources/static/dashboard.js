@@ -53,13 +53,6 @@ function registrarRefeicao() {
     }
 }
 
-// Função para interação com os copos de água (Antiga, mantida por compatibilidade se usada em outro lugar)
-function beberAgua(elemento) {
-    elemento.classList.remove('text-gray-200');
-    elemento.classList.add('text-verdeSalvia');
-    elemento.onclick = null;
-}
-
 // --- LÓGICA DE REFEIÇÕES PARA PERFIL INCOMPLETO ---
 document.addEventListener("DOMContentLoaded", () => {
     const btnGerarOutras = document.getElementById("btn-gerar-outras");
@@ -149,10 +142,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!containerDieta || mealBtns.length === 0) return;
 
-    // 1. Recupera qual era a última aba que o usuário estava vendo (ou o padrão)
     let tipoAtual = localStorage.getItem("ultima_aba_refeicao") || "Café da Manhã";
 
-    // 2. Arruma as cores dos botões assim que a página carrega
     mealBtns.forEach(b => {
         b.classList.remove("bg-verdeSalvia", "text-white", "shadow-md");
         b.classList.add("bg-gray-100", "text-textoClaro");
@@ -162,29 +153,24 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 3. Força a tela a mostrar o que está na memória
     const cacheKeyIncial = "dieta_" + tipoAtual;
     if (localStorage.getItem(cacheKeyIncial)) {
         containerDieta.innerHTML = localStorage.getItem(cacheKeyIncial);
     } else {
-        // Se for a primeira vez no dia, salva o que veio do Java na memória
         const htmlBackend = containerDieta.innerHTML;
         if (htmlBackend && htmlBackend.trim() !== "") {
             localStorage.setItem(cacheKeyIncial, htmlBackend);
         }
     }
 
-    // Função que verifica o cache antes de incomodar a IA
     async function buscarSugestaoIA(tipo, forcarNova = false) {
         const cacheKey = "dieta_" + tipo;
 
-        // Se NÃO forçou nova receita e já existe no cache, carrega instantâneo!
         if (!forcarNova && localStorage.getItem(cacheKey)) {
             containerDieta.innerHTML = localStorage.getItem(cacheKey);
             return;
         }
 
-        // Se não tem no cache, mostra a animação de carregamento
         containerDieta.style.opacity = "0.5";
         containerDieta.innerHTML = `<div class="flex flex-col items-center justify-center py-10">
             <i class="fa-solid fa-spinner fa-spin text-3xl text-verdeSalvia mb-3"></i>
@@ -204,7 +190,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const htmlGerado = await resposta.text();
 
-            // Salva a resposta na memória do dia e joga na tela
             localStorage.setItem(cacheKey, htmlGerado);
             containerDieta.innerHTML = htmlGerado;
         } catch (erro) {
@@ -216,7 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Clique nos botões de refeição
     mealBtns.forEach(btn => {
         btn.addEventListener("click", (e) => {
             mealBtns.forEach(b => {
@@ -229,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
             botaoClicado.classList.add("bg-verdeSalvia", "text-white", "shadow-md");
 
             tipoAtual = botaoClicado.getAttribute("data-tipo");
-            localStorage.setItem("ultima_aba_refeicao", tipoAtual); // <--- Memoriza a aba!
+            localStorage.setItem("ultima_aba_refeicao", tipoAtual);
 
             buscarSugestaoIA(tipoAtual);
         });
@@ -249,7 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const metaAgua = parseInt(card.getAttribute('data-meta')) || 2000;
 
-    // Inicializa recuperando da memória o total E o último copo
     let aguaConsumida = parseInt(localStorage.getItem("agua_consumida")) || 0;
     let ultimoConsumo = parseInt(localStorage.getItem("agua_ultimo_registro")) || 0;
 
@@ -289,16 +272,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             svg.innerHTML = '<path fill="currentColor" d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/>';
 
-            // Lógica do clique na tela principal
             svg.onclick = () => {
                 if (aguaConsumida >= copoValor) {
-                    // Remover água desmarcando o copo
                     aguaConsumida = Math.max(0, aguaConsumida - 500);
-                    ultimoConsumo = 0; // Se desmarcou, quebra a corrente de edição
+                    ultimoConsumo = 0;
                 } else {
-                    // Adicionou um copo novo
                     aguaConsumida += 500;
-                    ultimoConsumo = 500; // Memoriza que o último copo teve 500ml
+                    ultimoConsumo = 500;
                 }
 
                 localStorage.setItem("agua_consumida", aguaConsumida);
@@ -310,7 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Abre o modal preenchido com o valor do último copo!
     window.editarAguaManual = () => {
         const modal = document.getElementById('modal-editar-agua');
         const input = document.getElementById('input-agua-manual');
@@ -331,17 +310,15 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => modal.classList.add('hidden'), 300);
     };
 
-    // A MÁGICA: Substitui o valor do último copo sem mexer no resto!
     window.salvarAguaManual = () => {
         const input = document.getElementById('input-agua-manual');
         const novoValorEditado = parseInt(input.value.replace(/\D/g, ''));
 
         if (!isNaN(novoValorEditado)) {
-            // Conta mágica: Pega o total, arranca fora o último copo e bota o valor novo!
             aguaConsumida = aguaConsumida - ultimoConsumo + novoValorEditado;
             if (aguaConsumida < 0) aguaConsumida = 0;
 
-            ultimoConsumo = novoValorEditado; // Atualiza a memória
+            ultimoConsumo = novoValorEditado;
 
             localStorage.setItem("agua_consumida", aguaConsumida);
             localStorage.setItem("agua_ultimo_registro", ultimoConsumo);
@@ -350,7 +327,6 @@ document.addEventListener('DOMContentLoaded', () => {
         fecharModalAgua();
     };
 
-    // Botão de emergência para limpar resíduos
     window.zerarAgua = () => {
         aguaConsumida = 0;
         ultimoConsumo = 0;
@@ -397,30 +373,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    const modalEmBreve = document.getElementById("modal-em-breve");
-    const btnFecharEmBreve = document.getElementById("btn-fechar-em-breve");
-    const linksBloqueados = document.querySelectorAll('.link-em-breve');
-
-    linksBloqueados.forEach(link => {
-        link.addEventListener("click", (e) => {
-            e.preventDefault();
-            modalEmBreve.classList.remove("hidden");
-            setTimeout(() => {
-                modalEmBreve.classList.remove("opacity-0");
-                modalEmBreve.querySelector('div').classList.remove("scale-95");
-            }, 10);
-        });
-    });
-
-    if (btnFecharEmBreve) {
-        btnFecharEmBreve.addEventListener("click", () => {
-            modalEmBreve.classList.add("opacity-0");
-            modalEmBreve.querySelector('div').classList.add("scale-95");
-            setTimeout(() => modalEmBreve.classList.add("hidden"), 300);
-        });
-    }
-});
 
 // --- LÓGICA DO BOTÃO CENTRAL (VARINHA MÁGICA) ---
 document.addEventListener("DOMContentLoaded", () => {
@@ -460,7 +412,7 @@ document.addEventListener('click', function(event) {
 
 document.addEventListener('DOMContentLoaded', () => {
     const mainElement = document.querySelector('main');
-    const modais = ['modal-completar-perfil', 'modal-editar-perfil', 'modal-visualizar-dados', 'modal-em-breve'];
+    const modais = ['modal-completar-perfil', 'modal-editar-perfil', 'modal-visualizar-dados'];
 
     const observer = new MutationObserver(() => {
     const modalAberto = modais.some(id => {

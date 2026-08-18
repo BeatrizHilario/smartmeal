@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard- SmartMeal</title>
+    <title>Dashboard - SmartMeal</title>
     <meta name="view-transition" content="same-origin">
     <!-- Tailwind CSS para estilização rápida -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,10 +25,10 @@
 
 <!-- MENU LATERAL (SIDEBAR) -->
 <aside class="hidden md:flex w-72 bg-verdeSalvia text-white rounded-r-[3rem] shadow-xl z-20 flex-col py-10 my-4 ml-0 relative transition-transform duration-300">    <div class="px-8 mb-12 flex justify-center items-center w-full">
-        <h1 class="text-5xl font-cursiva text-center">
-            Smart<span class="text-amareloMostarda">Meal</span>
-        </h1>
-    </div>
+    <h1 class="text-5xl font-cursiva text-center">
+        Smart<span class="text-amareloMostarda">Meal</span>
+    </h1>
+</div>
 
     <nav class="flex-1 px-4 space-y-2">
         <a href="#" class="flex items-center space-x-4 px-6 py-4 bg-white/20 rounded-2xl transition hover:bg-white/30 text-white font-medium">
@@ -39,11 +39,6 @@
         <a th:href="@{/diario}" class="flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
             <i class="fa-solid fa-book-open w-6 text-xl"></i>
             <span>Diário Alimentar</span>
-        </a>
-
-        <a href="javascript:void(0)" class="link-em-breve flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
-            <i class="fa-solid fa-wallet w-6 text-xl"></i>
-            <span>Orçamento e Compras</span>
         </a>
 
         <a href="#" id="btn-abrir-editar-perfil" class="flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
@@ -67,14 +62,13 @@
 
 <!-- CONTEÚDO PRINCIPAL -->
 <main class="flex-1 px-4 md:px-12 py-6 md:py-10 h-full overflow-y-auto z-10 relative pb-24 md:pb-10 w-full bg-[#FAFAFA] md:bg-transparent anima-conteudo">    <div th:if="${erroIA}" class="bg-red-50 border-l-[6px] border-red-500 text-red-700 p-4 mb-6 rounded-r-2xl shadow-sm flex items-center animate-fade-in" role="alert">
-        <i class="fa-solid fa-triangle-exclamation text-2xl mr-4 text-red-500"></i>
-        <div>
-            <h4 class="font-bold">Ops! Tivemos um contratempo.</h4>
-            <p class="text-sm font-medium" th:text="${erroIA}"></p>
-        </div>
+    <i class="fa-solid fa-triangle-exclamation text-2xl mr-4 text-red-500"></i>
+    <div>
+        <h4 class="font-bold">Ops! Tivemos um contratempo.</h4>
+        <p class="text-sm font-medium" th:text="${erroIA}"></p>
     </div>
+</div>
 
-    <!-- HEADER DO CONTEÚDO -->
     <!-- HEADER DO CONTEÚDO -->
     <header class="flex flex-col mb-4 md:mb-10 mt-0 md:mt-0 gap-1 md:gap-4">
 
@@ -195,7 +189,8 @@
 
         <div class="xl:col-span-2 space-y-8">
 
-            <div class="grid grid-cols-2 gap-6">
+            <!-- Card de Calorias Consumidas Ocupando 100% da Largura -->
+            <div class="grid grid-cols-1 gap-6">
 
                 <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300">
                     <div class="flex justify-between items-center mb-4">
@@ -217,22 +212,6 @@
                     </div>
                 </div>
 
-                <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative overflow-hidden">
-                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-amareloMostarda/10 rounded-full"></div>
-                    <div class="flex justify-between items-center mb-4 relative z-10">
-                        <div class="w-12 h-12 rounded-2xl bg-amareloMostarda/20 text-amareloMostarda flex items-center justify-center text-xl">
-                            <i class="fa-solid fa-wallet"></i>
-                        </div>
-                        <span class="bg-amareloMostarda/10 text-amareloMostarda px-3 py-1 rounded-full text-xs font-bold">MÊS</span>
-                    </div>
-                    <p class="text-textoClaro font-medium mb-1 relative z-10">Orçamento Gasto</p>
-                    <h3 class="text-3xl font-bold text-textoEscuro relative z-10">
-                        R$ 0 <span class="text-lg text-textoClaro font-medium">/ R$ <span th:text="${usuario.orcamentoMaxMensal}"></span></span>
-                    </h3>
-                    <div class="w-full bg-gray-100 rounded-full h-3 mt-4 relative z-10">
-                        <div class="bg-amareloMostarda h-3 rounded-full transition-all duration-1000" style="width: 45%;"></div>
-                    </div>
-                </div>
             </div>
 
             <div class="bg-cardBranco rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 shadow-md border-t-8 md:border-t-0 md:border-l-[12px] border-amareloMostarda relative">
@@ -375,13 +354,6 @@
         </a>
     </div>
 
-    <a href="javascript:void(0)" class="link-em-breve flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition">
-        <div class="p-2 mb-1">
-            <i class="fa-solid fa-wallet text-lg"></i>
-        </div>
-        <span class="text-[10px] font-medium">Compras</span>
-    </a>
-
     <a href="#" id="btn-abrir-editar-perfil-mobile" class="flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition">
         <div class="p-2 mb-1">
             <i class="fa-solid fa-user-gear text-lg"></i>
@@ -452,11 +424,6 @@
                 <div class="flex flex-col">
                     <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
                     <input type="text" name="restricaoAlimentar" placeholder="Ex: Nenhuma, Vegano, Lactose..." required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
-                </div>
-
-                <div class="flex flex-col md:col-span-2">
-                    <label class="text-textoClaro font-bold text-sm mb-1">Orçamento Mensal (R$)</label>
-                    <input type="number" step="0.01" name="orcamentoMaxMensal" placeholder="Ex: 400.00" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
                 </div>
 
             </div>
@@ -616,11 +583,6 @@
                             <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
                             <input type="text" name="restricaoAlimentar" th:value="${usuario.restricaoAlimentar}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
                         </div>
-
-                        <div class="flex flex-col md:col-span-2">
-                            <label class="text-textoClaro font-bold text-sm mb-1">Orçamento Mensal para Alimentação (R$)</label>
-                            <input type="number" step="0.01" name="orcamentoMaxMensal" th:value="${usuario.orcamentoMaxMensal}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full md:w-1/2">
-                        </div>
                     </th:block>
                 </div>
 
@@ -665,17 +627,6 @@
             <button onclick="fecharModalAgua()" class="flex-1 py-2.5 rounded-xl text-textoClaro font-bold hover:bg-gray-100 transition">Cancelar</button>
             <button onclick="salvarAguaManual()" class="flex-1 py-2.5 rounded-xl bg-verdeSalvia text-white font-bold hover:bg-verdeEscuro transition shadow-md">Salvar</button>
         </div>
-    </div>
-</div>
-
-<div id="modal-em-breve" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300">
-    <div class="bg-cardBranco p-8 rounded-[2rem] shadow-xl w-full max-w-md text-center transform transition-transform scale-95 border-2 border-verdeSalvia/30">
-        <div class="text-6xl mb-4">🚧</div>
-        <h3 class="text-2xl font-rancho font-bold text-textoEscuro mb-2">Em Desenvolvimento!</h3>
-        <p class="text-textoClaro text-sm mb-6">Esta funcionalidade estará disponível em breve.</p>
-        <button id="btn-fechar-em-breve" class="bg-verdeSalvia text-white px-8 py-2.5 rounded-full font-bold shadow-md hover:bg-verdeEscuro transition w-full">
-            Entendi
-        </button>
     </div>
 </div>
 

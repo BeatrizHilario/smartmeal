@@ -44,11 +44,6 @@
             <span>Diário Alimentar</span>
         </a>
 
-        <a href="javascript:void(0)" class="link-em-breve flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
-            <i class="fa-solid fa-wallet w-6 text-xl"></i>
-            <span>Orçamento e Compras</span>
-        </a>
-
         <a href="#" id="btn-abrir-editar-perfil" class="flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
             <i class="fa-solid fa-user-gear w-6 text-xl"></i>
             <span>Perfil e Restrições</span>
@@ -302,13 +297,6 @@
             <i class="fa-solid fa-plus text-2xl text-amareloMostarda"></i>
         </a>
     </div>
-
-    <a href="javascript:void(0)" class="link-em-breve flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition">
-        <div class="p-2 mb-1">
-            <i class="fa-solid fa-wallet text-lg"></i>
-        </div>
-        <span class="text-[10px] font-medium">Compras</span>
-    </a>
 
     <a href="#" id="btn-abrir-editar-perfil-mobile" class="flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition">
         <div class="p-2 mb-1">
@@ -596,10 +584,6 @@
                         <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
                         <input type="text" name="restricaoAlimentar" th:value="${usuario.restricaoAlimentar}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia">
                     </div>
-                    <div class="flex flex-col md:col-span-2">
-                        <label class="text-textoClaro font-bold text-sm mb-1">Orçamento Mensal para Alimentação (R$)</label>
-                        <input type="number" step="0.01" name="orcamentoMaxMensal" th:value="${usuario.orcamentoMaxMensal}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full md:w-1/2">
-                    </div>
                 </div>
                 <!-- Zona de Perigo -->
                 <div class="bg-red-50 border border-red-200 rounded-2xl p-6 mt-6 mb-4">
@@ -619,17 +603,6 @@
                 </button>
             </div>
         </form>
-    </div>
-</div>
-
-<div id="modal-em-breve" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300">
-    <div class="bg-cardBranco p-8 rounded-[2rem] shadow-xl w-full max-w-md text-center transform transition-transform scale-95 border-2 border-verdeSalvia/30">
-        <div class="text-6xl mb-4">🚧</div>
-        <h3 class="text-2xl font-rancho font-bold text-textoEscuro mb-2">Em Desenvolvimento!</h3>
-        <p class="text-textoClaro text-sm mb-6">Esta funcionalidade estará disponível em breve.</p>
-        <button id="btn-fechar-em-breve" class="bg-verdeSalvia text-white px-8 py-2.5 rounded-full font-bold shadow-md hover:bg-verdeEscuro transition w-full">
-            Entendi
-        </button>
     </div>
 </div>
 
