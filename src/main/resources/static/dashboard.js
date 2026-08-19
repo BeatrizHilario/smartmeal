@@ -445,11 +445,9 @@ function injetarBotaoConsumo() {
 
     const cardKcal = container.querySelector(".bg-fundoCreme, .border-amareloMostarda");
     if (cardKcal && !cardKcal.querySelector(".btn-consumir-sugestao")) {
-        // Linha tracejada separadora
         const linhaDivisoria = document.createElement("div");
-        linhaDivisoria.className = "w-full border-t border-dashed border-amareloMostarda/40 my-1";
+        linhaDivisoria.className = "w-full border-t border-dashed border-amareloMostarda/40 my-3";
 
-        // Botão idêntico ao modelo
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "btn-consumir-sugestao";

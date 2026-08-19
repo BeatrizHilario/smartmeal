@@ -28,15 +28,7 @@ body {
     margin: 0;
 }
 
-/* ... mantenha o resto do seu CSS abaixo desta linha igual ... */
-
-body {
-    background-color: #FDF7DF;
-    margin: 0;
-    /* REMOVA a linha "overflow: hidden;" daqui! Ela quebra o celular */
-}
-
-/* ADICIONE ISSO AQUI: Classe para ocultar a rolagem dos botões horizontalmente */
+/* Ocultar rolagem horizontal dos botões de abas */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
@@ -66,16 +58,46 @@ body {
     animation: entraSuave 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Ícones das listas retornadas pela IA */
+/* --- LAYOUT PROPORCIONAL DA SUGESTÃO INTELIGENTE --- */
+#container-dieta-ia > div {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+    width: 100% !important;
+}
+
+@media (min-width: 1024px) {
+    #container-dieta-ia > div {
+        flex-direction: row !important;
+        align-items: stretch !important;
+        justify-content: space-between !important;
+        gap: 2.5rem !important;
+    }
+}
+
+/* Coluna da esquerda (Ingredientes + Macros) */
+#container-dieta-ia > div > div:first-child {
+    flex: 1 1 58% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+}
+
+/* Ícones das listas com marcadores verdes */
 #container-dieta-ia ul {
     list-style: none !important;
     padding-left: 0 !important;
+    margin: 1rem 0 !important;
 }
 
 #container-dieta-ia li {
     position: relative;
-    padding-left: 1.75rem;
-    margin-bottom: 0.5rem;
+    padding-left: 1.85rem;
+    margin-bottom: 0.65rem;
+    font-size: 0.925rem;
+    font-weight: 500;
+    color: #555555;
+    line-height: 1.4;
 }
 
 #container-dieta-ia li::before {
@@ -84,75 +106,100 @@ body {
     font-weight: 900;
     position: absolute;
     left: 0;
-    top: 0;
+    top: 0.1rem;
     color: #84A98C;
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
-/* Card de Macronutrientes Estilizado */
+/* Grid de Macronutrientes em Cards Brancos Largos */
+#container-dieta-ia .flex-wrap {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.85rem !important;
+    margin-top: 1.5rem !important;
+    padding-top: 0 !important;
+    border-top: none !important;
+    width: 100% !important;
+}
+
 #container-dieta-ia .flex-wrap > span {
-    display: inline-flex !important;
+    display: flex !important;
     align-items: center !important;
-    gap: 0.5rem !important;
+    gap: 0.75rem !important;
     background-color: #FFFFFF !important;
-    border: 1px solid #F3F4F6 !important;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-    padding: 0.375rem 0.875rem !important;
-    border-radius: 0.75rem !important;
-    font-size: 0.75rem !important;
+    border: 1px solid #EDEDED !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 1rem !important;
+    font-size: 0.85rem !important;
     font-weight: 700 !important;
-    color: #4A4A4A !important;
+    color: #333333 !important;
+    white-space: nowrap !important;
 }
 
 #container-dieta-ia .flex-wrap > span > div {
-    width: 0.625rem !important;
-    height: 0.625rem !important;
+    width: 0.75rem !important;
+    height: 0.75rem !important;
     border-radius: 9999px !important;
+    flex-shrink: 0 !important;
     margin-right: 0 !important;
 }
 
-/* Caixa lateral amarela de Kcal e Ação */
+/* Caixa Lateral Amarela Ampliada (Total Kcal + Ação) */
 #container-dieta-ia .bg-fundoCreme {
+    flex: 1 1 42% !important;
+    max-width: 360px !important;
+    width: 100% !important;
     background-color: #FDF7DF !important;
-    border: 1px solid rgba(244, 180, 26, 0.4) !important;
-    border-style: solid !important;
-    border-radius: 1.5rem !important;
-    padding: 1.25rem !important;
+    border: 1.5px solid #F4E2A8 !important;
+    border-radius: 1.75rem !important;
+    padding: 2rem 1.5rem !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
-    gap: 0.75rem !important;
+    box-shadow: 0 2px 8px rgba(244, 180, 26, 0.08) !important;
+    margin-top: 0 !important;
+}
+
+#container-dieta-ia .bg-fundoCreme p.text-sm {
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    color: #4A4A4A !important;
+    margin-bottom: 0.25rem !important;
 }
 
 #container-dieta-ia .bg-fundoCreme p.text-3xl {
-    font-size: 1.875rem !important;
+    font-size: 2.5rem !important;
     font-weight: 800 !important;
     color: #F4B41A !important;
+    letter-spacing: -0.025em !important;
     margin: 0 !important;
 }
 
-/* Botão Consumir dentro da caixa */
+/* Botão de Consumo dentro da caixa amarela */
 .btn-consumir-sugestao {
-    width: 100%;
-    background-color: #F4B41A;
-    color: #FFFFFF;
-    padding: 0.625rem 1rem;
-    border-radius: 0.875rem;
-    font-weight: 700;
-    font-size: 0.8125rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    border: none;
+    width: 100% !important;
+    background-color: #F4B41A !important;
+    color: #FFFFFF !important;
+    padding: 0.9rem 1.25rem !important;
+    border-radius: 1.15rem !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    box-shadow: 0 6px 14px rgba(244, 180, 26, 0.35) !important;
+    transition: all 0.25s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.6rem !important;
+    cursor: pointer !important;
+    border: none !important;
+    margin-top: 1rem !important;
 }
 
 .btn-consumir-sugestao:hover {
-    background-color: #E0A10D;
-    transform: scale(1.02);
+    background-color: #E0A10D !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 18px rgba(244, 180, 26, 0.45) !important;
 }
