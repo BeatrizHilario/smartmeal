@@ -440,9 +440,10 @@ document.addEventListener('DOMContentLoaded', () => {
 // Envia a sugestão atual direto para o banco
 function consumirSugestaoIA() {
     const container = document.getElementById("container-dieta-ia");
+    if (!container) return;
 
-    const tituloEl = container.querySelector("p.text-base") || container.querySelector("h4");
-    const kcalEl = container.querySelector("p.text-3xl") || container.querySelector("span.text-xl");
+    const tituloEl = container.querySelector("h4") || container.querySelector("p.text-base");
+    const kcalEl = container.querySelector("p.text-4xl") || container.querySelector("p.text-3xl") || container.querySelector("span.text-xl");
 
     if (!tituloEl || !kcalEl) {
         alert("Gere uma sugestão primeiro!");

@@ -261,24 +261,36 @@
 
         </div>
 
-        <!-- SEGUNDA LINHA: SUGESTÃO INTELIGENTE -->
-        <div class="bg-cardBranco rounded-[2rem] p-5 md:p-6 shadow-sm border border-verdeSalvia/10 md:border-t-0 md:border-l-[12px] border-l-amareloMostarda relative flex flex-col justify-between">
-            <div class="flex justify-between items-center mb-3 border-b border-gray-100 pb-3">
-                <h3 id="titulo-refeicao-ia" class="font-bold text-xl md:text-2xl text-textoEscuro flex items-center">
-                    Sugestão Inteligente <i class="fa-solid fa-wand-magic-sparkles text-amareloMostarda ml-2 text-lg"></i>
+        <!-- SEGUNDA LINHA: SUGESTÃO INTELIGENTE ESTILIZADA -->
+        <div class="bg-cardBranco rounded-[2.5rem] p-6 md:p-8 shadow-sm border border-verdeSalvia/10 border-l-[10px] border-l-amareloMostarda relative flex flex-col justify-between">
+
+            <!-- Cabeçalho do Card -->
+            <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+                <h3 id="titulo-refeicao-ia" class="font-bold text-2xl text-textoEscuro flex items-center gap-2">
+                    Sugestão Inteligente <i class="fa-solid fa-wand-magic-sparkles text-amareloMostarda text-xl"></i>
                 </h3>
-                <button id="btn-gerar-sugestao" class="hidden md:flex text-verdeSalvia hover:text-verdeEscuro bg-verdeSalvia/10 px-3 py-1.5 rounded-lg font-bold text-xs items-center gap-1.5 transition">
+                <button id="btn-gerar-sugestao" class="hidden md:flex text-verdeSalvia hover:text-verdeEscuro bg-verdeSalvia/10 px-4 py-2 rounded-xl font-bold text-xs items-center gap-2 transition">
                     <i class="fa-solid fa-arrows-rotate"></i> Gerar Outra
                 </button>
             </div>
 
-            <div class="flex gap-2 mb-4 overflow-x-auto pb-1 no-scrollbar">
-                <button class="meal-btn shrink-0 whitespace-nowrap bg-verdeSalvia text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-sm transition transform hover:scale-105" data-tipo="Café da Manhã">Café da Manhã</button>
-                <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-4 py-1.5 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Almoço">Almoço</button>
-                <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-4 py-1.5 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Lanche">Lanche</button>
-                <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-4 py-1.5 rounded-full text-sm font-bold transition transform hover:scale-105" data-tipo="Jantar">Jantar</button>
+            <!-- Abas de Refeição com Ícones -->
+            <div class="flex gap-3 mb-6 overflow-x-auto pb-1 no-scrollbar">
+                <button class="meal-btn shrink-0 whitespace-nowrap bg-verdeSalvia text-white px-5 py-2.5 rounded-full text-xs md:text-sm font-bold shadow-sm transition transform hover:scale-105 flex items-center gap-2" data-tipo="Café da Manhã">
+                    <i class="fa-solid fa-mug-saucer"></i> Café da Manhã
+                </button>
+                <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2.5 rounded-full text-xs md:text-sm font-bold transition transform hover:scale-105 flex items-center gap-2" data-tipo="Almoço">
+                    <i class="fa-regular fa-sun"></i> Almoço
+                </button>
+                <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2.5 rounded-full text-xs md:text-sm font-bold transition transform hover:scale-105 flex items-center gap-2" data-tipo="Lanche">
+                    <i class="fa-solid fa-cookie-bite"></i> Lanche
+                </button>
+                <button class="meal-btn shrink-0 whitespace-nowrap bg-gray-100 text-textoClaro hover:bg-gray-200 px-5 py-2.5 rounded-full text-xs md:text-sm font-bold transition transform hover:scale-105 flex items-center gap-2" data-tipo="Jantar">
+                    <i class="fa-solid fa-fire-flame-curved"></i> Jantar
+                </button>
             </div>
 
+            <!-- Container Dinâmico do Conteúdo da IA -->
             <div id="container-dieta-ia" class="flex-1" th:utext="${dietaReal?.planoAlimentar}">
                 <div class="animate-pulse flex space-x-4">
                     <div class="flex-1 space-y-3 py-1">
@@ -291,14 +303,11 @@
                 </div>
             </div>
 
-            <form id="form-sugestao-ia" th:action="@{/diario/registrar-sugestao}" method="post" class="mt-4 w-full flex justify-end">
+            <!-- Formulário Oculto de Registro -->
+            <form id="form-sugestao-ia" th:action="@{/diario/registrar-sugestao}" method="post" class="hidden">
                 <input type="hidden" name="tipoRefeicao" id="input-sug-tipo">
                 <input type="hidden" name="descricao" id="input-sug-desc">
                 <input type="hidden" name="calorias" id="input-sug-kcal">
-
-                <button type="button" onclick="consumirSugestaoIA()" class="bg-amareloMostarda text-white px-5 py-2.5 rounded-full font-bold shadow-md hover:bg-amareloHover transition transform hover:scale-105 flex items-center gap-2 text-sm">
-                    <i class="fa-solid fa-check-circle"></i> Consumi esta Sugestão!
-                </button>
             </form>
         </div>
 

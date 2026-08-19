@@ -65,3 +65,26 @@ body {
 .anima-conteudo {
     animation: entraSuave 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
+/* Ícones das listas retornadas pela IA */
+#container-dieta-ia ul {
+    list-style: none !important;
+    padding-left: 0 !important;
+}
+
+#container-dieta-ia li {
+    position: relative;
+    padding-left: 1.75rem;
+    margin-bottom: 0.5rem;
+}
+
+#container-dieta-ia li::before {
+    content: "\f058";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #84A98C;
+    font-size: 1rem;
+}
