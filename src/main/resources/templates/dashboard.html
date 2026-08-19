@@ -72,19 +72,23 @@
     </div>
 
     <!-- HEADER DO CONTEÚDO -->
-    <header class="flex flex-col mb-4 md:mb-8 mt-0 md:mt-0 gap-1 md:gap-4">
+    <header class="flex flex-col mb-3 md:mb-5 mt-0 gap-0">
         <div class="flex justify-between items-start md:items-center w-full">
             <div>
                 <h2 class="text-3xl md:text-5xl font-cursiva text-textoEscuro leading-none"
                     th:text="'Bem-vindo(a), ' + ${usuario.nome} + '!'">
                     Bem-vindo(a)!
                 </h2>
-                <p th:if="${perfilIncompleto}" class="md:hidden text-textoClaro text-xs mt-1 font-medium leading-snug pr-4">
+                <!-- Subtítulo Desktop com margem superior zerada (mt-1) -->
+                <p th:unless="${perfilIncompleto}" class="hidden md:block text-textoClaro text-sm font-medium mt-1">
+                    Aqui está o resumo do seu planejamento nutricional de hoje.
+                </p>
+                <p th:if="${perfilIncompleto}" class="md:hidden text-textoClaro text-xs mt-0.5 font-medium leading-snug pr-4">
                     Ficamos felizes em ajudar você a cozinhar melhor e economizar!
                 </p>
             </div>
 
-            <!-- Avatar com Menu Dropdown -->
+            <!-- Avatar -->
             <div class="relative shrink-0 z-50">
                 <div id="btn-avatar-perfil" onclick="document.getElementById('dropdown-perfil').classList.toggle('hidden')" class="flex items-center space-x-3 md:space-x-4 md:bg-cardBranco md:py-2 md:px-4 md:rounded-full md:shadow-sm md:border border-verdeSalvia/20 cursor-pointer transition hover:bg-gray-50 select-none">
                     <span class="hidden md:block font-semibold text-sm whitespace-nowrap" th:text="${usuario.nome}">Usuário</span>
@@ -106,20 +110,6 @@
                     </a>
                 </div>
             </div>
-        </div>
-
-        <div class="hidden md:flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 w-full mt-2">
-            <div class="flex-1">
-                <p th:if="${perfilIncompleto}" class="text-textoClaro font-medium text-base">
-                    Preencha seus dados corporais para desbloquear uma experiência 100% personalizada.
-                </p>
-                <p th:unless="${perfilIncompleto}" class="text-textoClaro text-base font-medium">
-                    Aqui está o resumo do seu planejamento nutricional de hoje.
-                </p>
-            </div>
-            <button th:if="${perfilIncompleto}" id="btn-completar-perfil" class="shrink-0 bg-amareloMostarda text-white px-5 py-1.5 rounded-full text-sm font-bold shadow-md hover:opacity-90 transition flex items-center justify-center w-max whitespace-nowrap">
-                <i class="fa-solid fa-unlock-keyhole mr-2"></i> Completar Perfil
-            </button>
         </div>
     </header>
 
