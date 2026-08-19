@@ -59,45 +59,46 @@ body {
 }
 
 /* --- LAYOUT COMPACTO DA SUGESTÃO INTELIGENTE --- */
+/* --- LAYOUT DA SUGESTÃO INTELIGENTE COM CARD AMARELO CENTRALIZADO --- */
 #container-dieta-ia > div {
     display: flex !important;
     flex-direction: column !important;
-    gap: 1rem !important;
+    gap: 1.5rem !important;
     width: 100% !important;
 }
 
 @media (min-width: 1024px) {
     #container-dieta-ia > div {
         flex-direction: row !important;
-        align-items: center !important; /* Centraliza verticalmente o card amarelo */
+        align-items: center !important; /* Centraliza perfeitamente o card amarelo na altura */
         justify-content: space-between !important;
-        gap: 2rem !important;
+        gap: 2.5rem !important;
     }
 }
 
-/* Coluna da esquerda */
+/* Coluna da esquerda (Ingredientes + Macros) */
 #container-dieta-ia > div > div:first-child {
-    flex: 1 1 58% !important;
+    flex: 1 1 56% !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
 }
 
-/* Lista de ingredientes compacta */
+/* Ícones das listas com marcadores verdes */
 #container-dieta-ia ul {
     list-style: none !important;
     padding-left: 0 !important;
-    margin: 0.5rem 0 !important;
+    margin: 0.75rem 0 !important;
 }
 
 #container-dieta-ia li {
     position: relative;
-    padding-left: 1.6rem;
-    margin-bottom: 0.35rem; /* Menor espaçamento entre itens */
-    font-size: 0.875rem;
+    padding-left: 1.85rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
     font-weight: 500;
     color: #555555;
-    line-height: 1.35;
+    line-height: 1.4;
 }
 
 #container-dieta-ia li::before {
@@ -106,17 +107,17 @@ body {
     font-weight: 900;
     position: absolute;
     left: 0;
-    top: 0;
+    top: 0.1rem;
     color: #84A98C;
-    font-size: 1rem;
+    font-size: 1.05rem;
 }
 
-/* Cards de Macronutrientes mais enxutos */
+/* Grid de Macronutrientes em Cards Brancos Largos */
 #container-dieta-ia .flex-wrap {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
-    gap: 0.65rem !important;
-    margin-top: 0.75rem !important;
+    gap: 0.75rem !important;
+    margin-top: 1rem !important;
     padding-top: 0 !important;
     border-top: none !important;
     width: 100% !important;
@@ -125,80 +126,82 @@ body {
 #container-dieta-ia .flex-wrap > span {
     display: flex !important;
     align-items: center !important;
-    gap: 0.5rem !important;
+    gap: 0.65rem !important;
     background-color: #FFFFFF !important;
     border: 1px solid #EDEDED !important;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04) !important;
-    padding: 0.45rem 0.75rem !important;
-    border-radius: 0.85rem !important;
-    font-size: 0.8rem !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    padding: 0.65rem 0.85rem !important;
+    border-radius: 1rem !important;
+    font-size: 0.825rem !important;
     font-weight: 700 !important;
     color: #333333 !important;
     white-space: nowrap !important;
 }
 
 #container-dieta-ia .flex-wrap > span > div {
-    width: 0.65rem !important;
-    height: 0.65rem !important;
+    width: 0.7rem !important;
+    height: 0.7rem !important;
     border-radius: 9999px !important;
     flex-shrink: 0 !important;
     margin-right: 0 !important;
 }
 
-/* Caixa Lateral Amarela Centralizada e Compacta */
+/* Caixa Lateral Amarela (Tamanho Amplo e Centralizada Verticalmente) */
 #container-dieta-ia .bg-fundoCreme {
-    flex: 1 1 38% !important;
-    max-width: 330px !important;
+    flex: 1 1 44% !important;
+    max-width: 360px !important;
     width: 100% !important;
     background-color: #FDF7DF !important;
     border: 1.5px solid #F4E2A8 !important;
-    border-radius: 1.5rem !important;
-    padding: 1.25rem 1.25rem !important;
+    border-radius: 1.75rem !important;
+    padding: 1.75rem 1.5rem !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
     box-shadow: 0 2px 8px rgba(244, 180, 26, 0.08) !important;
-    margin: auto 0 !important;
+    align-self: center !important; /* Puxa o card para o centro exato da altura */
+    margin: 0 !important;
 }
 
 #container-dieta-ia .bg-fundoCreme p.text-sm {
-    font-size: 0.85rem !important;
+    font-size: 0.9rem !important;
     font-weight: 600 !important;
     color: #4A4A4A !important;
-    margin-bottom: 0.15rem !important;
+    margin-bottom: 0.25rem !important;
 }
 
 #container-dieta-ia .bg-fundoCreme p.text-3xl {
-    font-size: 2.1rem !important;
+    font-size: 2.4rem !important;
     font-weight: 800 !important;
     color: #F4B41A !important;
     letter-spacing: -0.025em !important;
     margin: 0 !important;
 }
 
-/* Botão de Consumo mais compacto */
+/* Botão de Consumo dentro da caixa amarela */
 .btn-consumir-sugestao {
     width: 100% !important;
     background-color: #F4B41A !important;
     color: #FFFFFF !important;
-    padding: 0.75rem 1rem !important;
-    border-radius: 1rem !important;
+    padding: 0.85rem 1.25rem !important;
+    border-radius: 1.15rem !important;
     font-weight: 700 !important;
-    font-size: 0.875rem !important;
-    box-shadow: 0 4px 10px rgba(244, 180, 26, 0.3) !important;
-    transition: all 0.2s ease !important;
+    font-size: 0.925rem !important;
+    box-shadow: 0 6px 14px rgba(244, 180, 26, 0.35) !important;
+    transition: all 0.25s ease !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 0.5rem !important;
+    gap: 0.6rem !important;
     cursor: pointer !important;
     border: none !important;
-    margin-top: 0.65rem !important;
+    margin-top: 0.75rem !important;
 }
 
 .btn-consumir-sugestao:hover {
     background-color: #E0A10D !important;
-    transform: translateY(-1px) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 18px rgba(244, 180, 26, 0.45) !important;
 }
