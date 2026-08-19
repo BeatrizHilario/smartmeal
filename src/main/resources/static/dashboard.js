@@ -438,12 +438,36 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Envia a sugestão atual direto para o banco
+// Insere o botão de consumo diretamente dentro do card amarelo da IA
+function injetarBotaoConsumo() {
+    const container = document.getElementById("container-dieta-ia");
+    if (!container) return;
+
+    const cardKcal = container.querySelector(".bg-fundoCreme, .border-amareloMostarda");
+    if (cardKcal && !cardKcal.querySelector(".btn-consumir-sugestao")) {
+        // Linha tracejada separadora
+        const linhaDivisoria = document.createElement("div");
+        linhaDivisoria.className = "w-full border-t border-dashed border-amareloMostarda/40 my-1";
+
+        // Botão idêntico ao modelo
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn-consumir-sugestao";
+        btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Consumi esta Sugestão!';
+        btn.onclick = consumirSugestaoIA;
+
+        cardKcal.appendChild(linhaDivisoria);
+        cardKcal.appendChild(btn);
+    }
+}
+
+// Envia a sugestão atual para o banco
 function consumirSugestaoIA() {
     const container = document.getElementById("container-dieta-ia");
     if (!container) return;
 
-    const tituloEl = container.querySelector("h4") || container.querySelector("p.text-base");
-    const kcalEl = container.querySelector("p.text-4xl") || container.querySelector("p.text-3xl") || container.querySelector("span.text-xl");
+    const tituloEl = container.querySelector("h4") || container.querySelector("p.text-base") || container.querySelector("p.font-bold");
+    const kcalEl = container.querySelector("p.text-3xl") || container.querySelector("p.text-4xl") || container.querySelector("span.text-xl");
 
     if (!tituloEl || !kcalEl) {
         alert("Gere uma sugestão primeiro!");
@@ -462,6 +486,19 @@ function consumirSugestaoIA() {
 
     document.getElementById("form-sugestao-ia").submit();
 }
+
+// Observa o container para aplicar a injeção do botão sempre que o conteúdo mudar
+document.addEventListener("DOMContentLoaded", () => {
+    injetarBotaoConsumo();
+
+    const containerDieta = document.getElementById("container-dieta-ia");
+    if (containerDieta) {
+        const observer = new MutationObserver(() => {
+            injetarBotaoConsumo();
+        });
+        observer.observe(containerDieta, { childList: true, subtree: true });
+    }
+});
 
 // --- SISTEMA DE TRANSIÇÃO SUAVE (APENAS PARA PROCESSAMENTO PESADO) ---
 document.addEventListener("DOMContentLoaded", () => {
