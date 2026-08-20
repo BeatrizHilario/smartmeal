@@ -164,18 +164,20 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
 
             <!-- 1. CARD CALORIAS -->
-            <div class="bg-cardBranco p-6 rounded-[2.5rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative flex flex-col justify-between h-full">
+            <div class="bg-cardBranco p-6 rounded-[2.5rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative flex flex-col justify-between h-full overflow-hidden">
 
-                <!-- Cabeçalho com Badge Integrado -->
-                <div class="flex justify-between items-center mb-4">
+                <!-- Círculo Decorativo no Canto Superior Direito -->
+                <div class="absolute top-0 right-0 w-28 h-28 bg-orange-100/50 rounded-full -mr-6 -mt-6 pointer-events-none flex items-end justify-start p-6">
+                    <span class="text-orange-600 font-extrabold text-xs uppercase tracking-wider">
+                        Hoje
+                    </span>
+                </div>
+
+                <!-- Ícone Esquerdo -->
+                <div class="flex items-center mb-4 relative z-10">
                     <div class="w-13 h-13 p-3 rounded-2xl bg-orange-100/70 text-orange-500 flex items-center justify-center text-2xl shrink-0 shadow-sm">
                         <i class="fa-solid fa-fire"></i>
                     </div>
-
-                    <!-- Badge Pílula que contém o texto perfeitamente -->
-                    <span class="bg-[#FFF4E6] text-orange-600 px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider shadow-sm border border-orange-200/50">
-            Hoje
-        </span>
                 </div>
 
                 <!-- Corpo Centralizado com Texto Maior -->
@@ -189,18 +191,20 @@
             </div>
 
             <!-- 2. CARD HIDRATAÇÃO -->
-            <div class="bg-cardBranco p-6 rounded-[2.5rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative flex flex-col justify-between h-full" id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
+            <div class="bg-cardBranco p-6 rounded-[2.5rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative flex flex-col justify-between h-full overflow-hidden" id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
 
-                <!-- Cabeçalho com Badge Integrado -->
-                <div class="flex justify-between items-center mb-4">
-                    <div class="w-13 h-13 p-3 rounded-2xl bg-blue-50 text-[#4CB5F9] flex items-center justify-center text-2xl shrink-0 shadow-sm">
-                        <i class="fa-solid fa-droplet"></i>
-                    </div>
-
-                    <!-- Badge Pílula Azul: Faltam X L centralizado -->
-                    <div class="bg-[#EBF5FF] border border-blue-200/50 px-3.5 py-1.5 rounded-full text-xs font-semibold text-textoClaro flex items-center gap-1 shadow-sm">
+                <!-- Círculo Decorativo no Canto Superior Direito (Aumentado para w-36 h-36 para comportar o texto) -->
+                <div class="absolute top-0 right-0 w-36 h-36 bg-blue-50/70 rounded-full -mr-8 -mt-8 pointer-events-none flex items-end justify-start p-6">
+                    <div class="text-xs font-semibold text-textoClaro flex items-center gap-1">
                         <span>Faltam</span>
                         <span id="texto-agua-faltante" class="font-extrabold text-verdeSalvia">...</span>
+                    </div>
+                </div>
+
+                <!-- Ícone Esquerdo -->
+                <div class="flex items-center mb-4 relative z-10">
+                    <div class="w-13 h-13 p-3 rounded-2xl bg-blue-50 text-[#4CB5F9] flex items-center justify-center text-2xl shrink-0 shadow-sm">
+                        <i class="fa-solid fa-droplet"></i>
                     </div>
                 </div>
 
