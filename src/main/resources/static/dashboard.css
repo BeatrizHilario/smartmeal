@@ -6,29 +6,25 @@ body {
     margin: 0;
 }
 
-/* Scrollbar visível apenas em telas grandes (Desktop) */
+/* Scrollbar visível apenas em telas Desktop */
 @media (min-width: 768px) {
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #84A98C; border-radius: 10px; }
 }
 
-/* Esconder barra de rolagem geral no celular (Mobile) */
+/* Ocultar barra de rolagem no mobile */
 @media (max-width: 767px) {
     ::-webkit-scrollbar { display: none; }
     body, main {
-        -ms-overflow-style: none; /* IE e Edge */
-        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
 }
 
-/* Ocultar rolagem horizontal dos botões de abas */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ==========================================================================
-   ANIMAÇÕES E DECORAÇÕES
-   ========================================================================== */
 .ondas-bg {
     position: absolute;
     bottom: 0;
@@ -44,13 +40,10 @@ body {
     0% { opacity: 0; transform: translateY(15px); }
     100% { opacity: 1; transform: translateY(0); }
 }
-
-.anima-conteudo {
-    animation: entraSuave 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
+.anima-conteudo { animation: entraSuave 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 
 /* ==========================================================================
-   ESTILIZAÇÃO DO COMPONENTE: "SUGESTÃO INTELIGENTE" DA IA
+   ESTILIZAÇÃO DO COMPONENTE "SUGESTÃO INTELIGENTE"
    ========================================================================== */
 
 /* --- 1. Estado de Carregamento (Loading) --- */
@@ -76,42 +69,46 @@ body {
     font-weight: 500 !important;
 }
 
-/* --- 2. Layout Principal (Grid Split: Esquerda x Direita) --- */
-#container-dieta-ia > .grid {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 2rem !important;
+/* --- 2. Container Geral Retornado da IA --- */
+#container-dieta-ia > div {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem !important;
     width: 100% !important;
-    align-items: center !important;
 }
 
 @media (min-width: 1024px) {
-    #container-dieta-ia > .grid {
-        grid-template-columns: 1.4fr 1fr !important; /* Esquerda com 60% e Direita com 40% */
+    #container-dieta-ia > div {
+        flex-direction: row !important;
+        align-items: center !important; /* Alinhamento central vertical */
+        justify-content: space-between !important;
         gap: 3rem !important;
     }
 }
 
-/* --- 3. Coluna Esquerda: Texto e Ingredientes --- */
-#container-dieta-ia > .grid > div:first-child {
+/* --- 3. Coluna Esquerda: Texto, Ingredientes e Macros --- */
+#container-dieta-ia > div > div:first-child {
+    flex: 1 1 58% !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
     width: 100% !important;
+    max-height: none !important;
+    padding-right: 0 !important;
 }
 
-#container-dieta-ia h4 {
+#container-dieta-ia p.font-bold {
     font-size: 1.15rem !important;
     margin-bottom: 0.75rem !important;
     color: #2D3748 !important;
     font-weight: 700 !important;
 }
 
-/* Lista de Ingredientes com Checks Customizados */
+/* Marcadores Verdes nos Ingredientes */
 #container-dieta-ia ul {
     list-style: none !important;
     padding-left: 0 !important;
-    margin: 0.5rem 0 1.5rem 0 !important;
+    margin: 0.5rem 0 1.25rem 0 !important;
 }
 
 #container-dieta-ia li {
@@ -124,7 +121,6 @@ body {
     line-height: 1.4 !important;
 }
 
-/* Injeta o ícone FontAwesome (fa-circle-check) antes de cada <li> */
 #container-dieta-ia li::before {
     content: "\f058" !important;
     font-family: "Font Awesome 6 Free" !important;
@@ -136,16 +132,18 @@ body {
     font-size: 1.1rem !important;
 }
 
-/* --- 4. Cards de Macronutrientes (Parte inferior esquerda) --- */
+/* Cards Brancos de Macronutrientes */
 #container-dieta-ia .flex-wrap {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 0.75rem !important;
-    margin-top: 0 !important;
+    margin-top: 0.5rem !important;
+    border-top: none !important;
+    padding-top: 0 !important;
     width: 100% !important;
 }
 
-#container-dieta-ia .flex-wrap > div {
+#container-dieta-ia .flex-wrap > span {
     display: flex !important;
     align-items: center !important;
     gap: 0.6rem !important;
@@ -154,34 +152,48 @@ body {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
     padding: 0.65rem 0.85rem !important;
     border-radius: 0.875rem !important;
+    font-size: 0.825rem !important;
+    font-weight: 700 !important;
+    color: #333333 !important;
     white-space: nowrap !important;
 }
 
-/* --- 5. Caixa Lateral Amarela (Total Kcal) --- */
-#container-dieta-ia .bg-\[\#FDF7DF\] {
-    width: 100% !important;
+#container-dieta-ia .flex-wrap > span > div {
+    width: 0.65rem !important;
+    height: 0.65rem !important;
+    border-radius: 9999px !important;
+    flex-shrink: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* --- 4. Caixa Lateral Amarela (Total Kcal + Botão) --- */
+#container-dieta-ia .bg-fundoCreme {
+    flex: 0 0 320px !important;
+    width: 320px !important;
     max-width: 320px !important;
-    justify-self: end !important; /* Empurra para a borda direita */
     background-color: #FDF7DF !important;
     border: 1.5px solid #F4E2A8 !important;
+    border-style: solid !important; /* Sobrescreve o border-dashed vindo do backend */
     border-radius: 1.75rem !important;
     padding: 2rem 1.5rem !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
+    justify-content: center !important;
     text-align: center !important;
     box-shadow: 0 2px 8px rgba(244, 180, 26, 0.08) !important;
     margin: 0 auto !important;
+    align-self: center !important;
 }
 
-#container-dieta-ia .bg-\[\#FDF7DF\] p.text-xs {
+#container-dieta-ia .bg-fundoCreme p.text-sm {
     font-size: 0.9rem !important;
     font-weight: 600 !important;
     color: #4A4A4A !important;
     margin-bottom: 0.25rem !important;
 }
 
-#container-dieta-ia .bg-\[\#FDF7DF\] p.text-3xl {
+#container-dieta-ia .bg-fundoCreme p.text-3xl {
     font-size: 2.5rem !important;
     font-weight: 800 !important;
     color: #F4B41A !important;
@@ -189,7 +201,7 @@ body {
     margin: 0.2rem 0 !important;
 }
 
-/* Botão de Consumo injetado dinamicamente dentro da caixa */
+/* Botão Consumir dentro da Caixa */
 .btn-consumir-sugestao {
     width: 100% !important;
     background-color: #F4B41A !important;

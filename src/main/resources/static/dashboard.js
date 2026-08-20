@@ -3,14 +3,12 @@
 // ==========================================================================
 const HOJE = new Date().toLocaleDateString();
 
-// Controle de virada de dia (Limpa cache se for um dia novo)
 if (localStorage.getItem("smartmeal_data") !== HOJE) {
     localStorage.clear();
     localStorage.setItem("smartmeal_data", HOJE);
     localStorage.setItem("agua_consumida", "0");
 }
 
-// Inicialização das Cores do Tailwind no Frontend
 tailwind.config = {
     theme: {
         extend: {
@@ -33,11 +31,11 @@ tailwind.config = {
 };
 
 // ==========================================================================
-// 2. LÓGICA DE REFEIÇÕES E IA DA TELA PRINCIPAL (SUGESTÃO INTELIGENTE)
+// 2. LÓGICA DE REFEIÇÕES E IA (SUGESTÃO INTELIGENTE E PERFIL INCOMPLETO)
 // ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Configurações do componente de Perfil Incompleto
+    // --- Lógica para Perfil Incompleto ---
     const btnGerarOutras = document.getElementById("btn-gerar-outras");
     const containerTextoIncompleto = document.getElementById("texto-ideitas-ia");
     const mealBtnsIncompleto = document.querySelectorAll(".meal-btn-incompleto");
@@ -45,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function buscarIdeiasIncompleto(tipo) {
         if (!containerTextoIncompleto) return;
-
         containerTextoIncompleto.style.opacity = "0.5";
         containerTextoIncompleto.innerHTML = `
             <div class="flex flex-col items-center justify-center py-10">
@@ -65,7 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Eventos das abas do Perfil Incompleto
     mealBtnsIncompleto.forEach(btn => {
         btn.addEventListener("click", (e) => {
             mealBtnsIncompleto.forEach(b => {
@@ -74,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             e.target.classList.replace("bg-gray-100", "bg-verdeSalvia");
             e.target.classList.replace("text-textoClaro", "text-white");
-
             tipoRefeicaoIncompleto = e.target.getAttribute("data-tipo");
             buscarIdeiasIncompleto(tipoRefeicaoIncompleto);
         });
@@ -92,7 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (containerDieta && mealBtns.length > 0) {
         let tipoAtual = localStorage.getItem("ultima_aba_refeicao") || "Café da Manhã";
 
-        // Define a aba correta baseada no cache
         mealBtns.forEach(b => {
             b.classList.replace("bg-verdeSalvia", "bg-gray-100");
             b.classList.replace("text-white", "text-textoClaro");
@@ -102,7 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Carrega o conteúdo do cache se existir
         const cacheKeyIncial = "dieta_" + tipoAtual;
         if (localStorage.getItem(cacheKeyIncial)) {
             containerDieta.innerHTML = localStorage.getItem(cacheKeyIncial);
@@ -110,7 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem(cacheKeyIncial, containerDieta.innerHTML);
         }
 
-        // Função assíncrona de busca na API
         async function buscarSugestaoIA(tipo, forcarNova = false) {
             const cacheKey = "dieta_" + tipo;
 
@@ -141,14 +133,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem(cacheKey, htmlGerado);
                 containerDieta.innerHTML = htmlGerado;
             } catch (erro) {
-                containerDieta.innerHTML = "<p class='text-red-500 font-bold text-center w-full'>Erro de comunicação com a IA.</p>";
+                containerDieta.innerHTML = "<p class='text-red-500 font-bold text-center w-full'>Erro ao comunicar com a IA.</p>";
             } finally {
                 containerDieta.style.opacity = "1";
                 if (btnGerarOutra) btnGerarOutra.disabled = false;
             }
         }
 
-        // Ações de clique nas abas
         mealBtns.forEach(btn => {
             btn.addEventListener("click", (e) => {
                 mealBtns.forEach(b => {
@@ -243,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================================================
-// 4. SISTEMA DE MODAIS E OBSERVERS DA UI
+// 4. SISTEMA DE MODAIS E INJEÇÃO DE BOTÕES
 // ==========================================================================
 
 function abrirModal(id) {
@@ -266,13 +257,13 @@ function fecharModal(id) {
     }
 }
 
-// Injeção dinâmica do Botão de Consumo na tela da IA
+// Injeção do Botão de Consumo dentro da caixa de Kcal gerada pela IA
 function injetarBotaoConsumo() {
     const container = document.getElementById("container-dieta-ia");
     if (!container) return;
 
-    // A classe \[\#FDF7DF\] é a responsável pelo card amarelo vindo da API
-    const cardKcal = container.querySelector(".bg-\\[\\#FDF7DF\\]");
+    // Busca o card amarelo retornado pelo backend (usa bg-fundoCreme ou border-amareloMostarda)
+    const cardKcal = container.querySelector(".bg-fundoCreme") || container.querySelector("[class*='border-amareloMostarda']");
 
     if (cardKcal && !cardKcal.querySelector(".btn-consumir-sugestao")) {
         const linhaDivisoria = document.createElement("div");
@@ -281,7 +272,7 @@ function injetarBotaoConsumo() {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "btn-consumir-sugestao";
-        btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Consumi esta Sugestão!';
+        btn.innerHTML = '<i class="fa-solid fa-circle-check mr-2"></i> Consumi esta Sugestão!';
         btn.onclick = window.consumirSugestaoIA;
 
         cardKcal.appendChild(linhaDivisoria);
@@ -293,8 +284,8 @@ window.consumirSugestaoIA = function() {
     const container = document.getElementById("container-dieta-ia");
     if (!container) return;
 
-    const tituloEl = container.querySelector("h4");
-    const kcalEl = container.querySelector("p.text-3xl");
+    const tituloEl = container.querySelector("p.font-bold") || container.querySelector("h4");
+    const kcalEl = container.querySelector("p.text-3xl") || container.querySelector("p.text-4xl");
 
     if (!tituloEl || !kcalEl) {
         alert("Gere uma sugestão primeiro!");
@@ -310,10 +301,8 @@ window.consumirSugestaoIA = function() {
     document.getElementById("form-sugestao-ia").submit();
 };
 
-// Listeners Globais da UI
 document.addEventListener("DOMContentLoaded", () => {
-
-    // Tratamento de botões de abertura de modal
+    // Listeners de abertura de modal
     document.querySelectorAll('[id^="btn-abrir-"]').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -322,7 +311,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Tratamento de fechamento em cliques externos e menus suspensos
+    // Fechamento de dropdown e clique fora de modais
     document.addEventListener('click', (e) => {
         const dropdown = document.getElementById('dropdown-perfil');
         const btnAvatar = document.getElementById('btn-avatar-perfil');
@@ -336,14 +325,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Injeção do Mutation Observer para a área da IA (Reinjeta botões após carregamento)
+    // Observer para injetar o botão de consumo assim que a IA renderizar
     const containerDieta = document.getElementById("container-dieta-ia");
     if (containerDieta) {
         injetarBotaoConsumo();
         new MutationObserver(injetarBotaoConsumo).observe(containerDieta, { childList: true, subtree: true });
     }
 
-    // Tela de Carregamento (Spinner)
+    // Loader Global
     const loader = document.getElementById("loader-global");
     if (loader) {
         document.addEventListener("submit", () => {
@@ -356,7 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Lógica do botão flutuante Varinha Mágica no Mobile
+    // Botão Varinha Mágica (Mobile)
     const btnFabGerar = document.getElementById("btn-fab-gerar");
     if (btnFabGerar) {
         btnFabGerar.addEventListener("click", (e) => {
