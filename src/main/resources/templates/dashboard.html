@@ -164,8 +164,11 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
 
             <!-- CARD CALORIAS -->
-            <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 flex flex-col justify-between h-full">
-                <div>
+            <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 flex flex-col justify-between h-full relative overflow-hidden">
+                <!-- Círculo decorativo (cor do fundo do card amarelo) -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-[#FDF7DF] rounded-full -mr-10 -mt-10 pointer-events-none"></div>
+
+                <div class="relative z-10">
                     <div class="flex justify-between items-center mb-4">
                         <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center text-xl shrink-0">
                             <i class="fa-solid fa-fire"></i>
@@ -178,15 +181,14 @@
                         <span class="text-base text-textoClaro font-medium">/ <span th:text="${usuario.metaCaloricaKcal}"></span> kcal</span>
                     </h3>
                 </div>
-                <div class="w-full bg-gray-100 rounded-full h-3 mt-5">
-                    <div class="bg-orange-400 h-3 rounded-full transition-all duration-1000"
-                         th:style="'width: ' + (${usuario.metaCaloricaKcal != null and usuario.metaCaloricaKcal > 0 ? (caloriasConsumidas * 100 / usuario.metaCaloricaKcal) : 0}) + '%; max-width: 100%;'"></div>
-                </div>
             </div>
 
             <!-- CARD HIDRATAÇÃO -->
-            <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 text-center relative flex flex-col justify-between h-full" id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
-                <div>
+            <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 text-center relative flex flex-col justify-between h-full overflow-hidden" id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
+                <!-- Círculo decorativo (cor do fundo do card amarelo) -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-[#FDF7DF] rounded-full -mr-10 -mt-10 pointer-events-none"></div>
+
+                <div class="relative z-10">
                     <div class="flex justify-between items-center mb-3">
                         <div class="w-12 h-12 rounded-2xl bg-blue-50 text-[#4CB5F9] flex items-center justify-center text-xl shrink-0">
                             <i class="fa-solid fa-droplet"></i>
@@ -197,7 +199,7 @@
                     <div class="flex justify-center flex-wrap gap-2 my-2" id="container-copos"></div>
                 </div>
 
-                <div class="flex items-center justify-center mt-2 group">
+                <div class="flex items-center justify-center mt-2 group relative z-10">
                     <p class="text-2xl font-bold text-textoEscuro cursor-pointer hover:text-verdeSalvia transition" id="texto-agua-consumida" onclick="editarAguaManual()" title="Clique para editar">
                         0 ml
                     </p>
@@ -207,7 +209,7 @@
                 </div>
             </div>
 
-            <!-- CARD REFEIÇÕES DE HOJE (Movido para a primeira linha) -->
+            <!-- CARD REFEIÇÕES DE HOJE -->
             <div class="bg-verdeSalvia text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden flex flex-col justify-between h-full transform hover:-translate-y-1 transition duration-300">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 pointer-events-none"></div>
                 <div>
