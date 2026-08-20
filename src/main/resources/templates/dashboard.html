@@ -163,58 +163,61 @@
         <!-- PRIMEIRA LINHA: 3 CARDS (Métricas e Refeições) -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
 
-            <!-- CARD CALORIAS -->
-            <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 flex flex-col justify-between h-full relative overflow-hidden">
-                <!-- Círculo decorativo (cor do fundo do card amarelo) -->
-                <div class="absolute top-0 right-0 w-32 h-32 bg-[#FDF7DF] rounded-full -mr-10 -mt-10 pointer-events-none"></div>
+            <!-- 1. CARD CALORIAS (Centralizado com detalhe Laranja Pastel) -->
+            <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 text-center relative flex flex-col justify-between h-full overflow-hidden">
+                <!-- Círculo decorativo (Laranja Suave) -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-[#FFF4E6] rounded-full -mr-10 -mt-10 pointer-events-none"></div>
 
-                <div class="relative z-10">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center text-xl shrink-0">
-                            <i class="fa-solid fa-fire"></i>
-                        </div>
-                        <span class="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs font-bold shrink-0">HOJE</span>
+                <!-- Cabeçalho (Fogo + HOJE) -->
+                <div class="relative z-10 flex justify-between items-center mb-3">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-fire"></i>
                     </div>
+                    <span class="bg-orange-50 text-orange-600 px-3 py-1 rounded-full text-xs font-bold shrink-0">HOJE</span>
+                </div>
+
+                <!-- Corpo Centralizado -->
+                <div class="relative z-10 flex flex-col items-center justify-center flex-1 mt-2">
                     <p class="text-textoClaro font-medium mb-1 text-sm">Calorias Consumidas</p>
-                    <h3 class="text-3xl font-bold text-textoEscuro">
-                        <span th:text="${caloriasConsumidas != null ? caloriasConsumidas : 0}">0</span>
+                    <h3 class="flex items-baseline justify-center gap-1.5">
+                        <span class="text-3xl font-bold text-textoEscuro" th:text="${caloriasConsumidas != null ? caloriasConsumidas : 0}">0</span>
                         <span class="text-base text-textoClaro font-medium">/ <span th:text="${usuario.metaCaloricaKcal}"></span> kcal</span>
                     </h3>
                 </div>
             </div>
 
-            <!-- CARD HIDRATAÇÃO -->
+            <!-- 2. CARD HIDRATAÇÃO (Centralizado com detalhe Azul Pastel) -->
             <div class="bg-cardBranco p-6 rounded-[2rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 text-center relative flex flex-col justify-between h-full overflow-hidden" id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
-                <!-- Círculo decorativo (cor do fundo do card amarelo) -->
-                <div class="absolute top-0 right-0 w-32 h-32 bg-[#FDF7DF] rounded-full -mr-10 -mt-10 pointer-events-none"></div>
+                <!-- Círculo decorativo (Azul Suave) -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-[#EBF5FF] rounded-full -mr-10 -mt-10 pointer-events-none"></div>
 
-                <div class="relative z-10">
-                    <div class="flex justify-between items-center mb-3">
-                        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-[#4CB5F9] flex items-center justify-center text-xl shrink-0">
-                            <i class="fa-solid fa-droplet"></i>
-                        </div>
-                        <p class="text-xs font-medium text-textoClaro">Faltam <span id="texto-agua-faltante" class="font-bold text-verdeSalvia">...</span></p>
+                <!-- Cabeçalho (Gota + Faltam X) -->
+                <div class="relative z-10 flex justify-between items-center mb-3">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-[#4CB5F9] flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-droplet"></i>
                     </div>
-                    <!-- Copos dinâmicos -->
-                    <div class="flex justify-center flex-wrap gap-2 my-2" id="container-copos"></div>
+                    <p class="text-xs font-medium text-textoClaro">Faltam <span id="texto-agua-faltante" class="font-bold text-verdeSalvia">...</span></p>
                 </div>
 
-                <div class="flex items-center justify-center mt-2 group relative z-10">
-                    <p class="text-2xl font-bold text-textoEscuro cursor-pointer hover:text-verdeSalvia transition" id="texto-agua-consumida" onclick="editarAguaManual()" title="Clique para editar">
-                        0 ml
-                    </p>
-                    <button onclick="editarAguaManual()" class="ml-2 w-7 h-7 rounded-full bg-gray-50 text-textoClaro hover:bg-amareloMostarda hover:text-white transition flex items-center justify-center shadow-sm shrink-0">
-                        <i class="fa-solid fa-pen text-[10px]"></i>
-                    </button>
+                <!-- Corpo Centralizado -->
+                <div class="relative z-10 flex flex-col items-center justify-center flex-1">
+                    <div class="flex justify-center flex-wrap gap-2 my-2 min-h-[40px] w-full" id="container-copos"></div>
+                    <div class="flex items-center justify-center mt-2 group relative z-10">
+                        <p class="text-2xl font-bold text-textoEscuro cursor-pointer hover:text-verdeSalvia transition" id="texto-agua-consumida" onclick="editarAguaManual()" title="Clique para editar">
+                            0 ml
+                        </p>
+                        <button onclick="editarAguaManual()" class="ml-2 w-7 h-7 rounded-full bg-gray-50 text-textoClaro hover:bg-amareloMostarda hover:text-white transition flex items-center justify-center shadow-sm shrink-0">
+                            <i class="fa-solid fa-pen text-[10px]"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- CARD REFEIÇÕES DE HOJE -->
+            <!-- 3. CARD REFEIÇÕES DE HOJE -->
             <div class="bg-verdeSalvia text-white p-6 rounded-[2rem] shadow-md relative overflow-hidden flex flex-col justify-between h-full transform hover:-translate-y-1 transition duration-300">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 pointer-events-none"></div>
                 <div>
                     <h3 class="font-bold text-xl mb-4 relative z-10">Refeições de Hoje</h3>
-
                     <ul class="space-y-3 relative z-10 font-medium opacity-90 text-sm">
                         <!-- CAFÉ DA MANHÃ -->
                         <li class="flex items-center"
@@ -250,7 +253,6 @@
                     </ul>
                 </div>
             </div>
-
         </div>
 
         <!-- SEGUNDA LINHA: SUGESTÃO INTELIGENTE ESTILIZADA -->

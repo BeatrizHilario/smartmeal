@@ -1,14 +1,16 @@
-// === CONTROLE DE VIRADA DE DIA ===
+// ==========================================================================
+// 1. CONFIGURAÇÕES E ESTADOS GERAIS
+// ==========================================================================
 const HOJE = new Date().toLocaleDateString();
 
-// Se a data salva for diferente de hoje, ele limpa o cache antigo
+// Controle de virada de dia (Limpa cache se for um dia novo)
 if (localStorage.getItem("smartmeal_data") !== HOJE) {
-    localStorage.clear(); // Limpa as dietas salvas de ontem
+    localStorage.clear();
     localStorage.setItem("smartmeal_data", HOJE);
     localStorage.setItem("agua_consumida", "0");
 }
 
-// Configuração do Tailwind (Cores e Fontes Personalizadas)
+// Inicialização das Cores do Tailwind no Frontend
 tailwind.config = {
     theme: {
         extend: {
@@ -30,209 +32,152 @@ tailwind.config = {
     }
 };
 
-// Função do botão de Inteligência Artificial para registrar refeição
-function registrarRefeicao() {
-    const btn = document.getElementById('btn-registrar');
-    const kcalEl = document.getElementById('kcal-atual');
-    const gastoEl = document.getElementById('gasto-atual');
-
-    if(btn.innerText !== "Consumido!") {
-        btn.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Adicionado ao Diário!';
-        btn.classList.remove('bg-amareloMostarda', 'hover:bg-amareloHover');
-        btn.classList.add('bg-verdeSalvia');
-
-        kcalEl.innerText = "1.900";
-        gastoEl.innerText = "R$ 193,50";
-
-        // Reseta o botão após 3 segundos
-        setTimeout(() => {
-            btn.innerHTML = 'Registrar Consumo no Diário';
-            btn.classList.remove('bg-verdeSalvia');
-            btn.classList.add('bg-amareloMostarda', 'hover:bg-amareloHover');
-        }, 3000);
-    }
-}
-
-// --- LÓGICA DE REFEIÇÕES PARA PERFIL INCOMPLETO ---
+// ==========================================================================
+// 2. LÓGICA DE REFEIÇÕES E IA DA TELA PRINCIPAL (SUGESTÃO INTELIGENTE)
+// ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
-    const btnGerarOutras = document.getElementById("btn-gerar-outras");
-    const containerTexto = document.getElementById("texto-ideitas-ia");
-    const mealBtnsIncompleto = document.querySelectorAll(".meal-btn-incompleto");
 
+    // Configurações do componente de Perfil Incompleto
+    const btnGerarOutras = document.getElementById("btn-gerar-outras");
+    const containerTextoIncompleto = document.getElementById("texto-ideitas-ia");
+    const mealBtnsIncompleto = document.querySelectorAll(".meal-btn-incompleto");
     let tipoRefeicaoIncompleto = "Café da Manhã";
 
     async function buscarIdeiasIncompleto(tipo) {
-        if (!containerTexto) return;
+        if (!containerTextoIncompleto) return;
 
-        containerTexto.style.opacity = "0.5";
-        containerTexto.innerHTML = `<div class="flex flex-col items-center justify-center py-10">
-            <i class="fa-solid fa-spinner fa-spin text-3xl text-verdeSalvia mb-3"></i>
-            <p>A IA está pensando em seu ${tipo}...</p>
-        </div>`;
+        containerTextoIncompleto.style.opacity = "0.5";
+        containerTextoIncompleto.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-10">
+                <i class="fa-solid fa-spinner fa-spin text-3xl text-verdeSalvia mb-3"></i>
+                <p>A IA está pensando em seu ${tipo}...</p>
+            </div>`;
         if (btnGerarOutras) btnGerarOutras.disabled = true;
 
         try {
             const resposta = await fetch(`/api/receitas/aleatorias?tipoRefeicao=${encodeURIComponent(tipo)}`);
-            const novoTexto = await resposta.text();
-            containerTexto.innerHTML = novoTexto;
+            containerTextoIncompleto.innerHTML = await resposta.text();
         } catch (error) {
-            console.error("Erro ao buscar novas receitas:", error);
-            containerTexto.innerHTML = "<p class='text-red-500 font-bold'>Houve uma falha ao conectar com a IA. Tente novamente.</p>";
+            containerTextoIncompleto.innerHTML = "<p class='text-red-500 font-bold'>Falha ao conectar com a IA. Tente novamente.</p>";
         } finally {
-            containerTexto.style.opacity = "1";
+            containerTextoIncompleto.style.opacity = "1";
             if (btnGerarOutras) btnGerarOutras.disabled = false;
         }
     }
 
+    // Eventos das abas do Perfil Incompleto
     mealBtnsIncompleto.forEach(btn => {
         btn.addEventListener("click", (e) => {
             mealBtnsIncompleto.forEach(b => {
-                b.classList.remove("bg-verdeSalvia", "text-white", "shadow-md");
-                b.classList.add("bg-gray-100", "text-textoClaro");
+                b.classList.replace("bg-verdeSalvia", "bg-gray-100");
+                b.classList.replace("text-white", "text-textoClaro");
             });
+            e.target.classList.replace("bg-gray-100", "bg-verdeSalvia");
+            e.target.classList.replace("text-textoClaro", "text-white");
 
-            const botaoClicado = e.target;
-            botaoClicado.classList.remove("bg-gray-100", "text-textoClaro");
-            botaoClicado.classList.add("bg-verdeSalvia", "text-white", "shadow-md");
-
-            tipoRefeicaoIncompleto = botaoClicado.getAttribute("data-tipo");
+            tipoRefeicaoIncompleto = e.target.getAttribute("data-tipo");
             buscarIdeiasIncompleto(tipoRefeicaoIncompleto);
         });
     });
 
     if (btnGerarOutras) {
-        btnGerarOutras.addEventListener("click", () => {
-            buscarIdeiasIncompleto(tipoRefeicaoIncompleto);
-        });
+        btnGerarOutras.addEventListener("click", () => buscarIdeiasIncompleto(tipoRefeicaoIncompleto));
     }
-});
 
-document.addEventListener("DOMContentLoaded", () => {
-    const btnAbrirPerfil = document.getElementById("btn-completar-perfil");
-    const modalPerfil = document.getElementById("modal-completar-perfil");
-    const btnFecharPerfil = document.getElementById("btn-fechar-perfil");
-
-    if (btnAbrirPerfil && modalPerfil) {
-        btnAbrirPerfil.addEventListener("click", () => {
-            modalPerfil.classList.remove("hidden");
-            setTimeout(() => {
-                modalPerfil.classList.remove("opacity-0");
-                modalPerfil.querySelector('div').classList.remove("scale-95");
-            }, 10);
-        });
-
-        const fecharModal = () => {
-            modalPerfil.classList.add("opacity-0");
-            modalPerfil.querySelector('div').classList.add("scale-95");
-            setTimeout(() => modalPerfil.classList.add("hidden"), 300);
-        };
-
-        btnFecharPerfil.addEventListener("click", fecharModal);
-        modalPerfil.addEventListener("click", (e) => {
-            if (e.target === modalPerfil) fecharModal();
-        });
-    }
-});
-
-// --- LÓGICA INTELIGENTE DE SUGESTÃO DA IA COM CACHE ---
-document.addEventListener("DOMContentLoaded", () => {
+    // --- Sugestão Inteligente (Perfil Completo) ---
     const mealBtns = document.querySelectorAll(".meal-btn");
     const btnGerarOutra = document.getElementById("btn-gerar-sugestao");
     const containerDieta = document.getElementById("container-dieta-ia");
 
-    if (!containerDieta || mealBtns.length === 0) return;
+    if (containerDieta && mealBtns.length > 0) {
+        let tipoAtual = localStorage.getItem("ultima_aba_refeicao") || "Café da Manhã";
 
-    let tipoAtual = localStorage.getItem("ultima_aba_refeicao") || "Café da Manhã";
-
-    mealBtns.forEach(b => {
-        b.classList.remove("bg-verdeSalvia", "text-white", "shadow-md");
-        b.classList.add("bg-gray-100", "text-textoClaro");
-        if (b.getAttribute("data-tipo") === tipoAtual) {
-            b.classList.remove("bg-gray-100", "text-textoClaro");
-            b.classList.add("bg-verdeSalvia", "text-white", "shadow-md");
-        }
-    });
-
-    const cacheKeyIncial = "dieta_" + tipoAtual;
-    if (localStorage.getItem(cacheKeyIncial)) {
-        containerDieta.innerHTML = localStorage.getItem(cacheKeyIncial);
-    } else {
-        const htmlBackend = containerDieta.innerHTML;
-        if (htmlBackend && htmlBackend.trim() !== "") {
-            localStorage.setItem(cacheKeyIncial, htmlBackend);
-        }
-    }
-
-    async function buscarSugestaoIA(tipo, forcarNova = false) {
-        const cacheKey = "dieta_" + tipo;
-
-        if (!forcarNova && localStorage.getItem(cacheKey)) {
-            containerDieta.innerHTML = localStorage.getItem(cacheKey);
-            return;
-        }
-
-        containerDieta.style.opacity = "0.5";
-        containerDieta.innerHTML = `<div class="flex flex-col items-center justify-center py-10">
-            <i class="fa-solid fa-spinner fa-spin text-3xl text-verdeSalvia mb-3"></i>
-            <p>A IA está pensando em seu ${tipo}...</p>
-        </div>`;
-        if (btnGerarOutra) btnGerarOutra.disabled = true;
-
-        try {
-            const formData = new URLSearchParams();
-            formData.append("tipoRefeicao", tipo);
-
-            const resposta = await fetch("/api/dieta/nova-sugestao", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: formData
-            });
-
-            const htmlGerado = await resposta.text();
-
-            localStorage.setItem(cacheKey, htmlGerado);
-            containerDieta.innerHTML = htmlGerado;
-        } catch (erro) {
-            containerDieta.innerHTML = "<p class='text-red-500 font-bold'>Erro ao comunicar com a IA. Tente novamente.</p>";
-            console.error(erro);
-        } finally {
-            containerDieta.style.opacity = "1";
-            if (btnGerarOutra) btnGerarOutra.disabled = false;
-        }
-    }
-
-    mealBtns.forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            mealBtns.forEach(b => {
-                b.classList.remove("bg-verdeSalvia", "text-white", "shadow-md");
-                b.classList.add("bg-gray-100", "text-textoClaro");
-            });
-
-            const botaoClicado = e.target;
-            botaoClicado.classList.remove("bg-gray-100", "text-textoClaro");
-            botaoClicado.classList.add("bg-verdeSalvia", "text-white", "shadow-md");
-
-            tipoAtual = botaoClicado.getAttribute("data-tipo");
-            localStorage.setItem("ultima_aba_refeicao", tipoAtual);
-
-            buscarSugestaoIA(tipoAtual);
+        // Define a aba correta baseada no cache
+        mealBtns.forEach(b => {
+            b.classList.replace("bg-verdeSalvia", "bg-gray-100");
+            b.classList.replace("text-white", "text-textoClaro");
+            if (b.getAttribute("data-tipo") === tipoAtual) {
+                b.classList.replace("bg-gray-100", "bg-verdeSalvia");
+                b.classList.replace("text-textoClaro", "text-white");
+            }
         });
-    });
 
-    if (btnGerarOutra) {
-        btnGerarOutra.addEventListener("click", () => {
-            buscarSugestaoIA(tipoAtual, true);
+        // Carrega o conteúdo do cache se existir
+        const cacheKeyIncial = "dieta_" + tipoAtual;
+        if (localStorage.getItem(cacheKeyIncial)) {
+            containerDieta.innerHTML = localStorage.getItem(cacheKeyIncial);
+        } else if (containerDieta.innerHTML.trim() !== "") {
+            localStorage.setItem(cacheKeyIncial, containerDieta.innerHTML);
+        }
+
+        // Função assíncrona de busca na API
+        async function buscarSugestaoIA(tipo, forcarNova = false) {
+            const cacheKey = "dieta_" + tipo;
+
+            if (!forcarNova && localStorage.getItem(cacheKey)) {
+                containerDieta.innerHTML = localStorage.getItem(cacheKey);
+                return;
+            }
+
+            containerDieta.style.opacity = "0.5";
+            containerDieta.innerHTML = `
+                <div class="flex flex-col items-center justify-center w-full py-10">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl text-verdeSalvia mb-3"></i>
+                    <p class="text-sm font-medium text-textoClaro">A IA está pensando em seu ${tipo}...</p>
+                </div>`;
+            if (btnGerarOutra) btnGerarOutra.disabled = true;
+
+            try {
+                const formData = new URLSearchParams();
+                formData.append("tipoRefeicao", tipo);
+
+                const resposta = await fetch("/api/dieta/nova-sugestao", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: formData
+                });
+
+                const htmlGerado = await resposta.text();
+                localStorage.setItem(cacheKey, htmlGerado);
+                containerDieta.innerHTML = htmlGerado;
+            } catch (erro) {
+                containerDieta.innerHTML = "<p class='text-red-500 font-bold text-center w-full'>Erro de comunicação com a IA.</p>";
+            } finally {
+                containerDieta.style.opacity = "1";
+                if (btnGerarOutra) btnGerarOutra.disabled = false;
+            }
+        }
+
+        // Ações de clique nas abas
+        mealBtns.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                mealBtns.forEach(b => {
+                    b.classList.replace("bg-verdeSalvia", "bg-gray-100");
+                    b.classList.replace("text-white", "text-textoClaro");
+                });
+                e.target.classList.replace("bg-gray-100", "bg-verdeSalvia");
+                e.target.classList.replace("text-textoClaro", "text-white");
+
+                tipoAtual = e.target.getAttribute("data-tipo");
+                localStorage.setItem("ultima_aba_refeicao", tipoAtual);
+                buscarSugestaoIA(tipoAtual);
+            });
         });
+
+        if (btnGerarOutra) {
+            btnGerarOutra.addEventListener("click", () => buscarSugestaoIA(tipoAtual, true));
+        }
     }
 });
 
-// --- LÓGICA DE HIDRATAÇÃO DINÂMICA (EDIÇÃO DO ÚLTIMO COPO) ---
+// ==========================================================================
+// 3. LÓGICA DE HIDRATAÇÃO DINÂMICA
+// ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
     const card = document.getElementById('card-hidratacao');
     if(!card) return;
 
     const metaAgua = parseInt(card.getAttribute('data-meta')) || 2000;
-
     let aguaConsumida = parseInt(localStorage.getItem("agua_consumida")) || 0;
     let ultimoConsumo = parseInt(localStorage.getItem("agua_ultimo_registro")) || 0;
 
@@ -240,210 +185,95 @@ document.addEventListener('DOMContentLoaded', () => {
     const elConsumida = document.getElementById('texto-agua-consumida');
     const containerCopos = document.getElementById('container-copos');
 
-    const formatarVolume = (ml) => {
-        if (ml >= 1000) {
-            return (ml / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' L';
-        }
-        return ml + ' ml';
-    };
+    const formatarVolume = (ml) => ml >= 1000 ? (ml / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' L' : ml + ' ml';
 
     const renderizarAgua = () => {
-        let faltam = metaAgua - aguaConsumida;
-        if (faltam < 0) faltam = 0;
-
-        elFaltante.textContent = formatarVolume(faltam);
+        elFaltante.textContent = formatarVolume(Math.max(0, metaAgua - aguaConsumida));
         elConsumida.textContent = formatarVolume(aguaConsumida);
-
-        const totalCopos = Math.ceil(metaAgua / 500);
         containerCopos.innerHTML = '';
 
-        for (let i = 1; i <= totalCopos; i++) {
-            const copoValor = i * 500;
-
+        for (let i = 1; i <= Math.ceil(metaAgua / 500); i++) {
             const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             svg.setAttribute("viewBox", "0 0 24 24");
-            svg.setAttribute("class", "w-8 h-10 cursor-pointer transition-all duration-300 hover:scale-110 hover:-translate-y-1");
-
-            if (aguaConsumida >= copoValor) {
-                svg.classList.add("text-[#4CB5F9]", "drop-shadow-md");
-            } else {
-                svg.classList.add("text-gray-200");
-            }
-
+            svg.setAttribute("class", `w-8 h-10 cursor-pointer transition-all duration-300 hover:scale-110 hover:-translate-y-1 ${aguaConsumida >= i * 500 ? "text-[#4CB5F9] drop-shadow-md" : "text-gray-200"}`);
             svg.innerHTML = '<path fill="currentColor" d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/>';
 
             svg.onclick = () => {
-                if (aguaConsumida >= copoValor) {
+                if (aguaConsumida >= i * 500) {
                     aguaConsumida = Math.max(0, aguaConsumida - 500);
                     ultimoConsumo = 0;
                 } else {
                     aguaConsumida += 500;
                     ultimoConsumo = 500;
                 }
-
                 localStorage.setItem("agua_consumida", aguaConsumida);
                 localStorage.setItem("agua_ultimo_registro", ultimoConsumo);
                 renderizarAgua();
             };
-
             containerCopos.appendChild(svg);
         }
     };
 
     window.editarAguaManual = () => {
-        const modal = document.getElementById('modal-editar-agua');
-        const input = document.getElementById('input-agua-manual');
-
-        input.value = ultimoConsumo > 0 ? ultimoConsumo : '';
-
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-            modal.querySelector('div').classList.remove('scale-95');
-        }, 10);
-    };
-
-    window.fecharModalAgua = () => {
-        const modal = document.getElementById('modal-editar-agua');
-        modal.classList.add('opacity-0');
-        modal.querySelector('div').classList.add('scale-95');
-        setTimeout(() => modal.classList.add('hidden'), 300);
+        document.getElementById('input-agua-manual').value = ultimoConsumo > 0 ? ultimoConsumo : '';
+        abrirModal('modal-editar-agua');
     };
 
     window.salvarAguaManual = () => {
-        const input = document.getElementById('input-agua-manual');
-        const novoValorEditado = parseInt(input.value.replace(/\D/g, ''));
-
-        if (!isNaN(novoValorEditado)) {
-            aguaConsumida = aguaConsumida - ultimoConsumo + novoValorEditado;
-            if (aguaConsumida < 0) aguaConsumida = 0;
-
-            ultimoConsumo = novoValorEditado;
-
+        const novoValor = parseInt(document.getElementById('input-agua-manual').value.replace(/\D/g, ''));
+        if (!isNaN(novoValor)) {
+            aguaConsumida = Math.max(0, aguaConsumida - ultimoConsumo + novoValor);
+            ultimoConsumo = novoValor;
             localStorage.setItem("agua_consumida", aguaConsumida);
             localStorage.setItem("agua_ultimo_registro", ultimoConsumo);
             renderizarAgua();
         }
-        fecharModalAgua();
+        fecharModal('modal-editar-agua');
     };
 
     window.zerarAgua = () => {
-        aguaConsumida = 0;
-        ultimoConsumo = 0;
+        aguaConsumida = ultimoConsumo = 0;
         localStorage.setItem("agua_consumida", 0);
         localStorage.setItem("agua_ultimo_registro", 0);
         renderizarAgua();
-        fecharModalAgua();
+        fecharModal('modal-editar-agua');
     };
 
     renderizarAgua();
 });
 
-// --- LÓGICA DO MODAL DE EDITAR PERFIL ---
-document.addEventListener("DOMContentLoaded", () => {
-    const btnAbrirEditar = document.getElementById("btn-abrir-editar-perfil");
-    const btnAbrirEditarMobile = document.getElementById("btn-abrir-editar-perfil-mobile");
+// ==========================================================================
+// 4. SISTEMA DE MODAIS E OBSERVERS DA UI
+// ==========================================================================
 
-    const modalEditar = document.getElementById("modal-editar-perfil");
-    const btnFecharEditar = document.getElementById("btn-fechar-editar-perfil");
-
-    if (modalEditar) {
-        const abrirModal = (e) => {
-            e.preventDefault();
-            modalEditar.classList.remove("hidden");
-            setTimeout(() => {
-                modalEditar.classList.remove("opacity-0");
-                modalEditar.querySelector('div').classList.remove("scale-95");
-            }, 10);
-        };
-
-        if (btnAbrirEditar) btnAbrirEditar.addEventListener("click", abrirModal);
-        if (btnAbrirEditarMobile) btnAbrirEditarMobile.addEventListener("click", abrirModal);
-
-        const fecharModalEditar = () => {
-            modalEditar.classList.add("opacity-0");
-            modalEditar.querySelector('div').classList.add("scale-95");
-            setTimeout(() => modalEditar.classList.add("hidden"), 300);
-        };
-
-        if (btnFecharEditar) btnFecharEditar.addEventListener("click", fecharModalEditar);
-        modalEditar.addEventListener("click", (e) => {
-            if (e.target === modalEditar) fecharModalEditar();
-        });
+function abrirModal(id) {
+    const modal = document.getElementById(id);
+    if(modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modal.querySelector('div').classList.remove('scale-95');
+        }, 10);
     }
-});
+}
 
-
-// --- LÓGICA DO BOTÃO CENTRAL (VARINHA MÁGICA) ---
-document.addEventListener("DOMContentLoaded", () => {
-    const btnFabGerar = document.getElementById("btn-fab-gerar");
-    const btnGerarOutras = document.getElementById("btn-gerar-outras");
-    const btnGerarSugestao = document.getElementById("btn-gerar-sugestao");
-
-    if (btnFabGerar) {
-        btnFabGerar.addEventListener("click", (e) => {
-            e.preventDefault();
-
-            if ("vibrate" in navigator) {
-                navigator.vibrate([50, 100, 50]);
-            }
-
-            const icone = btnFabGerar.querySelector('i');
-            icone.classList.add('fa-spin');
-            setTimeout(() => icone.classList.remove('fa-spin'), 1000);
-
-            if (btnGerarOutras) {
-                btnGerarOutras.click();
-            } else if (btnGerarSugestao) {
-                btnGerarSugestao.click();
-            }
-        });
+function fecharModal(id) {
+    const modal = document.getElementById(id);
+    if(modal) {
+        modal.classList.add('opacity-0');
+        modal.querySelector('div').classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 300);
     }
-});
+}
 
-document.addEventListener('click', function(event) {
-    const dropdown = document.getElementById('dropdown-perfil');
-    const btnAvatar = document.getElementById('btn-avatar-perfil');
-
-    if (dropdown && btnAvatar && !btnAvatar.contains(event.target) && !dropdown.contains(event.target)) {
-        dropdown.classList.add('hidden');
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const mainElement = document.querySelector('main');
-    const modais = ['modal-completar-perfil', 'modal-editar-perfil', 'modal-visualizar-dados'];
-
-    const observer = new MutationObserver(() => {
-    const modalAberto = modais.some(id => {
-        const el = document.getElementById(id);
-        return el && !el.classList.contains('hidden');
-    });
-
-    if (modalAberto) {
-        mainElement.classList.remove('overflow-y-auto');
-        mainElement.classList.add('overflow-y-hidden');
-        } else {
-            mainElement.classList.remove('overflow-y-hidden');
-            mainElement.classList.add('overflow-y-auto');
-            }
-    });
-
-    modais.forEach(id => {
-    const el = document.getElementById(id);
-        if (el) {
-            observer.observe(el, { attributes: true, attributeFilter: ['class'] });
-        }
-    });
-});
-
-// Envia a sugestão atual direto para o banco
-// Insere o botão de consumo diretamente dentro do card amarelo da IA
+// Injeção dinâmica do Botão de Consumo na tela da IA
 function injetarBotaoConsumo() {
     const container = document.getElementById("container-dieta-ia");
     if (!container) return;
 
-    const cardKcal = container.querySelector(".bg-fundoCreme, .border-amareloMostarda");
+    // A classe \[\#FDF7DF\] é a responsável pelo card amarelo vindo da API
+    const cardKcal = container.querySelector(".bg-\\[\\#FDF7DF\\]");
+
     if (cardKcal && !cardKcal.querySelector(".btn-consumir-sugestao")) {
         const linhaDivisoria = document.createElement("div");
         linhaDivisoria.className = "w-full border-t border-dashed border-amareloMostarda/40 my-3";
@@ -452,66 +282,93 @@ function injetarBotaoConsumo() {
         btn.type = "button";
         btn.className = "btn-consumir-sugestao";
         btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Consumi esta Sugestão!';
-        btn.onclick = consumirSugestaoIA;
+        btn.onclick = window.consumirSugestaoIA;
 
         cardKcal.appendChild(linhaDivisoria);
         cardKcal.appendChild(btn);
     }
 }
 
-// Envia a sugestão atual para o banco
-function consumirSugestaoIA() {
+window.consumirSugestaoIA = function() {
     const container = document.getElementById("container-dieta-ia");
     if (!container) return;
 
-    const tituloEl = container.querySelector("h4") || container.querySelector("p.text-base") || container.querySelector("p.font-bold");
-    const kcalEl = container.querySelector("p.text-3xl") || container.querySelector("p.text-4xl") || container.querySelector("span.text-xl");
+    const tituloEl = container.querySelector("h4");
+    const kcalEl = container.querySelector("p.text-3xl");
 
     if (!tituloEl || !kcalEl) {
         alert("Gere uma sugestão primeiro!");
         return;
     }
 
-    const descricaoPrato = tituloEl.innerText.trim();
-    const caloriasNum = parseInt(kcalEl.innerText.replace(/\D/g, '')) || 0;
-
     const botaoAtivo = document.querySelector(".meal-btn.bg-verdeSalvia");
-    const tipo = botaoAtivo ? botaoAtivo.getAttribute("data-tipo") : "Refeição Sugerida";
 
-    document.getElementById("input-sug-tipo").value = tipo;
-    document.getElementById("input-sug-desc").value = descricaoPrato;
-    document.getElementById("input-sug-kcal").value = caloriasNum;
+    document.getElementById("input-sug-tipo").value = botaoAtivo ? botaoAtivo.getAttribute("data-tipo") : "Sugerida";
+    document.getElementById("input-sug-desc").value = tituloEl.innerText.trim();
+    document.getElementById("input-sug-kcal").value = parseInt(kcalEl.innerText.replace(/\D/g, '')) || 0;
 
     document.getElementById("form-sugestao-ia").submit();
-}
+};
 
-// Observa o container para aplicar a injeção do botão sempre que o conteúdo mudar
+// Listeners Globais da UI
 document.addEventListener("DOMContentLoaded", () => {
-    injetarBotaoConsumo();
 
+    // Tratamento de botões de abertura de modal
+    document.querySelectorAll('[id^="btn-abrir-"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const alvo = btn.id.replace('btn-abrir-', 'modal-');
+            abrirModal(alvo);
+        });
+    });
+
+    // Tratamento de fechamento em cliques externos e menus suspensos
+    document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById('dropdown-perfil');
+        const btnAvatar = document.getElementById('btn-avatar-perfil');
+        if (dropdown && btnAvatar && !btnAvatar.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.add('hidden');
+        }
+
+        ['modal-completar-perfil', 'modal-editar-perfil', 'modal-visualizar-dados', 'modal-editar-agua'].forEach(id => {
+            const modal = document.getElementById(id);
+            if(modal && e.target === modal) fecharModal(id);
+        });
+    });
+
+    // Injeção do Mutation Observer para a área da IA (Reinjeta botões após carregamento)
     const containerDieta = document.getElementById("container-dieta-ia");
     if (containerDieta) {
-        const observer = new MutationObserver(() => {
-            injetarBotaoConsumo();
-        });
-        observer.observe(containerDieta, { childList: true, subtree: true });
+        injetarBotaoConsumo();
+        new MutationObserver(injetarBotaoConsumo).observe(containerDieta, { childList: true, subtree: true });
     }
-});
 
-// --- SISTEMA DE TRANSIÇÃO SUAVE (APENAS PARA PROCESSAMENTO PESADO) ---
-document.addEventListener("DOMContentLoaded", () => {
+    // Tela de Carregamento (Spinner)
     const loader = document.getElementById("loader-global");
-    if (!loader) return;
+    if (loader) {
+        document.addEventListener("submit", () => {
+            loader.classList.remove("hidden");
+            loader.classList.add("flex");
+        });
+        window.addEventListener("pageshow", () => {
+            loader.classList.add("hidden");
+            loader.classList.remove("flex");
+        });
+    }
 
-    // O loader animado agora SÓ vai aparecer quando você enviar um formulário pesado (ex: IA ou Salvar Perfil)
-    document.addEventListener("submit", () => {
-        loader.classList.remove("hidden");
-        loader.classList.add("flex");
-    });
+    // Lógica do botão flutuante Varinha Mágica no Mobile
+    const btnFabGerar = document.getElementById("btn-fab-gerar");
+    if (btnFabGerar) {
+        btnFabGerar.addEventListener("click", (e) => {
+            e.preventDefault();
+            if ("vibrate" in navigator) navigator.vibrate([50, 100, 50]);
 
-    // Garante que o loader suma caso o usuário clique em "Voltar" no navegador
-    window.addEventListener("pageshow", () => {
-        loader.classList.add("hidden");
-        loader.classList.remove("flex");
-    });
+            const icone = btnFabGerar.querySelector('i');
+            icone.classList.add('fa-spin');
+            setTimeout(() => icone.classList.remove('fa-spin'), 1000);
+
+            const btn = document.getElementById("btn-gerar-outras") || document.getElementById("btn-gerar-sugestao");
+            if(btn) btn.click();
+        });
+    }
 });
