@@ -161,6 +161,7 @@ public class UsuarioController {
         if (usuarioLogado == null) return "redirect:/login";
 
         usuarioLogado.setNome(dadosAtualizados.getNome());
+        usuarioLogado.setDataNascimento(dadosAtualizados.getDataNascimento());
         usuarioLogado.setAlturaCm(dadosAtualizados.getAlturaCm());
         usuarioLogado.setPesoKg(dadosAtualizados.getPesoKg());
         usuarioLogado.setGenero(dadosAtualizados.getGenero());

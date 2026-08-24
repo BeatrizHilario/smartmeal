@@ -4,8 +4,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Period;
 
 @Data
 @NoArgsConstructor
@@ -33,8 +37,9 @@ public class Usuario {
     @Column(name = "altura_cm")
     private Integer alturaCm;
 
-    @Column(nullable = false)
-    private Integer idade;
+    @Column(name = "data_nascimento", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dataNascimento;
 
     @Column(length = 50)
     private String objetivo;
@@ -59,4 +64,11 @@ public class Usuario {
 
     @Column(name = "nivel_atividade")
     private String nivelAtividade;
+
+    public Integer getIdade() {
+        if (this.dataNascimento == null) {
+            return 0;
+        }
+        return Period.between(this.dataNascimento, LocalDate.now()).getYears();
+    }
 }
