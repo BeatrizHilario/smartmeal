@@ -37,7 +37,14 @@
             <span>Dashboard</span>
         </a>
 
-        <a th:href="@{/diario}" class="flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
+        <a th:if="${perfilIncompleto}" href="javascript:void(0)" onclick="bloquearRecursoIncompleto()"
+           class="flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/60 hover:text-white font-medium">
+            <i class="fa-solid fa-book-open w-6 text-xl"></i>
+            <span class="flex items-center justify-between w-full">Diário Alimentar<i class="fa-solid fa-lock text-xs text-amareloMostarda ml-2"></i></span>
+        </a>
+
+        <a th:unless="${perfilIncompleto}" th:href="@{/diario}"
+           class="flex items-center space-x-4 px-6 py-4 rounded-2xl transition hover:bg-white/10 text-white/80 hover:text-white font-medium">
             <i class="fa-solid fa-book-open w-6 text-xl"></i>
             <span>Diário Alimentar</span>
         </a>
@@ -330,19 +337,26 @@
         <span class="text-[10px] font-bold">Início</span>
     </a>
 
-    <a th:href="@{/diario}" class="flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition">
+    <a th:if="${perfilIncompleto}" href="javascript:void(0)" onclick="bloquearRecursoIncompleto()" class="flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition relative">
+        <div class="p-2 mb-1 relative">
+            <i class="fa-solid fa-book-open text-lg"></i>
+            <i class="fa-solid fa-lock text-[9px] text-amareloMostarda absolute top-1 right-1"></i>
+        </div>
+        <span class="text-[10px] font-medium">Diário</span>
+    </a>
+    <a th:unless="${perfilIncompleto}" th:href="@{/diario}" class="flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition">
         <div class="p-2 mb-1">
             <i class="fa-solid fa-book-open text-lg"></i>
         </div>
         <span class="text-[10px] font-medium">Diário</span>
     </a>
 
-    <a href="#" id="btn-abrir-editar-perfil-mobile" class="flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition">
+    <button type="button" onclick="abrirModal('modal-editar-perfil')" class="flex flex-col items-center text-textoClaro hover:text-verdeSalvia transition focus:outline-none">
         <div class="p-2 mb-1">
             <i class="fa-solid fa-user-gear text-lg"></i>
         </div>
         <span class="text-[10px] font-medium">Perfil</span>
-    </a>
+    </button>
 </nav>
 
 <!-- MODAIS -->
@@ -481,8 +495,7 @@
 <!-- MODAL EDITAR PERFIL -->
 <div id="modal-editar-perfil" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300">
     <div class="bg-cardBranco rounded-[2.5rem] shadow-xl w-full max-w-3xl relative transform transition-transform scale-95 border-2 border-verdeSalvia/30 max-h-[85vh] flex flex-col overflow-hidden">
-        <button type="button" id="btn-fechar-editar-perfil" onclick="fecharModal('modal-editar-perfil')" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-20">&times;</button>        <div class="text-center p-8 pb-4 border-b border-gray-100 shrink-0">
-            <h3 class="text-3xl font-rancho font-bold text-textoEscuro mb-1">Configurações da Conta</h3>
+        <button type="button" id="btn-fechar-editar-perfil" onclick="fecharModal('modal-editar-perfil')" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-10">&times;</button>            <h3 class="text-3xl font-rancho font-bold text-textoEscuro mb-1">Configurações da Conta</h3>
             <p class="text-textoClaro font-medium text-sm">Mantenha suas métricas atualizadas para a IA calcular tudo com precisão.</p>
         </div>
 

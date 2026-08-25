@@ -326,3 +326,32 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+// Intercepta recursos bloqueados para perfil incompleto
+window.bloquearRecursoIncompleto = function() {
+    alert("Complete o perfil para desbloquear esse recurso!");
+    abrirModal("modal-completar-perfil");
+};
+
+// Funções globais de modal
+window.abrirModal = function(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        const container = modal.querySelector('div');
+        if (container) container.classList.remove('scale-95');
+    }, 10);
+};
+
+window.fecharModal = function(id) {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+
+    modal.classList.add('opacity-0');
+    const container = modal.querySelector('div');
+    if (container) container.classList.add('scale-95');
+    setTimeout(() => modal.classList.add('hidden'), 300);
+};

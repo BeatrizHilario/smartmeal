@@ -21,10 +21,14 @@ public class DiarioController {
     private DiarioService diarioService;
 
     @GetMapping
-    public String exibirDiario(HttpSession session, Model model) {
+    public String exibirDiario(HttpSession session, Model model, org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
         if (usuario == null) {
             return "redirect:/login";
+        }
+
+        if (usuario.getPesoKg() == null || usuario.getAlturaCm() == null) {
+            redirectAttributes.addFlashAttribute("erroIA", "Complete seu perfil para desbloquear o Diário Alimentar!");
         }
 
         LocalDate hoje = LocalDate.now();
