@@ -237,95 +237,76 @@ document.addEventListener('DOMContentLoaded', () => {
 // 4. SISTEMA DE MODAIS E INJEÇÃO DE BOTÕES
 // ==========================================================================
 
-function abrirModal(id) {
+window.abrirModal = function(id) {
     const modal = document.getElementById(id);
-    if(modal) {
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-            modal.querySelector('div').classList.remove('scale-95');
-        }, 10);
-    }
-}
+    if (!modal) return;
 
-function fecharModal(id) {
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        const container = modal.querySelector('div');
+        if (container) container.classList.remove('scale-95');
+    }, 10);
+};
+
+window.fecharModal = function(id) {
     const modal = document.getElementById(id);
-    if(modal) {
-        modal.classList.add('opacity-0');
-        modal.querySelector('div').classList.add('scale-95');
-        setTimeout(() => modal.classList.add('hidden'), 300);
-    }
-}
+    if (!modal) return;
 
-// Injeção do Botão de Consumo dentro da caixa de Kcal gerada pela IA
-function injetarBotaoConsumo() {
-    const container = document.getElementById("container-dieta-ia");
-    if (!container) return;
-
-    // Busca o card amarelo retornado pelo backend (usa bg-fundoCreme ou border-amareloMostarda)
-    const cardKcal = container.querySelector(".bg-fundoCreme") || container.querySelector("[class*='border-amareloMostarda']");
-
-    if (cardKcal && !cardKcal.querySelector(".btn-consumir-sugestao")) {
-        const linhaDivisoria = document.createElement("div");
-        linhaDivisoria.className = "w-full border-t border-dashed border-amareloMostarda/40 my-3";
-
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "btn-consumir-sugestao";
-        btn.innerHTML = '<i class="fa-solid fa-circle-check mr-2"></i> Consumi esta Sugestão!';
-        btn.onclick = window.consumirSugestaoIA;
-
-        cardKcal.appendChild(linhaDivisoria);
-        cardKcal.appendChild(btn);
-    }
-}
-
-window.consumirSugestaoIA = function() {
-    const container = document.getElementById("container-dieta-ia");
-    if (!container) return;
-
-    const tituloEl = container.querySelector("p.font-bold") || container.querySelector("h4");
-    const kcalEl = container.querySelector("p.text-3xl") || container.querySelector("p.text-4xl");
-
-    if (!tituloEl || !kcalEl) {
-        alert("Gere uma sugestão primeiro!");
-        return;
-    }
-
-    const botaoAtivo = document.querySelector(".meal-btn.bg-verdeSalvia");
-
-    document.getElementById("input-sug-tipo").value = botaoAtivo ? botaoAtivo.getAttribute("data-tipo") : "Sugerida";
-    document.getElementById("input-sug-desc").value = tituloEl.innerText.trim();
-    document.getElementById("input-sug-kcal").value = parseInt(kcalEl.innerText.replace(/\D/g, '')) || 0;
-
-    document.getElementById("form-sugestao-ia").submit();
+    modal.classList.add('opacity-0');
+    const container = modal.querySelector('div');
+    if (container) container.classList.add('scale-95');
+    setTimeout(() => modal.classList.add('hidden'), 300);
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Listeners de abertura de modal
-    document.querySelectorAll('[id^="btn-abrir-"]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+    // Abertura do modal de Configurações (Desktop e Mobile)
+    const btnEditarDesktop = document.getElementById("btn-abrir-editar-perfil");
+    const btnEditarMobile = document.getElementById("btn-abrir-editar-perfil-mobile");
+    const btnCompletar = document.getElementById("btn-completar-perfil");
+
+    if (btnEditarDesktop) {
+        btnEditarDesktop.addEventListener("click", (e) => {
             e.preventDefault();
-            const alvo = btn.id.replace('btn-abrir-', 'modal-');
-            abrirModal(alvo);
+            abrirModal("modal-editar-perfil");
         });
+    }
+
+    if (btnEditarMobile) {
+        btnEditarMobile.addEventListener("click", (e) => {
+            e.preventDefault();
+            abrirModal("modal-editar-perfil");
+        });
+    }
+
+    if (btnCompletar) {
+        btnCompletar.addEventListener("click", (e) => {
+            e.preventDefault();
+            abrirModal("modal-completar-perfil");
+        });
+    }
+
+    // Fechamento ao clicar fora do modal
+    const modais = ['modal-completar-perfil', 'modal-editar-perfil', 'modal-visualizar-dados', 'modal-editar-agua'];
+    modais.forEach(id => {
+        const modal = document.getElementById(id);
+        if (modal) {
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) fecharModal(id);
+            });
+        }
     });
 
-    // Fechamento de dropdown e clique fora de modais
+    // Dropdown do Avatar
+    const dropdown = document.getElementById('dropdown-perfil');
+    const btnAvatar = document.getElementById('btn-avatar-perfil');
     document.addEventListener('click', (e) => {
-        const dropdown = document.getElementById('dropdown-perfil');
-        const btnAvatar = document.getElementById('btn-avatar-perfil');
         if (dropdown && btnAvatar && !btnAvatar.contains(e.target) && !dropdown.contains(e.target)) {
             dropdown.classList.add('hidden');
         }
-
-        ['modal-completar-perfil', 'modal-editar-perfil', 'modal-visualizar-dados', 'modal-editar-agua'].forEach(id => {
-            const modal = document.getElementById(id);
-            if(modal && e.target === modal) fecharModal(id);
-        });
     });
 
-    // Observer para injetar o botão de consumo assim que a IA renderizar
+    // Injeção do Botão de Consumo na IA
     const containerDieta = document.getElementById("container-dieta-ia");
     if (containerDieta) {
         injetarBotaoConsumo();
@@ -342,22 +323,6 @@ document.addEventListener("DOMContentLoaded", () => {
         window.addEventListener("pageshow", () => {
             loader.classList.add("hidden");
             loader.classList.remove("flex");
-        });
-    }
-
-    // Botão Varinha Mágica (Mobile)
-    const btnFabGerar = document.getElementById("btn-fab-gerar");
-    if (btnFabGerar) {
-        btnFabGerar.addEventListener("click", (e) => {
-            e.preventDefault();
-            if ("vibrate" in navigator) navigator.vibrate([50, 100, 50]);
-
-            const icone = btnFabGerar.querySelector('i');
-            icone.classList.add('fa-spin');
-            setTimeout(() => icone.classList.remove('fa-spin'), 1000);
-
-            const btn = document.getElementById("btn-gerar-outras") || document.getElementById("btn-gerar-sugestao");
-            if(btn) btn.click();
         });
     }
 });
