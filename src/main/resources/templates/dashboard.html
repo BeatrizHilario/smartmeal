@@ -200,9 +200,10 @@
             </div>
 
             <!-- 2. CARD HIDRATAÇÃO -->
-            <div class="bg-cardBranco p-6 rounded-[2.5rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative flex flex-col justify-between h-full overflow-hidden" id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
+            <div class="bg-cardBranco p-6 rounded-[2.5rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative flex flex-col justify-between h-full overflow-hidden"
+                 id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
 
-                <!-- Círculo Decorativo Reduzido e Texto Mais Alto -->
+                <!-- Círculo com texto fixo -->
                 <div class="absolute top-0 right-0 w-32 h-32 bg-blue-100/[85%] rounded-full -mr-10 -mt-10 pointer-events-none flex items-center justify-center">
                     <div class="flex flex-col items-center justify-center text-center -translate-x-[15px] translate-y-[14px]">
                         <span class="text-[12px] font-semibold text-textoClaro tracking-wider leading-none">Faltam</span>
@@ -210,22 +211,33 @@
                     </div>
                 </div>
 
-                <!-- Ícone Esquerdo -->
                 <div class="flex items-center mb-4 relative z-10">
                     <div class="w-13 h-13 p-3 rounded-2xl bg-blue-50 text-[#4CB5F9] flex items-center justify-center text-2xl shrink-0 shadow-sm">
                         <i class="fa-solid fa-droplet"></i>
                     </div>
                 </div>
 
-                <!-- Corpo Centralizado com Copos e Valor Maior -->
                 <div class="flex flex-col items-center justify-center flex-1 my-2">
+                    <!-- Barra / Copos indicativos do progresso -->
                     <div class="flex justify-center flex-wrap gap-2.5 my-2 min-h-[44px] w-full items-center" id="container-copos"></div>
-                    <div class="flex items-center justify-center mt-1 group">
-                        <p class="text-3xl md:text-4xl font-extrabold text-textoEscuro cursor-pointer hover:text-verdeSalvia transition tracking-tight" id="texto-agua-consumida" onclick="editarAguaManual()" title="Clique para editar">
+
+                    <!-- Valor Total Consumido -->
+                    <div class="flex items-center justify-center mt-1">
+                        <p class="text-3xl md:text-4xl font-extrabold text-textoEscuro tracking-tight" id="texto-agua-consumida">
                             0 ml
                         </p>
-                        <button onclick="editarAguaManual()" class="ml-2.5 w-8 h-8 rounded-full bg-gray-100 text-textoClaro hover:bg-amareloMostarda hover:text-white transition flex items-center justify-center shadow-sm shrink-0">
-                            <i class="fa-solid fa-pen text-xs"></i>
+                    </div>
+
+                    <!-- Ações Rápidas: +250ml, +500ml e Personalizado -->
+                    <div class="flex items-center gap-2 mt-3 z-10">
+                        <button type="button" onclick="adicionarAgua(250)" class="px-2.5 py-1 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#4CB5F9] font-bold text-xs transition shadow-sm" title="Adicionar 250 ml">
+                            +250ml
+                        </button>
+                        <button type="button" onclick="adicionarAgua(500)" class="px-2.5 py-1 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#4CB5F9] font-bold text-xs transition shadow-sm" title="Adicionar 500 ml">
+                            +500ml
+                        </button>
+                        <button type="button" onclick="abrirModal('modal-editar-agua')" class="w-7 h-7 rounded-xl bg-gray-100 hover:bg-amareloMostarda hover:text-white text-textoClaro flex items-center justify-center transition shadow-sm text-xs" title="Adicionar quantidade avulsa">
+                            <i class="fa-solid fa-plus"></i>
                         </button>
                     </div>
                 </div>
@@ -605,16 +617,29 @@
 <!-- MODAL EDITAR ÁGUA -->
 <div id="modal-editar-agua" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
     <div class="bg-white rounded-[2rem] shadow-xl w-full max-w-xs relative transform transition-transform scale-95 flex flex-col overflow-hidden border-2 border-verdeSalvia/30 p-6 text-center">
-        <h3 class="text-xl font-bold text-textoEscuro mb-2">Editar Copo</h3>
-        <p class="text-xs text-textoClaro mb-4">Ajuste a quantidade do último copo que você adicionou:</p>
+        <button type="button" onclick="fecharModal('modal-editar-agua')" class="absolute top-4 right-5 text-2xl text-textoClaro hover:text-textoEscuro font-bold">&times;</button>
 
-        <input type="number" id="input-agua-manual" class="w-full text-center px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia text-xl font-bold text-textoEscuro mb-3" placeholder="Ex: 800">
+        <h3 class="text-xl font-bold text-textoEscuro mb-1 mt-1">Registrar Água</h3>
+        <p class="text-xs text-textoClaro mb-4">Quanto você acabou de beber?</p>
 
-        <button onclick="zerarAgua()" class="text-xs text-red-400 hover:text-red-600 font-medium mb-5 transition underline">Quero zerar tudo</button>
+        <div class="relative flex items-center mb-4">
+            <input type="number" id="input-agua-adicional" min="1" step="10"
+                   class="w-full text-center px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia text-2xl font-extrabold text-textoEscuro placeholder-gray-300"
+                   placeholder="300">
+            <span class="absolute right-4 text-xs font-bold text-textoClaro">ml</span>
+        </div>
 
-        <div class="flex gap-3 w-full">
-            <button onclick="fecharModalAgua()" class="flex-1 py-2.5 rounded-xl text-textoClaro font-bold hover:bg-gray-100 transition">Cancelar</button>
-            <button onclick="salvarAguaManual()" class="flex-1 py-2.5 rounded-xl bg-verdeSalvia text-white font-bold hover:bg-verdeEscuro transition shadow-md">Salvar</button>
+        <button type="button" onclick="salvarAguaAvulsa()" class="w-full py-3 rounded-xl bg-verdeSalvia text-white font-bold hover:bg-verdeEscuro transition shadow-md text-sm mb-4">
+            Adicionar ao Total
+        </button>
+
+        <div class="border-t border-gray-100 pt-3 flex justify-between items-center text-xs text-textoClaro">
+            <button type="button" onclick="desfazerUltimoConsumo()" class="hover:text-textoEscuro transition underline">
+                Desfazer último
+            </button>
+            <button type="button" onclick="zerarAgua()" class="text-red-400 hover:text-red-600 transition underline">
+                Zerar tudo
+            </button>
         </div>
     </div>
 </div>

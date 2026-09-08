@@ -166,71 +166,87 @@ document.addEventListener("DOMContentLoaded", () => {
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
     const card = document.getElementById('card-hidratacao');
-    if(!card) return;
+    if (!card) return;
 
-    const metaAgua = parseInt(card.getAttribute('data-meta')) || 2000;
+    const metaAgua = parseInt(card.getAttribute('data-meta')) || 2500;
     let aguaConsumida = parseInt(localStorage.getItem("agua_consumida")) || 0;
-    let ultimoConsumo = parseInt(localStorage.getItem("agua_ultimo_registro")) || 0;
+    let ultimoAdicionado = parseInt(localStorage.getItem("agua_ultimo_adicionado")) || 0;
 
     const elFaltante = document.getElementById('texto-agua-faltante');
     const elConsumida = document.getElementById('texto-agua-consumida');
     const containerCopos = document.getElementById('container-copos');
 
-    const formatarVolume = (ml) => ml >= 1000 ? (ml / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' L' : ml + ' ml';
+    const formatarVolume = (ml) => {
+        return ml >= 1000 ? (ml / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 1 }) + 'L' : ml + ' ml';
+    };
 
-    const renderizarAgua = () => {
-        elFaltante.textContent = formatarVolume(Math.max(0, metaAgua - aguaConsumida));
-        elConsumida.textContent = formatarVolume(aguaConsumida);
-        containerCopos.innerHTML = '';
+    const atualizarInterface = () => {
+        const faltam = Math.max(0, metaAgua - aguaConsumida);
+        if (elFaltante) elFaltante.textContent = formatarVolume(faltam);
+        if (elConsumida) elConsumida.textContent = aguaConsumida + ' ml';
 
-        for (let i = 1; i <= Math.ceil(metaAgua / 500); i++) {
-            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            svg.setAttribute("viewBox", "0 0 24 24");
-            svg.setAttribute("class", `w-8 h-10 cursor-pointer transition-all duration-300 hover:scale-110 hover:-translate-y-1 ${aguaConsumida >= i * 500 ? "text-[#4CB5F9] drop-shadow-md" : "text-gray-200"}`);
-            svg.innerHTML = '<path fill="currentColor" d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/>';
+        // Renderiza copos ilustrativos baseados em frações de 500ml
+        if (containerCopos) {
+            containerCopos.innerHTML = '';
+            const totalCopos = Math.ceil(metaAgua / 500);
 
-            svg.onclick = () => {
-                if (aguaConsumida >= i * 500) {
-                    aguaConsumida = Math.max(0, aguaConsumida - 500);
-                    ultimoConsumo = 0;
-                } else {
-                    aguaConsumida += 500;
-                    ultimoConsumo = 500;
-                }
-                localStorage.setItem("agua_consumida", aguaConsumida);
-                localStorage.setItem("agua_ultimo_registro", ultimoConsumo);
-                renderizarAgua();
-            };
-            containerCopos.appendChild(svg);
+            for (let i = 1; i <= totalCopos; i++) {
+                const preenchido = aguaConsumida >= i * 500;
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute("viewBox", "0 0 24 24");
+                svg.setAttribute("class", `w-7 h-9 transition-all duration-300 ${preenchido ? "text-[#4CB5F9] drop-shadow-sm" : "text-gray-200"}`);
+                svg.innerHTML = '<path fill="currentColor" d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/>';
+                containerCopos.appendChild(svg);
+            }
         }
     };
 
-    window.editarAguaManual = () => {
-        document.getElementById('input-agua-manual').value = ultimoConsumo > 0 ? ultimoConsumo : '';
-        abrirModal('modal-editar-agua');
+    // Adiciona uma quantia e soma automaticamente ao total existente
+    window.adicionarAgua = (quantidade) => {
+        const valor = parseInt(quantidade);
+        if (isNaN(valor) || valor <= 0) return;
+
+        aguaConsumida += valor;
+        ultimoAdicionado = valor;
+        localStorage.setItem("agua_consumida", aguaConsumida);
+        localStorage.setItem("agua_ultimo_adicionado", ultimoAdicionado);
+        atualizarInterface();
     };
 
-    window.salvarAguaManual = () => {
-        const novoValor = parseInt(document.getElementById('input-agua-manual').value.replace(/\D/g, ''));
-        if (!isNaN(novoValor)) {
-            aguaConsumida = Math.max(0, aguaConsumida - ultimoConsumo + novoValor);
-            ultimoConsumo = novoValor;
+    // Submissão do valor digitado no modal (+X ml)
+    window.salvarAguaAvulsa = () => {
+        const input = document.getElementById('input-agua-adicional');
+        const valor = parseInt(input?.value);
+        if (!isNaN(valor) && valor > 0) {
+            window.adicionarAgua(valor);
+            if (input) input.value = '';
+            fecharModal('modal-editar-agua');
+        }
+    };
+
+    // Desfaz apenas o último valor adicionado
+    window.desfazerUltimoConsumo = () => {
+        if (ultimoAdicionado > 0) {
+            aguaConsumida = Math.max(0, aguaConsumida - ultimoAdicionado);
+            ultimoAdicionado = 0;
             localStorage.setItem("agua_consumida", aguaConsumida);
-            localStorage.setItem("agua_ultimo_registro", ultimoConsumo);
-            renderizarAgua();
+            localStorage.setItem("agua_ultimo_adicionado", 0);
+            atualizarInterface();
+            fecharModal('modal-editar-agua');
         }
-        fecharModal('modal-editar-agua');
     };
 
+    // Zera o contador diário
     window.zerarAgua = () => {
-        aguaConsumida = ultimoConsumo = 0;
+        aguaConsumida = 0;
+        ultimoAdicionado = 0;
         localStorage.setItem("agua_consumida", 0);
-        localStorage.setItem("agua_ultimo_registro", 0);
-        renderizarAgua();
+        localStorage.setItem("agua_ultimo_adicionado", 0);
+        atualizarInterface();
         fecharModal('modal-editar-agua');
     };
 
-    renderizarAgua();
+    atualizarInterface();
 });
 
 // ==========================================================================
