@@ -6,8 +6,16 @@ body {
     margin: 0;
 }
 
+html.modal-aberto,
 body.modal-aberto {
-    overflow: hidden;
+    overflow: hidden !important;
+    height: 100vh !important;
+    touch-action: none !important;
+}
+
+body.modal-aberto main {
+    overflow: hidden !important;
+    pointer-events: none !important;
 }
 /* Scrollbar visível apenas em telas Desktop */
 @media (min-width: 768px) {

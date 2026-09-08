@@ -234,12 +234,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================================================
-// 4. SISTEMA DE MODAIS E INJEÇÃO DE BOTÕES
+// 4. SISTEMA DE MODAIS E CONTROLE DE TRAVAMENTO
 // ==========================================================================
 
 window.abrirModal = function(id) {
     const modal = document.getElementById(id);
     if (!modal) return;
+
+    // Trava completamente o scroll do fundo em html e body
+    document.documentElement.classList.add('modal-aberto');
+    document.body.classList.add('modal-aberto');
 
     modal.classList.remove('hidden');
     setTimeout(() => {
@@ -253,14 +257,64 @@ window.fecharModal = function(id) {
     const modal = document.getElementById(id);
     if (!modal) return;
 
+    // Libera a rolagem do fundo
+    document.documentElement.classList.remove('modal-aberto');
+    document.body.classList.remove('modal-aberto');
+
     modal.classList.add('opacity-0');
     const container = modal.querySelector('div');
     if (container) container.classList.add('scale-95');
     setTimeout(() => modal.classList.add('hidden'), 300);
 };
 
+window.bloquearRecursoIncompleto = function() {
+    alert("Complete o perfil para desbloquear esse recurso!");
+    abrirModal("modal-completar-perfil");
+};
+
+function injetarBotaoConsumo() {
+    const container = document.getElementById("container-dieta-ia");
+    if (!container) return;
+
+    const cardKcal = container.querySelector(".bg-fundoCreme") || container.querySelector("[class*='border-amareloMostarda']");
+
+    if (cardKcal && !cardKcal.querySelector(".btn-consumir-sugestao")) {
+        const linhaDivisoria = document.createElement("div");
+        linhaDivisoria.className = "w-full border-t border-dashed border-amareloMostarda/40 my-3";
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn-consumir-sugestao";
+        btn.innerHTML = '<i class="fa-solid fa-circle-check mr-2"></i> Consumi esta Sugestão!';
+        btn.onclick = window.consumirSugestaoIA;
+
+        cardKcal.appendChild(linhaDivisoria);
+        cardKcal.appendChild(btn);
+    }
+}
+
+window.consumirSugestaoIA = function() {
+    const container = document.getElementById("container-dieta-ia");
+    if (!container) return;
+
+    const tituloEl = container.querySelector("p.font-bold") || container.querySelector("h4");
+    const kcalEl = container.querySelector("p.text-3xl") || container.querySelector("p.text-4xl");
+
+    if (!tituloEl || !kcalEl) {
+        alert("Gere uma sugestão primeiro!");
+        return;
+    }
+
+    const botaoAtivo = document.querySelector(".meal-btn.bg-verdeSalvia");
+
+    document.getElementById("input-sug-tipo").value = botaoAtivo ? botaoAtivo.getAttribute("data-tipo") : "Sugerida";
+    document.getElementById("input-sug-desc").value = tituloEl.innerText.trim();
+    document.getElementById("input-sug-kcal").value = parseInt(kcalEl.innerText.replace(/\D/g, '')) || 0;
+
+    document.getElementById("form-sugestao-ia").submit();
+};
+
 document.addEventListener("DOMContentLoaded", () => {
-    // Abertura do modal de Configurações (Desktop e Mobile)
     const btnEditarDesktop = document.getElementById("btn-abrir-editar-perfil");
     const btnEditarMobile = document.getElementById("btn-abrir-editar-perfil-mobile");
     const btnCompletar = document.getElementById("btn-completar-perfil");
@@ -286,7 +340,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Fechamento ao clicar fora do modal
     const modais = ['modal-completar-perfil', 'modal-editar-perfil', 'modal-visualizar-dados', 'modal-editar-agua'];
     modais.forEach(id => {
         const modal = document.getElementById(id);
@@ -297,7 +350,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Dropdown do Avatar
     const dropdown = document.getElementById('dropdown-perfil');
     const btnAvatar = document.getElementById('btn-avatar-perfil');
     document.addEventListener('click', (e) => {
@@ -306,14 +358,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Injeção do Botão de Consumo na IA
     const containerDieta = document.getElementById("container-dieta-ia");
     if (containerDieta) {
         injetarBotaoConsumo();
         new MutationObserver(injetarBotaoConsumo).observe(containerDieta, { childList: true, subtree: true });
     }
 
-    // Loader Global
     const loader = document.getElementById("loader-global");
     if (loader) {
         document.addEventListener("submit", () => {
@@ -326,33 +376,3 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-
-// Intercepta recursos bloqueados para perfil incompleto
-window.bloquearRecursoIncompleto = function() {
-    alert("Complete o perfil para desbloquear esse recurso!");
-    abrirModal("modal-completar-perfil");
-};
-
-// Funções globais de modal
-window.abrirModal = function(id) {
-    const modal = document.getElementById(id);
-    if (!modal) return;
-    document.body.classList.add('overflow-hidden'); // Trava o fundo
-    modal.classList.remove('hidden');
-    setTimeout(() => {
-        modal.classList.remove('opacity-0');
-        const container = modal.querySelector('div');
-        if (container) container.classList.remove('scale-95');
-    }, 10);
-};
-
-window.fecharModal = function(id) {
-    const modal = document.getElementById(id);
-    if (!modal) return;
-    document.body.classList.remove('overflow-hidden'); // Libera o fundo
-    modal.classList.add('opacity-0');
-    const container = modal.querySelector('div');
-    if (container) container.classList.add('scale-95');
-    setTimeout(() => modal.classList.add('hidden'), 300);
-};
-
