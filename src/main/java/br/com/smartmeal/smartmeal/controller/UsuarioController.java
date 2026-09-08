@@ -156,50 +156,75 @@ public class UsuarioController {
     }
 
     @PostMapping("/atualizarPerfil")
-    public String atualizarPerfil(Usuario dadosAtualizados, String novaSenha, HttpSession session) {
-        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
-        if (usuarioLogado == null) return "redirect:/login";
+    public String atualizarPerfil(Usuario dadosAtualizados,
+                                  @RequestParam(value = "novaSenha", required = false) String novaSenha,
+                                  HttpSession session,
+                                  RedirectAttributes redirectAttributes) {
+        try {
+            Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+            if (usuarioLogado == null) {
+                return "redirect:/login";
+            }
 
-        usuarioLogado.setNome(dadosAtualizados.getNome());
-        usuarioLogado.setDataNascimento(dadosAtualizados.getDataNascimento());
-        usuarioLogado.setAlturaCm(dadosAtualizados.getAlturaCm());
-        usuarioLogado.setPesoKg(dadosAtualizados.getPesoKg());
-        usuarioLogado.setGenero(dadosAtualizados.getGenero());
-        usuarioLogado.setNivelAtividade(dadosAtualizados.getNivelAtividade());
-        usuarioLogado.setObjetivo(dadosAtualizados.getObjetivo());
-        usuarioLogado.setRestricaoAlimentar(dadosAtualizados.getRestricaoAlimentar());
-        usuarioLogado.setOrcamentoMaxMensal(dadosAtualizados.getOrcamentoMaxMensal());
+            // Atualiza campos cadastrais básicos
+            usuarioLogado.setNome(dadosAtualizados.getNome());
+            usuarioLogado.setEmail(dadosAtualizados.getEmail());
+            usuarioLogado.setEstado(dadosAtualizados.getEstado());
 
-        if (novaSenha != null && !novaSenha.trim().isEmpty()) {
-            String novaSenhaCripto = SenhaUtils.criptografar(novaSenha);
-            usuarioLogado.setSenha(novaSenhaCripto);
+            if (dadosAtualizados.getDataNascimento() != null) {
+                usuarioLogado.setDataNascimento(dadosAtualizados.getDataNascimento());
+            }
+
+            // Atualiza métricas corporais caso venham preenchidas
+            if (dadosAtualizados.getAlturaCm() != null) usuarioLogado.setAlturaCm(dadosAtualizados.getAlturaCm());
+            if (dadosAtualizados.getPesoKg() != null) usuarioLogado.setPesoKg(dadosAtualizados.getPesoKg());
+            if (dadosAtualizados.getGenero() != null) usuarioLogado.setGenero(dadosAtualizados.getGenero());
+            if (dadosAtualizados.getNivelAtividade() != null) usuarioLogado.setNivelAtividade(dadosAtualizados.getNivelAtividade());
+            if (dadosAtualizados.getObjetivo() != null) usuarioLogado.setObjetivo(dadosAtualizados.getObjetivo());
+            if (dadosAtualizados.getRestricaoAlimentar() != null) usuarioLogado.setRestricaoAlimentar(dadosAtualizados.getRestricaoAlimentar());
+            if (dadosAtualizados.getOrcamentoMaxMensal() != null) usuarioLogado.setOrcamentoMaxMensal(dadosAtualizados.getOrcamentoMaxMensal());
+
+            // Atualiza senha se preenchida
+            if (novaSenha != null && !novaSenha.trim().isEmpty()) {
+                String novaSenhaCripto = SenhaUtils.criptografar(novaSenha);
+                usuarioLogado.setSenha(novaSenhaCripto);
+            }
+
+            // Só calcula TMB e Metas se o perfil tiver peso e altura informados
+            if (usuarioLogado.getPesoKg() != null && usuarioLogado.getAlturaCm() != null && usuarioLogado.getAlturaCm() > 0) {
+                double pesoParaConta = usuarioLogado.getPesoKg().doubleValue();
+                usuarioLogado.setMetaAguaMl((int) (pesoParaConta * 35));
+
+                double tmb;
+                if ("M".equalsIgnoreCase(usuarioLogado.getGenero())) {
+                    tmb = 66.5 + (13.75 * pesoParaConta) + (5.003 * usuarioLogado.getAlturaCm());
+                } else {
+                    tmb = 655.1 + (9.563 * pesoParaConta) + (1.850 * usuarioLogado.getAlturaCm());
+                }
+
+                double fatorAtividade = 1.2;
+                if ("leve".equalsIgnoreCase(usuarioLogado.getNivelAtividade())) fatorAtividade = 1.375;
+                if ("moderado".equalsIgnoreCase(usuarioLogado.getNivelAtividade())) fatorAtividade = 1.55;
+                if ("intenso".equalsIgnoreCase(usuarioLogado.getNivelAtividade())) fatorAtividade = 1.725;
+
+                double gastoDiario = tmb * fatorAtividade;
+                if ("emagrecer".equalsIgnoreCase(usuarioLogado.getObjetivo())) gastoDiario -= 500;
+                else if ("hipertrofia".equalsIgnoreCase(usuarioLogado.getObjetivo())) gastoDiario += 500;
+
+                usuarioLogado.setMetaCaloricaKcal((int) gastoDiario);
+            }
+
+            usuarioRepository.save(usuarioLogado);
+            session.setAttribute("usuarioLogado", usuarioLogado);
+
+            return "redirect:/dashboard";
+
+        } catch (Exception e) {
+            System.err.println("=== ERRO AO ATUALIZAR PERFIL ===");
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("erroIA", "Não foi possível atualizar o perfil: " + e.getMessage());
+            return "redirect:/dashboard";
         }
-
-        double pesoParaConta = usuarioLogado.getPesoKg().doubleValue();
-        usuarioLogado.setMetaCaloricaKcal((int) (pesoParaConta * 35));
-
-        double tmb;
-        if ("M".equals(usuarioLogado.getGenero())) {
-            tmb = 66.5 + (13.75 * pesoParaConta) + (5.003 * usuarioLogado.getAlturaCm());
-        } else {
-            tmb = 665.1 + (9.563 * pesoParaConta) + (1.850 * usuarioLogado.getAlturaCm());
-        }
-
-        double fatorAtividade = 1.2;
-        if ("leve".equals(usuarioLogado.getNivelAtividade())) fatorAtividade = 1.375;
-        if ("moderado".equals(usuarioLogado.getNivelAtividade())) fatorAtividade = 1.55;
-        if ("intenso".equals(usuarioLogado.getNivelAtividade())) fatorAtividade = 1.725;
-
-        double gastoDiario = tmb * fatorAtividade;
-        if ("emagrecer".equals(usuarioLogado.getObjetivo())) gastoDiario -= 500;
-        else if ("hipertrofia".equals(usuarioLogado.getObjetivo())) gastoDiario += 500;
-
-        usuarioLogado.setMetaCaloricaKcal((int) gastoDiario);
-
-        usuarioRepository.save(usuarioLogado);
-        session.setAttribute("usuarioLogado", usuarioLogado);
-
-        return "redirect:/dashboard";
     }
 
     @GetMapping("/deletarConta")

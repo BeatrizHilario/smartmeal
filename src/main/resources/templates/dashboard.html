@@ -538,6 +538,18 @@
                         <input type="password" name="novaSenha" placeholder="Deixe em branco para manter" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full text-sm">
                     </div>
 
+                    <!-- Campos livres mesmo com perfil básico -->
+                    <div class="flex flex-col">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Orçamento Mensal (R$)</label>
+                        <input type="number" step="0.01" name="orcamentoMaxMensal" th:value="${usuario.orcamentoMaxMensal}" placeholder="Ex: 400.00" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full text-sm">
+                    </div>
+
+                    <div class="flex flex-col md:col-span-2">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
+                        <input type="text" name="restricaoAlimentar" th:value="${usuario.restricaoAlimentar}" placeholder="Ex: Nenhuma, Vegano, Lactose..." class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full text-sm">
+                    </div>
+
+                    <!-- Métricas Físicas: Exibidas apenas após completar o perfil -->
                     <th:block th:unless="${perfilIncompleto}">
                         <div class="flex flex-col">
                             <label class="text-textoClaro font-bold text-sm mb-1">Data de Nascimento</label>
@@ -579,16 +591,6 @@
                                 <option value="manter" th:selected="${usuario.objetivo == 'manter'}">Manter peso</option>
                                 <option value="hipertrofia" th:selected="${usuario.objetivo == 'hipertrofia'}">Ganhar Massa Muscular</option>
                             </select>
-                        </div>
-
-                        <div class="flex flex-col">
-                            <label class="text-textoClaro font-bold text-sm mb-1">Orçamento Mensal (R$)</label>
-                            <input type="number" step="0.01" name="orcamentoMaxMensal" th:value="${usuario.orcamentoMaxMensal}" placeholder="Ex: 400.00" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full text-sm">
-                        </div>
-
-                        <div class="flex flex-col md:col-span-2">
-                            <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
-                            <input type="text" name="restricaoAlimentar" th:value="${usuario.restricaoAlimentar}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full text-sm">
                         </div>
                     </th:block>
                 </div>
