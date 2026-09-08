@@ -50,7 +50,7 @@ public class Usuario {
     @Column(nullable = false, length = 2)
     private String estado;
 
-    @Column(name = "restricao_alimentar", length = 50)
+    @Column(name = "restricao_alimentar", length = 500)
     private String restricaoAlimentar;
 
     @Column(name = "genero")
