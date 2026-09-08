@@ -8,7 +8,6 @@ import br.com.smartmeal.smartmeal.service.DietaService;
 import br.com.smartmeal.smartmeal.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import br.com.smartmeal.smartmeal.config.SenhaUtils;
@@ -32,16 +31,15 @@ public class UsuarioController {
     @PostMapping("/cadastrar")
     public String cadastrar(Usuario usuario, RedirectAttributes redirectAttributes) {
         try {
-           String senhaCripto = SenhaUtils.criptografar(usuario.getSenha());
-           usuario.setSenha(senhaCripto);
+            String senhaCripto = SenhaUtils.criptografar(usuario.getSenha());
+            usuario.setSenha(senhaCripto);
 
             usuarioService.cadastrarUsuario(usuario);
 
             redirectAttributes.addFlashAttribute("sucesso", "Conta criada com sucesso! Faça seu login.");
-           return "redirect:/login";
+            return "redirect:/login";
         } catch (RuntimeException e) {
             e.printStackTrace();
-
             redirectAttributes.addFlashAttribute("erro", "Esse e-mail já está em uso ou houve um erro no cadastro.");
             return "redirect:/login";
         }
@@ -63,7 +61,6 @@ public class UsuarioController {
             redirectAttributes.addFlashAttribute("erro", "Senha incorreta. Tente novamente.");
             return "redirect:/login";
         }
-
     }
 
     @GetMapping("/sair")
@@ -76,8 +73,25 @@ public class UsuarioController {
     public String completarPerfil(Usuario dadosAtualizados, HttpSession session, RedirectAttributes redirectAttributes) {
         try {
             Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
-
             if (usuarioLogado == null) return "redirect:/login";
+
+            // Validação de Segurança Médica (IMC)
+            if (dadosAtualizados.getPesoKg() != null && dadosAtualizados.getAlturaCm() != null && dadosAtualizados.getAlturaCm() > 0) {
+                double alturaMetros = dadosAtualizados.getAlturaCm() / 100.0;
+                double imc = dadosAtualizados.getPesoKg().doubleValue() / (alturaMetros * alturaMetros);
+
+                if (imc < 18.5 && "emagrecer".equalsIgnoreCase(dadosAtualizados.getObjetivo())) {
+                    redirectAttributes.addFlashAttribute("erroIA",
+                            String.format("Aviso de Saúde: Seu IMC calculado é %.1f (Abaixo do peso ideal). Por diretrizes de segurança alimentar, o objetivo de emagrecimento não é permitido.", imc));
+                    return "redirect:/dashboard";
+                }
+
+                if (imc >= 35.0 && "hipertrofia".equalsIgnoreCase(dadosAtualizados.getObjetivo())) {
+                    redirectAttributes.addFlashAttribute("erroIA",
+                            String.format("Aviso de Saúde: Seu IMC calculado é %.1f. Para essa faixa corporal, o foco recomendado é a reeducação alimentar e manutenção antes do ganho hipertrófico.", imc));
+                    return "redirect:/dashboard";
+                }
+            }
 
             usuarioLogado.setAlturaCm(dadosAtualizados.getAlturaCm());
             usuarioLogado.setPesoKg(dadosAtualizados.getPesoKg());
@@ -91,31 +105,25 @@ public class UsuarioController {
             usuarioLogado.setMetaAguaMl((int) (pesoParaConta * 35));
 
             double tmb;
-
-            if ("M".equals(usuarioLogado.getGenero())) {
+            if ("M".equalsIgnoreCase(usuarioLogado.getGenero())) {
                 tmb = 66.5 + (13.75 * pesoParaConta) + (5.003 * usuarioLogado.getAlturaCm());
             } else {
                 tmb = 655.1 + (9.563 * pesoParaConta) + (1.850 * usuarioLogado.getAlturaCm());
             }
 
             double fatorAtividade = 1.2;
-            if ("leve".equals(usuarioLogado.getNivelAtividade())) fatorAtividade = 1.375;
-            if ("moderado".equals(usuarioLogado.getNivelAtividade())) fatorAtividade = 1.55;
-            if ("intenso".equals(usuarioLogado.getNivelAtividade())) fatorAtividade = 1.725;
+            if ("leve".equalsIgnoreCase(usuarioLogado.getNivelAtividade())) fatorAtividade = 1.375;
+            if ("moderado".equalsIgnoreCase(usuarioLogado.getNivelAtividade())) fatorAtividade = 1.55;
+            if ("intenso".equalsIgnoreCase(usuarioLogado.getNivelAtividade())) fatorAtividade = 1.725;
 
             double gastoDiario = tmb * fatorAtividade;
-            if ("emagrecer".equals(usuarioLogado.getObjetivo())) gastoDiario -= 500;
-            else if ("hipertrofia".equals(usuarioLogado.getObjetivo())) gastoDiario += 500;
+            if ("emagrecer".equalsIgnoreCase(usuarioLogado.getObjetivo())) gastoDiario -= 500;
+            else if ("hipertrofia".equalsIgnoreCase(usuarioLogado.getObjetivo())) gastoDiario += 500;
 
             usuarioLogado.setMetaCaloricaKcal((int) gastoDiario);
             usuarioRepository.save(usuarioLogado);
 
             String dietaHtml = artificialIntelligenceService.gerarDietaPelaIA(usuarioLogado, "Café da Manhã");
-
-            System.out.println("=========================================");
-            System.out.println("RESPOSTA DIRETA DA IA PARA O UTILIZADOR: " + usuarioLogado.getIdUsuario());
-            System.out.println(dietaHtml);
-            System.out.println("=========================================");
 
             DietaRecomendada novaDieta = new DietaRecomendada();
             novaDieta.setIdUsuario(usuarioLogado.getIdUsuario());
@@ -127,7 +135,7 @@ public class UsuarioController {
 
             session.setAttribute("usuarioLogado", usuarioLogado);
             return "redirect:/dashboard";
-        }catch (Exception e) {
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("erroIA", "Nossos servidores de IA estão temporariamente sobrecarregados devido ao limite de requisições. Por favor, aguarde 1 minuto e tente novamente.");
             return "redirect:/dashboard";
         }
@@ -139,7 +147,7 @@ public class UsuarioController {
         Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
 
         if (usuarioLogado == null) {
-            return "<p class= 'text-red-500'>Sessão expirada. Atualize a página e faça login novamente.</p>";
+            return "<p class='text-red-500'>Sessão expirada. Atualize a página e faça login novamente.</p>";
         }
 
         String dietaHtml = artificialIntelligenceService.gerarDietaPelaIA(usuarioLogado, tipoRefeicao);
@@ -166,6 +174,28 @@ public class UsuarioController {
                 return "redirect:/login";
             }
 
+            // Determina dados finais para avaliação preventiva de IMC
+            Integer alturaFinal = dadosAtualizados.getAlturaCm() != null ? dadosAtualizados.getAlturaCm() : usuarioLogado.getAlturaCm();
+            java.math.BigDecimal pesoFinal = dadosAtualizados.getPesoKg() != null ? dadosAtualizados.getPesoKg() : usuarioLogado.getPesoKg();
+            String objetivoFinal = dadosAtualizados.getObjetivo() != null ? dadosAtualizados.getObjetivo() : usuarioLogado.getObjetivo();
+
+            if (alturaFinal != null && alturaFinal > 0 && pesoFinal != null) {
+                double alturaMetros = alturaFinal / 100.0;
+                double imc = pesoFinal.doubleValue() / (alturaMetros * alturaMetros);
+
+                if (imc < 18.5 && "emagrecer".equalsIgnoreCase(objetivoFinal)) {
+                    redirectAttributes.addFlashAttribute("erroIA",
+                            String.format("Aviso de Saúde: Seu IMC é %.1f (Abaixo do peso ideal). Por segurança clínica, não recomendamos metas de déficit calórico/emagrecimento.", imc));
+                    return "redirect:/dashboard";
+                }
+
+                if (imc >= 35.0 && "hipertrofia".equalsIgnoreCase(objetivoFinal)) {
+                    redirectAttributes.addFlashAttribute("erroIA",
+                            String.format("Aviso de Saúde: Seu IMC é %.1f. Para essa condição corporal, recomendamos acompanhamento profissional antes de iniciar planos de superávit para hipertrofia.", imc));
+                    return "redirect:/dashboard";
+                }
+            }
+
             // Atualiza campos cadastrais básicos
             usuarioLogado.setNome(dadosAtualizados.getNome());
             usuarioLogado.setEmail(dadosAtualizados.getEmail());
@@ -175,7 +205,7 @@ public class UsuarioController {
                 usuarioLogado.setDataNascimento(dadosAtualizados.getDataNascimento());
             }
 
-            // Atualiza métricas corporais caso venham preenchidas
+            // Atualiza métricas corporais
             if (dadosAtualizados.getAlturaCm() != null) usuarioLogado.setAlturaCm(dadosAtualizados.getAlturaCm());
             if (dadosAtualizados.getPesoKg() != null) usuarioLogado.setPesoKg(dadosAtualizados.getPesoKg());
             if (dadosAtualizados.getGenero() != null) usuarioLogado.setGenero(dadosAtualizados.getGenero());
@@ -190,7 +220,7 @@ public class UsuarioController {
                 usuarioLogado.setSenha(novaSenhaCripto);
             }
 
-            // Só calcula TMB e Metas se o perfil tiver peso e altura informados
+            // Recalcula TMB e metas se o perfil tiver peso e altura
             if (usuarioLogado.getPesoKg() != null && usuarioLogado.getAlturaCm() != null && usuarioLogado.getAlturaCm() > 0) {
                 double pesoParaConta = usuarioLogado.getPesoKg().doubleValue();
                 usuarioLogado.setMetaAguaMl((int) (pesoParaConta * 35));
@@ -229,26 +259,19 @@ public class UsuarioController {
 
     @GetMapping("/deletarConta")
     public String deletarConta(HttpSession session) {
-
         Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
 
         if (usuarioLogado != null) {
             try {
-
                 Integer id = usuarioLogado.getIdUsuario();
-
                 dietaService.excluirDietasDoUsuario(Integer.valueOf(id));
-
                 usuarioRepository.deleteById(id);
-
                 session.invalidate();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println("ERRO CRÍTICO NA EXCLUSÃO:");
                 e.printStackTrace();
                 return "redirect:/dashboard?erroExclusao=true";
             }
-         }else {
-            System.out.println("Aviso: Tentativa de exclusão ignorada porque o usuário na sessão era nulo.");
         }
 
         return "redirect:/login";
@@ -256,7 +279,6 @@ public class UsuarioController {
 
     @PostMapping("/salvar-nova-senha")
     public String salvarNovaSenha(@RequestParam("email") String email, @RequestParam("novaSenha") String novaSenha, RedirectAttributes redirectAttributes) {
-
         Usuario usuario = usuarioRepository.findByEmail(email);
 
         if (usuario != null) {
@@ -265,11 +287,10 @@ public class UsuarioController {
             usuarioRepository.save(usuario);
 
             redirectAttributes.addFlashAttribute("sucesso", "Senha alterada com sucesso! Faça seu login.");
-        }else {
+        } else {
             redirectAttributes.addFlashAttribute("erro", "Erro: O e-mail informado não está cadastrado.");
         }
 
         return "redirect:/login";
     }
-
 }

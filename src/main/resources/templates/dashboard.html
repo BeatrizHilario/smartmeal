@@ -499,6 +499,27 @@
             </button>
         </div>
     </div>
+
+    <!-- Card de IMC dentro da lista de métricas -->
+    <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <div>
+                <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Índice Corporal (IMC)</p>
+                <p class="text-sm font-bold text-textoEscuro"
+                   th:text="${#numbers.formatDecimal(usuario.pesoKg / ((usuario.alturaCm / 100.0) * (usuario.alturaCm / 100.0)), 1, 1)}">
+                    22.5
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé informativo de saúde -->
+    <p class="text-[10px] text-textoClaro text-center px-4 mt-2 leading-tight">
+        *Métricas baseadas em estimativas matemáticas gerais (Harris-Benedict / OMS). Não devem ser utilizadas como parecer clínico individual definitivo.
+    </p>
 </div>
 
 <!-- MODAL EDITAR PERFIL / CONFIGURAÇÕES -->
@@ -518,7 +539,7 @@
         <form th:action="@{/atualizarPerfil}" method="post" class="flex flex-col flex-1 min-h-0 bg-white">
             <div class="flex-1 overflow-y-auto p-5 md:p-8 space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    
+
                     <!-- Linha 1 -->
                     <div class="flex flex-col">
                         <label class="text-textoClaro font-bold text-sm mb-1">Nome Completo</label>
