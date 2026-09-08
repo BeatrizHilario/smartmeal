@@ -518,6 +518,8 @@
         <form th:action="@{/atualizarPerfil}" method="post" class="flex flex-col flex-1 min-h-0 bg-white">
             <div class="flex-1 overflow-y-auto p-5 md:p-8 space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <!-- Linha 1 -->
                     <div class="flex flex-col">
                         <label class="text-textoClaro font-bold text-sm mb-1">Nome Completo</label>
                         <input type="text" name="nome" th:value="${usuario.nome}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full text-sm">
@@ -528,6 +530,7 @@
                         <input type="email" name="email" th:value="${usuario.email}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full text-sm">
                     </div>
 
+                    <!-- Linha 2 -->
                     <div class="flex flex-col">
                         <label class="text-textoClaro font-bold text-sm mb-1">Estado (UF)</label>
                         <input type="text" name="estado" th:value="${usuario.estado}" placeholder="Ex: PA, SP, RJ" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full text-sm">
@@ -538,19 +541,9 @@
                         <input type="password" name="novaSenha" placeholder="Deixe em branco para manter" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full text-sm">
                     </div>
 
-                    <!-- Campos livres mesmo com perfil básico -->
-                    <div class="flex flex-col">
-                        <label class="text-textoClaro font-bold text-sm mb-1">Orçamento Mensal (R$)</label>
-                        <input type="number" step="0.01" name="orcamentoMaxMensal" th:value="${usuario.orcamentoMaxMensal}" placeholder="Ex: 400.00" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full text-sm">
-                    </div>
-
-                    <div class="flex flex-col md:col-span-2">
-                        <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
-                        <input type="text" name="restricaoAlimentar" th:value="${usuario.restricaoAlimentar}" placeholder="Ex: Nenhuma, Vegano, Lactose..." class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full text-sm">
-                    </div>
-
-                    <!-- Métricas Físicas: Exibidas apenas após completar o perfil -->
+                    <!-- Campos condicionais de métricas físicas -->
                     <th:block th:unless="${perfilIncompleto}">
+                        <!-- Linha 3 -->
                         <div class="flex flex-col">
                             <label class="text-textoClaro font-bold text-sm mb-1">Data de Nascimento</label>
                             <input type="date" name="dataNascimento" th:value="${usuario.dataNascimento}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full text-sm bg-white">
@@ -561,6 +554,7 @@
                             <input type="number" name="alturaCm" th:value="${usuario.alturaCm}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full text-sm">
                         </div>
 
+                        <!-- Linha 4 -->
                         <div class="flex flex-col">
                             <label class="text-textoClaro font-bold text-sm mb-1">Peso Atual (kg)</label>
                             <input type="number" step="0.1" name="pesoKg" th:value="${usuario.pesoKg}" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full text-sm">
@@ -574,6 +568,7 @@
                             </select>
                         </div>
 
+                        <!-- Linha 5 -->
                         <div class="flex flex-col">
                             <label class="text-textoClaro font-bold text-sm mb-1">Frequência de Atividade</label>
                             <select name="nivelAtividade" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white w-full text-sm">
@@ -593,6 +588,18 @@
                             </select>
                         </div>
                     </th:block>
+
+                    <!-- Linha 6: Orçamento fechando o grid em par quando o perfil estiver completo -->
+                    <div class="flex flex-col" th:classappend="${perfilIncompleto} ? 'md:col-span-2' : ''">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Orçamento Mensal (R$)</label>
+                        <input type="number" step="0.01" name="orcamentoMaxMensal" th:value="${usuario.orcamentoMaxMensal}" placeholder="Ex: 400.00" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full text-sm">
+                    </div>
+
+                    <!-- Restrição Alimentar: Último item antes da exclusão, ocupando as duas colunas -->
+                    <div class="flex flex-col md:col-span-2">
+                        <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
+                        <input type="text" name="restricaoAlimentar" th:value="${usuario.restricaoAlimentar}" placeholder="Ex: Nenhuma, Vegano, Lactose..." class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full text-sm">
+                    </div>
                 </div>
 
                 <!-- Zona de Perigo -->
