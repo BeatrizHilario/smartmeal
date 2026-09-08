@@ -175,23 +175,23 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
 
             <!-- 1. CARD CALORIAS -->
-            <div class="bg-cardBranco p-6 rounded-[2.5rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative flex flex-col justify-between h-full overflow-hidden">
+            <div class="bg-cardBranco p-6 rounded-[2.5rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative flex flex-col justify-center items-center h-full min-h-[220px] overflow-hidden">
 
-                <!-- Círculo Decorativo Reduzido e Texto Mais Alto -->
+                <!-- Círculo com texto fixo -->
                 <div class="absolute top-0 right-0 w-32 h-32 bg-orange-100/50 rounded-full -mr-10 -mt-10 pointer-events-none flex items-center justify-center">
                     <span class="text-orange-600 font-semibold uppercase text-[14px] -translate-x-[16px] translate-y-[12px]">Hoje</span>
                 </div>
 
-                <!-- Ícone Esquerdo -->
-                <div class="flex items-center mb-4 relative z-10">
-                    <div class="w-13 h-13 p-3 rounded-2xl bg-orange-100/70 text-orange-500 flex items-center justify-center text-2xl shrink-0 shadow-sm">
+                <!-- Ícone Esquerdo Fixado no Topo -->
+                <div class="absolute top-6 left-6 z-10">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-100/70 text-orange-500 flex items-center justify-center text-xl shadow-sm">
                         <i class="fa-solid fa-fire"></i>
                     </div>
                 </div>
 
-                <!-- Corpo Centralizado com Texto Maior -->
-                <div class="flex flex-col items-center justify-center flex-1 my-2">
-                    <p class="text-textoClaro font-semibold mb-1 text-sm tracking-wide">Calorias Consumidas</p>
+                <!-- Conteúdo 100% Centralizado Verticalmente -->
+                <div class="flex flex-col items-center justify-center text-center z-10">
+                    <p class="text-textoClaro font-semibold mb-1.5 text-sm tracking-wide">Calorias Consumidas</p>
                     <h3 class="flex items-baseline justify-center gap-2">
                         <span class="text-4xl md:text-5xl font-extrabold text-textoEscuro tracking-tight" th:text="${caloriasConsumidas != null ? caloriasConsumidas : 0}">0</span>
                         <span class="text-lg text-textoClaro font-semibold">/ <span th:text="${usuario.metaCaloricaKcal}"></span> <span class="text-sm font-medium">kcal</span></span>
@@ -200,7 +200,7 @@
             </div>
 
             <!-- 2. CARD HIDRATAÇÃO -->
-            <div class="bg-cardBranco p-6 rounded-[2.5rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative flex flex-col justify-between h-full overflow-hidden"
+            <div class="bg-cardBranco p-6 rounded-[2.5rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative flex flex-col justify-center items-center h-full min-h-[220px] overflow-hidden"
                  id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
 
                 <!-- Círculo com texto fixo -->
@@ -211,29 +211,29 @@
                     </div>
                 </div>
 
-                <div class="flex items-center mb-4 relative z-10">
-                    <div class="w-13 h-13 p-3 rounded-2xl bg-blue-50 text-[#4CB5F9] flex items-center justify-center text-2xl shrink-0 shadow-sm">
+                <!-- Ícone Esquerdo Fixado no Topo -->
+                <div class="absolute top-6 left-6 z-10">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-[#4CB5F9] flex items-center justify-center text-xl shadow-sm">
                         <i class="fa-solid fa-droplet"></i>
                     </div>
                 </div>
 
-                <div class="flex flex-col items-center justify-center flex-1 my-2">
-                    <!-- Barra / Copos indicativos do progresso -->
-                    <div class="flex justify-center flex-wrap gap-2.5 my-2 min-h-[44px] w-full items-center" id="container-copos"></div>
+                <!-- Conteúdo 100% Centralizado Verticalmente -->
+                <div class="flex flex-col items-center justify-center text-center w-full z-10 mt-1">
+                    <!-- Copos Maiores -->
+                    <div class="flex justify-center flex-wrap gap-3 mb-1 min-h-[48px] w-full items-center" id="container-copos"></div>
 
-                    <!-- Valor Total Consumido -->
-                    <div class="flex items-center justify-center mt-1">
-                        <p class="text-3xl md:text-4xl font-extrabold text-textoEscuro tracking-tight" id="texto-agua-consumida">
-                            0 ml
-                        </p>
-                    </div>
+                    <!-- Valor Total -->
+                    <p class="text-3xl md:text-4xl font-extrabold text-textoEscuro tracking-tight leading-none my-1" id="texto-agua-consumida">
+                        0 ml
+                    </p>
 
-                    <!-- Ações Rápidas: +250ml, +500ml e Personalizado -->
-                    <div class="flex items-center gap-2 mt-3 z-10">
-                        <button type="button" onclick="adicionarAgua(250)" class="px-2.5 py-1 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#4CB5F9] font-bold text-xs transition shadow-sm" title="Adicionar 250 ml">
+                    <!-- Botões de Ação Rápida -->
+                    <div class="flex items-center gap-2 mt-2">
+                        <button type="button" onclick="adicionarAgua(250)" class="px-3 py-1 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#4CB5F9] font-bold text-xs transition shadow-sm" title="Adicionar 250 ml">
                             +250ml
                         </button>
-                        <button type="button" onclick="adicionarAgua(500)" class="px-2.5 py-1 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#4CB5F9] font-bold text-xs transition shadow-sm" title="Adicionar 500 ml">
+                        <button type="button" onclick="adicionarAgua(500)" class="px-3 py-1 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#4CB5F9] font-bold text-xs transition shadow-sm" title="Adicionar 500 ml">
                             +500ml
                         </button>
                         <button type="button" onclick="abrirModal('modal-editar-agua')" class="w-7 h-7 rounded-xl bg-gray-100 hover:bg-amareloMostarda hover:text-white text-textoClaro flex items-center justify-center transition shadow-sm text-xs" title="Adicionar quantidade avulsa">

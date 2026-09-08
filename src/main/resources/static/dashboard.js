@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const preenchido = aguaConsumida >= i * 500;
                 const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 svg.setAttribute("viewBox", "0 0 24 24");
-                svg.setAttribute("class", `w-7 h-9 transition-all duration-300 ${preenchido ? "text-[#4CB5F9] drop-shadow-sm" : "text-gray-200"}`);
+                svg.setAttribute("class", `w-8 h-11 transition-all duration-300 ${preenchido ? "text-[#4CB5F9] drop-shadow-sm" : "text-gray-200"}`);
                 svg.innerHTML = '<path fill="currentColor" d="M4 2h16l-2 20H6L4 2zm2.2 2l1.6 16h8.4l1.6-16H6.2z"/>';
                 containerCopos.appendChild(svg);
             }
