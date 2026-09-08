@@ -337,7 +337,7 @@ window.bloquearRecursoIncompleto = function() {
 window.abrirModal = function(id) {
     const modal = document.getElementById(id);
     if (!modal) return;
-
+    document.body.classList.add('overflow-hidden'); // Trava o fundo
     modal.classList.remove('hidden');
     setTimeout(() => {
         modal.classList.remove('opacity-0');
@@ -349,9 +349,10 @@ window.abrirModal = function(id) {
 window.fecharModal = function(id) {
     const modal = document.getElementById(id);
     if (!modal) return;
-
+    document.body.classList.remove('overflow-hidden'); // Libera o fundo
     modal.classList.add('opacity-0');
     const container = modal.querySelector('div');
     if (container) container.classList.add('scale-95');
     setTimeout(() => modal.classList.add('hidden'), 300);
 };
+

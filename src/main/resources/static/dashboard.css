@@ -6,6 +6,9 @@ body {
     margin: 0;
 }
 
+body.modal-aberto {
+    overflow: hidden;
+}
 /* Scrollbar visível apenas em telas Desktop */
 @media (min-width: 768px) {
     ::-webkit-scrollbar { width: 8px; }
