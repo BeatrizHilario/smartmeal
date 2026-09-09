@@ -81,15 +81,13 @@ public class UsuarioController {
                 double imc = dadosAtualizados.getPesoKg().doubleValue() / (alturaMetros * alturaMetros);
 
                 if (imc < 18.5 && "emagrecer".equalsIgnoreCase(dadosAtualizados.getObjetivo())) {
+                    dadosAtualizados.setObjetivo("manter");
                     redirectAttributes.addFlashAttribute("erroIA",
-                            String.format("Aviso de Saúde: Seu IMC calculado é %.1f (Abaixo do peso ideal). Por diretrizes de segurança alimentar, o objetivo de emagrecimento não é permitido.", imc));
-                    return "redirect:/dashboard";
-                }
-
-                if (imc >= 35.0 && "hipertrofia".equalsIgnoreCase(dadosAtualizados.getObjetivo())) {
+                            String.format("Aviso de Saúde: Seu IMC calculado é %.1f (Abaixo do peso ideal). Por segurança clínica contra desnutrição, seu objetivo foi ajustado automaticamente para 'Manter peso'.", imc));
+                } else if (imc >= 35.0 && "hipertrofia".equalsIgnoreCase(dadosAtualizados.getObjetivo())) {
+                    dadosAtualizados.setObjetivo("manter");
                     redirectAttributes.addFlashAttribute("erroIA",
-                            String.format("Aviso de Saúde: Seu IMC calculado é %.1f. Para essa faixa corporal, o foco recomendado é a reeducação alimentar e manutenção antes do ganho hipertrófico.", imc));
-                    return "redirect:/dashboard";
+                            String.format("Aviso de Saúde: Seu IMC calculado é %.1f. Para evitar sobrecarga metabólica com superávit, seu objetivo foi ajustado temporariamente para 'Manter peso'.", imc));
                 }
             }
 
@@ -184,15 +182,11 @@ public class UsuarioController {
                 double imc = pesoFinal.doubleValue() / (alturaMetros * alturaMetros);
 
                 if (imc < 18.5 && "emagrecer".equalsIgnoreCase(objetivoFinal)) {
-                    redirectAttributes.addFlashAttribute("erroIA",
-                            String.format("Aviso de Saúde: Seu IMC é %.1f (Abaixo do peso ideal). Por segurança clínica, não recomendamos metas de déficit calórico/emagrecimento.", imc));
-                    return "redirect:/dashboard";
-                }
-
-                if (imc >= 35.0 && "hipertrofia".equalsIgnoreCase(objetivoFinal)) {
-                    redirectAttributes.addFlashAttribute("erroIA",
-                            String.format("Aviso de Saúde: Seu IMC é %.1f. Para essa condição corporal, recomendamos acompanhamento profissional antes de iniciar planos de superávit para hipertrofia.", imc));
-                    return "redirect:/dashboard";
+                    dadosAtualizados.setObjetivo("manter");
+                    redirectAttributes.addFlashAttribute("erroIA", String.format("Aviso de Saúde: Seu  IMC é %.1f (Abaixo do peso ideal). Por segurança clínica contra desnutrição, seu objetivo foi ajustado automáticamente para 'Manter peso', também podendo ser ajustado para 'Ganhar Massa Muscular' se desejar.", imc));
+                } else if (imc >= 35.0 && "hipertrofia".equalsIgnoreCase(objetivoFinal)) {
+                    dadosAtualizados.setObjetivo("manter");
+                    redirectAttributes.addFlashAttribute("erroIA", String.format("Aviso de Saúde: Seu IMC é %.1f. Para evitar sobrecarga metabólica com superavit, seu objetivo foi ajustado temporariamente para 'Manter Peso', podendo ser ajustado futuramente.", imc));
                 }
             }
 
