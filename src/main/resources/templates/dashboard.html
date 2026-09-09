@@ -15,7 +15,7 @@
     <link rel="stylesheet" th:href="@{/dashboard.css}">
     <link rel="shortcut icon" th:href="@{/imagens/favicon.png}" type="image/png">
 </head>
-<body class="text-textoEscuro font-sans h-[100dvh] flex flex-col md:flex-row">
+<body class="text-textoEscuro font-sans min-h-[100dvh] flex flex-col md:flex-row">
 
 <!-- Ondas Decorativas de Fundo -->
 <svg class="ondas-bg" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
@@ -86,7 +86,6 @@
                     th:text="'Bem-vindo(a), ' + ${usuario.nome} + '!'">
                     Bem-vindo(a)!
                 </h2>
-                <!-- Subtítulo Desktop com margem superior zerada (mt-1) -->
                 <p th:unless="${perfilIncompleto}" class="hidden md:block text-textoClaro text-sm font-medium mt-1">
                     Aqui está o resumo do seu planejamento nutricional de hoje.
                 </p>
@@ -123,8 +122,8 @@
     <!-- SEÇÃO PERFIL INCOMPLETO -->
     <div th:if="${perfilIncompleto}" class="flex flex-col gap-4 mb-16 md:mb-0 mt-2 md:mt-4">
 
-        <!-- BANNER DE AVISO AMARELO (No topo e com texto otimizado) -->
-        <div onclick="document.getElementById('modal-completar-perfil').classList.remove('hidden'); setTimeout(() => { document.getElementById('modal-completar-perfil').classList.remove('opacity-0'); document.getElementById('modal-completar-perfil').querySelector('div').classList.remove('scale-95'); }, 10);"
+        <!-- BANNER DE AVISO AMARELO -->
+        <div onclick="abrirModal('modal-completar-perfil')"
              class="bg-gradient-to-r from-amareloMostarda to-[#E0A10D] rounded-2xl p-3.5 md:p-4 px-4 md:px-6 flex items-center justify-between shadow-md cursor-pointer transform transition hover:scale-[1.01] mx-auto w-full max-w-5xl gap-3">
             <div class="flex items-center gap-2.5 md:gap-3 flex-1 pr-1">
                 <i class="fa-solid fa-lock text-white/90 text-sm md:text-lg shrink-0"></i>
@@ -176,20 +175,16 @@
 
             <!-- 1. CARD CALORIAS -->
             <div class="bg-cardBranco p-6 rounded-[2.5rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative flex flex-col justify-center items-center h-full min-h-[220px] overflow-hidden">
-
-                <!-- Círculo com texto fixo -->
                 <div class="absolute top-0 right-0 w-32 h-32 bg-orange-100/50 rounded-full -mr-10 -mt-10 pointer-events-none flex items-center justify-center">
                     <span class="text-orange-600 font-semibold uppercase text-[14px] -translate-x-[16px] translate-y-[12px]">Hoje</span>
                 </div>
 
-                <!-- Ícone Esquerdo Fixado no Topo -->
                 <div class="absolute top-6 left-6 z-10">
                     <div class="w-12 h-12 rounded-2xl bg-orange-100/70 text-orange-500 flex items-center justify-center text-xl shadow-sm">
                         <i class="fa-solid fa-fire"></i>
                     </div>
                 </div>
 
-                <!-- Conteúdo 100% Centralizado Verticalmente -->
                 <div class="flex flex-col items-center justify-center text-center z-10">
                     <p class="text-textoClaro font-semibold mb-1.5 text-sm tracking-wide">Calorias Consumidas</p>
                     <h3 class="flex items-baseline justify-center gap-2">
@@ -203,7 +198,6 @@
             <div class="bg-cardBranco p-6 rounded-[2.5rem] shadow-sm border border-verdeSalvia/10 transform hover:-translate-y-1 transition duration-300 relative flex flex-col justify-center items-center h-full min-h-[220px] overflow-hidden"
                  id="card-hidratacao" th:data-meta="${usuario.metaAguaMl}">
 
-                <!-- Círculo com texto fixo -->
                 <div class="absolute top-0 right-0 w-32 h-32 bg-blue-100/[85%] rounded-full -mr-10 -mt-10 pointer-events-none flex items-center justify-center">
                     <div class="flex flex-col items-center justify-center text-center -translate-x-[15px] translate-y-[14px]">
                         <span class="text-[12px] font-semibold text-textoClaro tracking-wider leading-none">Faltam</span>
@@ -211,24 +205,17 @@
                     </div>
                 </div>
 
-                <!-- Ícone Esquerdo Fixado no Topo -->
                 <div class="absolute top-6 left-6 z-10">
                     <div class="w-12 h-12 rounded-2xl bg-blue-50 text-[#4CB5F9] flex items-center justify-center text-xl shadow-sm">
                         <i class="fa-solid fa-droplet"></i>
                     </div>
                 </div>
 
-                <!-- Conteúdo 100% Centralizado Verticalmente -->
                 <div class="flex flex-col items-center justify-center text-center w-full z-10 mt-1">
-                    <!-- Copos Maiores -->
                     <div class="flex justify-center flex-wrap gap-3 mb-1 min-h-[48px] w-full items-center" id="container-copos"></div>
-
-                    <!-- Valor Total -->
                     <p class="text-3xl md:text-4xl font-extrabold text-textoEscuro tracking-tight leading-none my-1" id="texto-agua-consumida">
                         0 ml
                     </p>
-
-                    <!-- Botões de Ação Rápida -->
                     <div class="flex items-center gap-2 mt-2">
                         <button type="button" onclick="adicionarAgua(250)" class="px-3 py-1 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#4CB5F9] font-bold text-xs transition shadow-sm" title="Adicionar 250 ml">
                             +250ml
@@ -249,7 +236,6 @@
                 <div>
                     <h3 class="font-bold text-xl mb-4 relative z-10">Refeições de Hoje</h3>
                     <ul class="space-y-3 relative z-10 font-medium opacity-90 text-sm">
-                        <!-- CAFÉ DA MANHÃ -->
                         <li class="flex items-center"
                             th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Café da Manhã'])}"
                             th:classappend="${feito ? 'text-white' : 'text-white/60'}">
@@ -257,7 +243,6 @@
                             <span class="truncate">Café da Manhã <span th:unless="${feito}" class="text-xs font-normal opacity-80">(Pendente)</span></span>
                         </li>
 
-                        <!-- ALMOÇO -->
                         <li class="flex items-center"
                             th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Almoço'])}"
                             th:classappend="${feito ? 'text-white' : 'text-white/60'}">
@@ -265,7 +250,6 @@
                             <span class="truncate">Almoço <span th:unless="${feito}" class="text-xs font-normal opacity-80">(Pendente)</span></span>
                         </li>
 
-                        <!-- LANCHE -->
                         <li class="flex items-center"
                             th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Lanche'])}"
                             th:classappend="${feito ? 'text-white' : 'text-white/60'}">
@@ -273,7 +257,6 @@
                             <span class="truncate">Lanche <span th:unless="${feito}" class="text-xs font-normal opacity-80">(Pendente)</span></span>
                         </li>
 
-                        <!-- JANTAR -->
                         <li class="flex items-center"
                             th:with="feito=${refeicoes != null and !#lists.isEmpty(refeicoes.?[tipoRefeicao == 'Jantar'])}"
                             th:classappend="${feito ? 'text-white' : 'text-white/60'}">
@@ -287,8 +270,6 @@
 
         <!-- SEGUNDA LINHA: SUGESTÃO INTELIGENTE ESTILIZADA -->
         <div class="bg-cardBranco rounded-[2.5rem] p-6 md:p-8 shadow-sm border border-verdeSalvia/10 border-l-[10px] border-l-amareloMostarda relative flex flex-col justify-between">
-
-            <!-- Cabeçalho do Card -->
             <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
                 <h3 id="titulo-refeicao-ia" class="font-bold text-2xl text-textoEscuro flex items-center gap-2">
                     Sugestão Inteligente <i class="fa-solid fa-wand-magic-sparkles text-amareloMostarda text-xl"></i>
@@ -298,7 +279,6 @@
                 </button>
             </div>
 
-            <!-- Abas de Refeição com Ícones -->
             <div class="flex gap-3 mb-6 overflow-x-auto pb-1 no-scrollbar">
                 <button class="meal-btn shrink-0 whitespace-nowrap bg-verdeSalvia text-white px-5 py-2.5 rounded-full text-xs md:text-sm font-bold shadow-sm transition transform hover:scale-105 flex items-center gap-2" data-tipo="Café da Manhã">
                     <i class="fa-solid fa-mug-saucer"></i> Café da Manhã
@@ -314,7 +294,6 @@
                 </button>
             </div>
 
-            <!-- Container Dinâmico do Conteúdo da IA -->
             <div id="container-dieta-ia" class="flex-1" th:utext="${dietaReal?.planoAlimentar}">
                 <div class="animate-pulse flex space-x-4">
                     <div class="flex-1 space-y-3 py-1">
@@ -327,7 +306,6 @@
                 </div>
             </div>
 
-            <!-- Formulário Oculto de Registro -->
             <form id="form-sugestao-ia" th:action="@{/diario/registrar-sugestao}" method="post" class="hidden">
                 <input type="hidden" name="tipoRefeicao" id="input-sug-tipo">
                 <input type="hidden" name="descricao" id="input-sug-desc">
@@ -369,10 +347,13 @@
     </button>
 </nav>
 
-<!-- MODAIS -->
+<!-- ================= MODAIS ================= -->
+
+<!-- MODAL COMPLETAR PERFIL -->
 <div id="modal-completar-perfil" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
     <div class="bg-white rounded-[2rem] shadow-xl w-full max-w-2xl relative transform transition-transform scale-95 flex flex-col max-h-[95vh] overflow-hidden border-2 border-verdeSalvia/30">
-        <button type="button" id="btn-fechar-perfil" onclick="fecharModal('modal-completar-perfil')" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-20">&times;</button>        <div class="text-center p-6 border-b border-gray-100 shrink-0 bg-white z-10">
+        <button type="button" id="btn-fechar-perfil" onclick="fecharModal('modal-completar-perfil')" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-20">&times;</button>
+        <div class="text-center p-6 border-b border-gray-100 shrink-0 bg-white z-10">
             <h3 class="text-2xl md:text-3xl font-bold text-textoEscuro mb-1">Finalize seu Perfil</h3>
             <p class="text-textoClaro font-medium text-sm md:text-base">A Inteligência Artificial precisa dessas métricas para os cálculos.</p>
         </div>
@@ -381,17 +362,17 @@
             <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-4 md:space-y-0 md:grid md:grid-cols-2 gap-4">
                 <div class="flex flex-col">
                     <label class="text-textoClaro font-bold text-sm mb-1">Altura (cm)</label>
-                    <input type="number" name="alturaCm" placeholder="Ex: 165" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full">
+                    <input type="number" name="alturaCm" placeholder="Ex: 165" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full">
                 </div>
 
                 <div class="flex flex-col">
                     <label class="text-textoClaro font-bold text-sm mb-1">Peso (kg)</label>
-                    <input type="number" step="0.1" name="pesoKg" placeholder="Ex: 60.5" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full">
+                    <input type="number" step="0.1" name="pesoKg" placeholder="Ex: 60.5" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full">
                 </div>
 
                 <div class="flex flex-col">
                     <label class="text-textoClaro font-bold text-sm mb-1">Gênero Biológico</label>
-                    <select name="genero" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white w-full">
+                    <select name="genero" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full">
                         <option value="">Selecione...</option>
                         <option value="M">Masculino</option>
                         <option value="F">Feminino</option>
@@ -400,7 +381,7 @@
 
                 <div class="flex flex-col">
                     <label class="text-textoClaro font-bold text-sm mb-1">Frequência de Atividade</label>
-                    <select name="nivelAtividade" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white w-full">
+                    <select name="nivelAtividade" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full">
                         <option value="sedentario">Sedentário (Nenhuma)</option>
                         <option value="leve">Leve (1-3 dias/sem)</option>
                         <option value="moderado">Moderado (3-5 dias/sem)</option>
@@ -410,7 +391,7 @@
 
                 <div class="flex flex-col">
                     <label class="text-textoClaro font-bold text-sm mb-1">Objetivo Principal</label>
-                    <select name="objetivo" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-white w-full">
+                    <select name="objetivo" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full">
                         <option value="">Selecione...</option>
                         <option value="emagrecer">Emagrecer / Secar</option>
                         <option value="manter">Manter peso</option>
@@ -418,16 +399,14 @@
                     </select>
                 </div>
 
-                <!-- 10º ITEM (Voltou a ter tamanho normal e fica do lado direito) -->
                 <div class="flex flex-col">
                     <label class="text-textoClaro font-bold text-sm mb-1">Orçamento Mensal (R$)</label>
-                    <input type="number" step="0.01" name="orcamentoMaxMensal" placeholder="Ex: 400.00" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full">
+                    <input type="number" step="0.01" name="orcamentoMaxMensal" placeholder="Ex: 400.00" required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full">
                 </div>
 
-                <!-- 11º ITEM (Esticado embaixo ocupando tudo) -->
                 <div class="flex flex-col md:col-span-2">
                     <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
-                    <input type="text" name="restricaoAlimentar" placeholder="Ex: Nenhuma, Vegano, Lactose..." required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia w-full">
+                    <input type="text" name="restricaoAlimentar" placeholder="Ex: Nenhuma, Vegano, Lactose..." required class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full">
                 </div>
             </div>
 
@@ -443,7 +422,9 @@
 <!-- MODAL VISUALIZAR DADOS -->
 <div id="modal-visualizar-dados" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
     <div class="bg-white rounded-[2rem] shadow-xl w-full max-w-sm relative transform transition-transform scale-95 flex flex-col max-h-[95vh] overflow-hidden border-2 border-verdeSalvia/30">
-        <button id="btn-fechar-visualizar" onclick="fecharModal('modal-visualizar-dados')" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-20">&times;</button>        <div class="text-center p-6 border-b border-gray-100 shrink-0 bg-white z-10">
+        <button id="btn-fechar-visualizar" onclick="fecharModal('modal-visualizar-dados')" class="absolute top-4 right-6 text-3xl text-textoClaro hover:text-textoEscuro font-bold z-20">&times;</button>
+
+        <div class="text-center p-6 border-b border-gray-100 shrink-0 bg-white z-10">
             <div class="w-12 h-12 rounded-full bg-verdeSalvia/10 text-verdeSalvia flex items-center justify-center text-xl mx-auto mb-3">
                 <i class="fa-solid fa-clipboard-user"></i>
             </div>
@@ -451,20 +432,37 @@
             <p class="text-textoClaro font-medium text-xs">Visão geral do seu perfil corporal.</p>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/50">
-            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+        <div class="flex-1 overflow-y-auto p-6 space-y-3 bg-gray-50/50">
+            <!-- Peso -->
+            <div class="flex items-center justify-between bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-verdeSalvia/10 text-verdeSalvia flex items-center justify-center"><i class="fa-solid fa-weight-scale"></i></div>
+                    <div class="w-9 h-9 rounded-full bg-verdeSalvia/10 text-verdeSalvia flex items-center justify-center"><i class="fa-solid fa-weight-scale text-sm"></i></div>
                     <div>
                         <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Peso Atual</p>
-                        <p class="text-lg font-bold text-textoEscuro" th:text="${usuario.pesoKg} + ' kg'">0 kg</p>
+                        <p class="text-base font-bold text-textoEscuro" th:text="${usuario.pesoKg} + ' kg'">0 kg</p>
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+            <!-- IMC Calculado -->
+            <div class="flex items-center justify-between bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-amareloMostarda/10 text-amareloMostarda flex items-center justify-center"><i class="fa-solid fa-bullseye"></i></div>
+                    <div class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center"><i class="fa-solid fa-heart-pulse text-sm"></i></div>
+                    <div>
+                        <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Índice de Massa Corporal (IMC)</p>
+                        <p class="text-base font-bold text-textoEscuro"
+                           th:if="${usuario.pesoKg != null and usuario.alturaCm != null and usuario.alturaCm > 0}"
+                           th:text="${#numbers.formatDecimal(usuario.pesoKg.doubleValue() / ((usuario.alturaCm / 100.0) * (usuario.alturaCm / 100.0)), 1, 1)}">
+                            0.0
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Objetivo -->
+            <div class="flex items-center justify-between bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-amareloMostarda/10 text-amareloMostarda flex items-center justify-center"><i class="fa-solid fa-bullseye text-sm"></i></div>
                     <div>
                         <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Objetivo</p>
                         <p class="text-sm font-bold text-textoEscuro capitalize" th:text="${usuario.objetivo}">Objetivo</p>
@@ -472,9 +470,10 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+            <!-- Atividade -->
+            <div class="flex items-center justify-between bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"><i class="fa-solid fa-person-running"></i></div>
+                    <div class="w-9 h-9 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center"><i class="fa-solid fa-person-running text-sm"></i></div>
                     <div>
                         <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Atividade</p>
                         <p class="text-sm font-bold text-textoEscuro capitalize" th:text="${usuario.nivelAtividade}">Nível</p>
@@ -482,44 +481,28 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+            <!-- Meta Calórica -->
+            <div class="flex items-center justify-between bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-fire"></i></div>
+                    <div class="w-9 h-9 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center"><i class="fa-solid fa-fire text-sm"></i></div>
                     <div>
                         <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Meta Calórica Diária</p>
-                        <p class="text-lg font-bold text-textoEscuro" th:text="${usuario.metaCaloricaKcal} + ' kcal'">0 kcal</p>
+                        <p class="text-base font-bold text-textoEscuro" th:text="${usuario.metaCaloricaKcal} + ' kcal'">0 kcal</p>
                     </div>
                 </div>
             </div>
+
+            <p class="text-[9px] text-textoClaro text-center px-2 pt-2 leading-tight">
+                *Estimativas baseadas em fórmulas matemáticas gerais (OMS / Harris-Benedict). Não substituem avaliação clínica ou conduta médica individual.
+            </p>
         </div>
 
         <div class="p-4 border-t border-gray-100 bg-white shrink-0 z-10 rounded-b-[2rem]">
-            <button onclick="document.getElementById('btn-fechar-visualizar').click(); document.getElementById('btn-abrir-editar-perfil').click();" class="w-full text-textoClaro px-4 py-2.5 rounded-xl font-bold hover:bg-gray-100 hover:text-textoEscuro transition flex items-center justify-center text-sm border border-gray-200">
+            <button onclick="fecharModal('modal-visualizar-dados'); abrirModal('modal-editar-perfil');" class="w-full text-textoClaro px-4 py-2.5 rounded-xl font-bold hover:bg-gray-100 hover:text-textoEscuro transition flex items-center justify-center text-sm border border-gray-200">
                 <i class="fa-solid fa-user-pen mr-2"></i> Alterar nas configurações
             </button>
         </div>
     </div>
-
-    <!-- Card de IMC dentro da lista de métricas -->
-    <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <i class="fa-solid fa-heart-pulse"></i>
-            </div>
-            <div>
-                <p class="text-[10px] text-textoClaro font-bold uppercase tracking-wider">Índice Corporal (IMC)</p>
-                <p class="text-sm font-bold text-textoEscuro"
-                   th:text="${#numbers.formatDecimal(usuario.pesoKg / ((usuario.alturaCm / 100.0) * (usuario.alturaCm / 100.0)), 1, 1)}">
-                    22.5
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Rodapé informativo de saúde -->
-    <p class="text-[10px] text-textoClaro text-center px-4 mt-2 leading-tight">
-        *Métricas baseadas em estimativas matemáticas gerais (Harris-Benedict / OMS). Não devem ser utilizadas como parecer clínico individual definitivo.
-    </p>
 </div>
 
 <!-- MODAL EDITAR PERFIL / CONFIGURAÇÕES -->
@@ -562,7 +545,7 @@
                         <input type="password" name="novaSenha" placeholder="Deixe em branco para manter" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full text-sm">
                     </div>
 
-                    <!-- Campos condicionais de métricas físicas -->
+                    <!-- Campos de métricas físicas -->
                     <th:block th:unless="${perfilIncompleto}">
                         <!-- Linha 3 -->
                         <div class="flex flex-col">
@@ -610,13 +593,13 @@
                         </div>
                     </th:block>
 
-                    <!-- Linha 6: Orçamento fechando o grid em par quando o perfil estiver completo -->
+                    <!-- Linha 6 -->
                     <div class="flex flex-col" th:classappend="${perfilIncompleto} ? 'md:col-span-2' : ''">
                         <label class="text-textoClaro font-bold text-sm mb-1">Orçamento Mensal (R$)</label>
                         <input type="number" step="0.01" name="orcamentoMaxMensal" th:value="${usuario.orcamentoMaxMensal}" placeholder="Ex: 400.00" class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full text-sm">
                     </div>
 
-                    <!-- Restrição Alimentar: Último item antes da exclusão, ocupando as duas colunas -->
+                    <!-- Restrição Alimentar -->
                     <div class="flex flex-col md:col-span-2">
                         <label class="text-textoClaro font-bold text-sm mb-1">Restrição Alimentar</label>
                         <input type="text" name="restricaoAlimentar" th:value="${usuario.restricaoAlimentar}" placeholder="Ex: Nenhuma, Vegano, Lactose..." class="px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia bg-gray-50 w-full text-sm">
