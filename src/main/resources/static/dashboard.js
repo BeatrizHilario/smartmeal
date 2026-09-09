@@ -392,3 +392,28 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Alerta preventivo na seleção de Objetivo
+    const selectObjetivo = document.querySelector("#modal-editar-perfil select[name='objetivo']");
+    const inputPeso = document.querySelector("#modal-editar-perfil input[name='pesoKg']");
+    const inputAltura = document.querySelector("#modal-editar-perfil input[name='alturaCm']");
+
+    if (selectObjetivo && inputPeso && inputAltura) {
+        selectObjetivo.addEventListener("change", (e) => {
+            const peso = parseFloat(inputPeso.value);
+            const alturaCm = parseFloat(inputAltura.value);
+
+            if (peso > 0 && alturaCm > 0) {
+                const alturaM = alturaCm / 100.0;
+                const imc = peso / (alturaM * alturaM);
+
+                if (e.target.value === "emagrecer" && imc < 18.5) {
+                    alert(`Atenção à sua saúde: Seu IMC é ${imc.toFixed(1)} (Abaixo do peso ideal). O objetivo de emagrecer não é recomendado nesta faixa corporal.`);
+                } else if (e.target.value === "hipertrofia" && imc >= 35.0) {
+                    alert(`Atenção: Seu IMC é ${imc.toFixed(1)}. Para este nível de sobrepeso/obesidade, foque primeiro na reeducação alimentar e manutenção antes do ganho de massa com superávit calórico.`);
+                }
+            }
+        });
+    }
+});
