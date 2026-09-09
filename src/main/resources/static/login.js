@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
    }
 });
 
-// Função para alternar a visibilidade da senha no Login
+// Função para alternar a visibilidade da senha no Login e Registro
 function toggleSenhaGenerica(inputId, iconId) {
     const inputSenha = document.getElementById(inputId);
     const iconeOlho = document.getElementById(iconId);
@@ -89,13 +89,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const loader = document.getElementById("loader-global");
     if (!loader) return;
 
-    // No Login, a transição para o Dashboard acontece ao enviar o FORMULÁRIO (submit)
-    document.addEventListener("submit", () => {
-        // Remove a classe "oculto" para mostrar o loader com o efeito blur
-        loader.classList.remove("oculto");
+    // Dispara apenas quando os formulários reais de Login ou Cadastro forem enviados com sucesso
+    const forms = document.querySelectorAll("#modal-login form, #modal-register form");
+    forms.forEach(form => {
+        form.addEventListener("submit", () => {
+            if (form.checkValidity()) {
+                loader.classList.remove("oculto");
+            }
+        });
     });
 
-    // Medida de segurança: se o usuário clicar no botão "Voltar" do navegador
     window.addEventListener("pageshow", () => {
         loader.classList.add("oculto");
     });

@@ -75,7 +75,8 @@
                         </svg>
                     </button>
                 </div>
-            </div>            <div class="form-group"><label>Data de Nascimento</label><input type="date" name="dataNascimento" placeholder="Ex: 22" required></div>
+            </div>
+            <div class="form-group"><label>Data de Nascimento</label><input type="date" name="dataNascimento" placeholder="Ex: 22" required></div>
             <div class="form-group col-total">
                 <label>Estado (UF)</label>
                 <select name="estado" required>
@@ -175,6 +176,7 @@
 
 <!-- LOADER GLOBAL DE TRANSIÇÃO -->
 <div id="loader-global" class="loader-overlay oculto">
+    <!-- Ícone e Bolinha Perfeitamente Concêntricos usando Grid -->
     <div class="loader-icon-container">
         <div class="loader-ping"></div>
         <svg class="loader-utensils" viewBox="0 0 24 24" fill="none" stroke="#82A991" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -183,18 +185,9 @@
             <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
         </svg>
     </div>
+    <!-- Título Restaurado (text-5xl equivalente) -->
     <h2 class="loader-titulo">Carregando...</h2>
     <p class="loader-subtitulo">Conectando ao SmartMeal...</p>
-</div>
-
-<div class="mt-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs leading-relaxed max-w-md mx-auto text-center shadow-sm">
-    <div class="flex items-center justify-center gap-1.5 font-bold mb-1 text-amber-800">
-        <i class="fa-solid fa-shield-heart text-sm"></i>
-        <span>Aviso Legal de Saúde</span>
-    </div>
-    <p>
-        O <strong>SmartMeal</strong> é uma ferramenta de suporte e planejamento para auxílio na organização alimentar. O conteúdo gerado <strong>não substitui o diagnóstico, acompanhamento ou prescrição de um nutricionista ou médico</strong>. Consulte sempre um profissional de saúde.
-    </p>
 </div>
 
 <!-- Script Dinâmico para Notificações Elegantes -->
@@ -237,4 +230,3 @@
 <script th:src="@{/login.js}"></script>
 </body>
 </html>
-

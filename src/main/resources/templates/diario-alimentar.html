@@ -417,6 +417,7 @@
     function prepararEEnviarFormulario() {
         const form = document.getElementById('form-registro-manual');
         const linhas = document.querySelectorAll('.linha-ingrediente');
+        const loader = document.getElementById('loader-global');
 
         let validacaoOk = true;
         let fraseFinal = [];
@@ -444,8 +445,35 @@
 
         // Exemplo de resultado final: "150 g de Frango, 2 colher(es) de sopa de Arroz"
         document.getElementById('input-descricao-final').value = fraseFinal.join(', ');
+
+        // Exibe o loader ao processar os ingredientes
+        fecharModalManual();
+        if (loader) {
+            loader.classList.remove("hidden");
+            loader.classList.add("flex");
+        }
+
         form.submit();
     }
+
+    // Ouvinte para a volta ao Dashboard disparar o carregamento
+    document.addEventListener("DOMContentLoaded", () => {
+        const loader = document.getElementById('loader-global');
+        if (!loader) return;
+
+        const linksDashboard = document.querySelectorAll("a[href*='/dashboard']");
+        linksDashboard.forEach(link => {
+            link.addEventListener("click", () => {
+                loader.classList.remove("hidden");
+                loader.classList.add("flex");
+            });
+        });
+
+        window.addEventListener("pageshow", () => {
+            loader.classList.add("hidden");
+            loader.classList.remove("flex");
+        });
+    });
 </script>
 
 <!-- MODAL DE VISUALIZAR MÉTRICAS -->
@@ -621,23 +649,35 @@
 <!-- MODAL EDITAR ÁGUA -->
 <div id="modal-editar-agua" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300 p-4">
     <div class="bg-white rounded-[2rem] shadow-xl w-full max-w-xs relative transform transition-transform scale-95 flex flex-col overflow-hidden border-2 border-verdeSalvia/30 p-6 text-center">
-        <h3 class="text-xl font-bold text-textoEscuro mb-2">Editar Copo</h3>
-        <p class="text-xs text-textoClaro mb-4">Ajuste a quantidade do último copo que você adicionou:</p>
+        <button type="button" onclick="fecharModal('modal-editar-agua')" class="absolute top-4 right-5 text-2xl text-textoClaro hover:text-textoEscuro font-bold">&times;</button>
 
-        <input type="number" id="input-agua-manual" class="w-full text-center px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia text-xl font-bold text-textoEscuro mb-3" placeholder="Ex: 800">
+        <h3 class="text-xl font-bold text-textoEscuro mb-1 mt-1">Registrar Água</h3>
+        <p class="text-xs text-textoClaro mb-4">Quanto você acabou de beber?</p>
 
-        <button onclick="zerarAgua()" class="text-xs text-red-400 hover:text-red-600 font-medium mb-5 transition underline">Quero zerar tudo</button>
+        <div class="relative flex items-center mb-4">
+            <input type="number" id="input-agua-adicional" min="1" step="10"
+                   class="w-full text-center px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-verdeSalvia text-2xl font-extrabold text-textoEscuro placeholder-gray-300"
+                   placeholder="300">
+            <span class="absolute right-4 text-xs font-bold text-textoClaro">ml</span>
+        </div>
 
-        <div class="flex gap-3 w-full">
-            <button onclick="fecharModalAgua()" class="flex-1 py-2.5 rounded-xl text-textoClaro font-bold hover:bg-gray-100 transition">Cancelar</button>
-            <button onclick="salvarAguaManual()" class="flex-1 py-2.5 rounded-xl bg-verdeSalvia text-white font-bold hover:bg-verdeEscuro transition shadow-md">Salvar</button>
+        <button type="button" onclick="salvarAguaAvulsa()" class="w-full py-3 rounded-xl bg-verdeSalvia text-white font-bold hover:bg-verdeEscuro transition shadow-md text-sm mb-4">
+            Adicionar ao Total
+        </button>
+
+        <div class="border-t border-gray-100 pt-3 flex justify-between items-center text-xs text-textoClaro">
+            <button type="button" onclick="desfazerUltimoConsumo()" class="hover:text-textoEscuro transition underline">
+                Desfazer último
+            </button>
+            <button type="button" onclick="zerarAgua()" class="text-red-400 hover:text-red-600 transition underline">
+                Zerar tudo
+            </button>
         </div>
     </div>
 </div>
 
-<!-- LOADER GLOBAL -->
-<div id="loader-global" class="fixed inset-0 bg-white/60 backdrop-blur-md z-[9999] hidden flex flex-col justify-center items-center">
-    <!-- Ícone e Bolinha Perfeitamente Concêntricos -->
+<!-- LOADER GLOBAL COM BOLINHA E ÍCONE CENTRALIZADOS -->
+<div id="loader-global" class="fixed inset-0 bg-white/60 backdrop-blur-md z-[9999] hidden flex-col justify-center items-center">
     <div class="relative grid place-items-center w-24 h-24 mb-3">
         <div class="w-16 h-16 rounded-full bg-verdeSalvia/30 animate-ping col-start-1 row-start-1"></div>
         <svg class="w-12 h-12 text-verdeSalvia relative z-10 animate-bounce col-start-1 row-start-1 translate-y-[2px]"
@@ -647,11 +687,7 @@
             <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
         </svg>
     </div>
-
-    <!-- Título Restaurado para 48px (text-5xl) -->
     <h2 class="text-4xl md:text-5xl font-cursiva text-textoEscuro animate-pulse mb-1">Carregando...</h2>
-
-    <!-- Subtítulo em Tamanho Legível (14px - 16px) -->
     <p class="text-textoClaro text-sm md:text-base font-medium">Buscando seus dados nutritivos...</p>
 </div>
 

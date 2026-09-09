@@ -380,12 +380,27 @@ document.addEventListener("DOMContentLoaded", () => {
         new MutationObserver(injetarBotaoConsumo).observe(containerDieta, { childList: true, subtree: true });
     }
 
+    // --- LOADER GLOBAL APENAS PARA DIÁRIO E PERFIL ---
     const loader = document.getElementById("loader-global");
     if (loader) {
-        document.addEventListener("submit", () => {
-            loader.classList.remove("hidden");
-            loader.classList.add("flex");
+        // Dispara ao navegar para o Diário Alimentar (Sidebar ou Mobile)
+        const linksDiario = document.querySelectorAll("a[href*='/diario']");
+        linksDiario.forEach(link => {
+            link.addEventListener("click", () => {
+                loader.classList.remove("hidden");
+                loader.classList.add("flex");
+            });
         });
+
+        // Dispara ao salvar as alterações do Perfil
+        const formEditarPerfil = document.querySelector("#modal-editar-perfil form");
+        if (formEditarPerfil) {
+            formEditarPerfil.addEventListener("submit", () => {
+                loader.classList.remove("hidden");
+                loader.classList.add("flex");
+            });
+        }
+
         window.addEventListener("pageshow", () => {
             loader.classList.add("hidden");
             loader.classList.remove("flex");
