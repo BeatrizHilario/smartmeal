@@ -604,25 +604,28 @@ body {
 
     .loader-icon-container {
         position: relative;
+        width: 70px;
+        height: 70px;
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
     }
 
     .loader-ping {
         position: absolute;
+        inset: 0;
+        margin: auto;
         width: 60px;
         height: 60px;
         border-radius: 50%;
-        background-color: rgba(130, 169, 145, 0.3); /* var(--cor-verde) com transparência */
+        background-color: rgba(130, 169, 145, 0.35);
         animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
     }
 
     .loader-utensils {
-        width: 45px;
-        height: 45px;
-        color: var(--cor-verde);
+        width: 42px;
+        height: 42px;
         position: relative;
         z-index: 10;
         animation: bounce 1s infinite;
@@ -673,7 +676,7 @@ body {
        max-width: 860px;
        background-color: #FFF9E6;
        border: 1px solid #F4D06F;
-       border-radius: 50px;
+       border-radius: 20px;
        padding: 10px 24px;
        display: flex;
        align-items: center;
