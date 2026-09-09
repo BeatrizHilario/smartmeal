@@ -601,7 +601,7 @@
                     <p class="text-sm text-red-500/80 mb-4">Ao excluir sua conta, seu perfil será apagado e todas as dietas geradas pela IA serão excluídas permanentemente. Esta ação é irreversível.</p>
 
                     <a th:href="@{/deletarConta}"
-                       onclick="return confirm('ATENÇÃO: Tem certeza absoluta? Seu perfil e histórico de IA serão destruídos para sempre.');"
+                       onclick="return confirm('ATENÇÃO: Tem certeza absoluta? Seu perfil e histórico de IA serão excluídos para sempre.');"
                        class="inline-flex items-center bg-red-500 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-red-600 transition duration-200 cursor-pointer">
                         <i class="fa-solid fa-trash-can mr-2"></i> Excluir Minha Conta Permanentemente
                     </a>
@@ -636,13 +636,23 @@
 </div>
 
 <!-- LOADER GLOBAL -->
-<div id="loader-global" class="fixed inset-0 bg-white/60 backdrop-blur-md z-[9999] hidden flex-col justify-center items-center">
-    <div class="relative flex justify-center items-center mb-4">
-        <div class="absolute animate-ping w-16 h-16 rounded-full bg-verdeSalvia/30"></div>
-        <i class="fa-solid fa-utensils text-4xl text-verdeSalvia relative z-10 animate-bounce"></i>
+<div id="loader-global" class="fixed inset-0 bg-white/60 backdrop-blur-md z-[9999] hidden flex flex-col justify-center items-center">
+    <!-- Ícone e Bolinha Perfeitamente Concêntricos -->
+    <div class="relative grid place-items-center w-24 h-24 mb-3">
+        <div class="w-16 h-16 rounded-full bg-verdeSalvia/30 animate-ping col-start-1 row-start-1"></div>
+        <svg class="w-12 h-12 text-verdeSalvia relative z-10 animate-bounce col-start-1 row-start-1 translate-y-[2px]"
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+            <path d="M7 2v20"></path>
+            <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
+        </svg>
     </div>
-    <h2 class="text-3xl font-cursiva text-textoEscuro animate-pulse">Carregando...</h2>
-    <p class="text-textoClaro text-xs mt-2 font-medium">Buscando seus dados nutritivos</p>
+
+    <!-- Título Restaurado para 48px (text-5xl) -->
+    <h2 class="text-4xl md:text-5xl font-cursiva text-textoEscuro animate-pulse mb-1">Carregando...</h2>
+
+    <!-- Subtítulo em Tamanho Legível (14px - 16px) -->
+    <p class="text-textoClaro text-sm md:text-base font-medium">Buscando seus dados nutritivos...</p>
 </div>
 
 <!-- Script modularizado -->

@@ -604,18 +604,16 @@ body {
 
     .loader-icon-container {
         position: relative;
-        width: 70px;
-        height: 70px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        width: 80px;
+        height: 80px;
+        display: grid;
+        place-items: center;
         margin-bottom: 0.5rem;
     }
 
     .loader-ping {
-        position: absolute;
-        inset: 0;
-        margin: auto;
+        grid-column: 1;
+        grid-row: 1;
         width: 60px;
         height: 60px;
         border-radius: 50%;
@@ -624,10 +622,13 @@ body {
     }
 
     .loader-utensils {
+        grid-column: 1;
+        grid-row: 1;
         width: 42px;
         height: 42px;
         position: relative;
         z-index: 10;
+        transform: translateY(3px); /* Compensa a folga inferior do desenho do SVG */
         animation: bounce 1s infinite;
     }
 

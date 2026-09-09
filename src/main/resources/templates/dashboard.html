@@ -609,7 +609,7 @@
                 <!-- Zona de Perigo -->
                 <div class="bg-red-50 border border-red-200 rounded-2xl p-4 md:p-6 mt-6 mb-2">
                     <h4 class="text-red-600 font-bold mb-1 text-sm md:text-base"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Atenção!</h4>
-                    <p class="text-xs md:text-sm text-red-500/80 mb-3">Ao excluir sua conta, seu perfil e histórico de IA serão destruídos permanentemente.</p>
+                    <p class="text-xs md:text-sm text-red-500/80 mb-3">Ao excluir sua conta, seu perfil e histórico de IA serão excluídos permanentemente.</p>
                     <a th:href="@{/deletarConta}" onclick="return confirm('Tem certeza absoluta?');" class="inline-flex items-center bg-red-500 text-white px-4 py-2 rounded-xl text-xs md:text-sm font-bold shadow-md hover:bg-red-600 transition">
                         <i class="fa-solid fa-trash-can mr-2"></i> Excluir Conta
                     </a>
@@ -659,16 +659,22 @@
 
 <!-- LOADER GLOBAL -->
 <div id="loader-global" class="fixed inset-0 bg-white/60 backdrop-blur-md z-[9999] hidden flex flex-col justify-center items-center">
-    <div class="relative w-20 h-20 flex justify-center items-center mb-2">
-        <div class="absolute inset-0 m-auto w-16 h-16 rounded-full bg-verdeSalvia/30 animate-ping"></div>
-        <svg class="w-11 h-11 text-verdeSalvia relative z-10 animate-bounce" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Ícone e Bolinha Perfeitamente Concêntricos -->
+    <div class="relative grid place-items-center w-24 h-24 mb-3">
+        <div class="w-16 h-16 rounded-full bg-verdeSalvia/30 animate-ping col-start-1 row-start-1"></div>
+        <svg class="w-12 h-12 text-verdeSalvia relative z-10 animate-bounce col-start-1 row-start-1 translate-y-[2px]"
+             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
             <path d="M7 2v20"></path>
             <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
         </svg>
     </div>
-    <h2 class="text-3xl font-cursiva text-textoEscuro animate-pulse">Carregando...</h2>
-    <p class="text-textoClaro text-xs mt-1 font-medium">Buscando seus dados nutritivos...</p>
+
+    <!-- Título Restaurado para 48px (text-5xl) -->
+    <h2 class="text-4xl md:text-5xl font-cursiva text-textoEscuro animate-pulse mb-1">Carregando...</h2>
+
+    <!-- Subtítulo em Tamanho Legível (14px - 16px) -->
+    <p class="text-textoClaro text-sm md:text-base font-medium">Buscando seus dados nutritivos...</p>
 </div>
 
 <!-- Script modularizado -->
