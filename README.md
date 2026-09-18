@@ -20,7 +20,7 @@ O **SmartMeal** combina cálculo nutricional preciso com inteligência artificia
 ## 🚀 Funcionalidades Principais
 
 - **Autenticação e Perfil:** Registo seguro de utilizadores com encriptação de credenciais e gestão de dados antropométricos.
-- **Diário Alimentar:** Acompanhamento de refeições diárias e monitorização do consumo calórico e macronutrientes em tempo real.
+- **Diário Alimentar:** Acompanhamento de refeições diárias e monitoração do consumo calórico e macronutrientes em tempo real.
 - **Recomendações com Inteligência Artificial:** Integração com a API Google Gemini para elaborar planos alimentares dinâmicos de acordo com metas de saúde e restrições de paladar.
 - **Cache de Alimentos:** Mecanismo de persistência para otimizar pesquisas de itens e acelerar o cálculo das tabelas nutricionais.
 - **Interface Web Dinâmica:** Páginas responsivas renderizadas via Thymeleaf, HTML5, CSS3 e JavaScript Vanilla.
