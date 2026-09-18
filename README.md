@@ -1,4 +1,4 @@
-# SmartMeal - Monitorização Nutricional e Recomendações com IA
+# SmartMeal - Monitoração Nutricional e Recomendações com IA
 
 > Aplicação web desenvolvida em **Java** e **Spring Boot** para acompanhamento de rotina alimentar, cálculo de metas calóricas e geração de dietas personalizadas através da **API Google Gemini**.
 
