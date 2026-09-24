@@ -128,18 +128,18 @@ public class ArtificialIntelligenceService {
         }
 
         String prompt = """
-            Você é um cozinheiro e nutricionista focado em praticidade e economia doméstica no Brasil.
-            Gere UMA ÚNICA sugestão de %s rápida, prática e realista para quem cozinha no dia a dia.
+            Você é um cozinheiro criativo e nutricionista focado em culinária prática, saborosa e acessível para o dia a dia brasileiro.
+            Gere UMA ÚNICA sugestão de %s que seja rápida de fazer, nutritiva, com poucas calorias, mas com combinações inteligentes que saiam do óbvio.
 
-            REGRAS OBRIGATÓRIAS:
-            1. PRATICIDADE TOTAL: Sugira preparações simples do dia a dia (ex: ovos mexidos, cuscuz, pão com ovo, tapioca, arroz com feijão e frango grelhado, carne moída simples, salada básica).
-            2. É ESTRITAMENTE PROIBIDO sugerir pratos complexos, demorados ou que exijam forno longo (ex: tortas, suflês, assados elaborados, massas artesanais, peixes incomuns).
-            3. INGREDIENTES ACESSÍVEIS: Use apenas ingredientes comuns de supermercado brasileiro, de baixo custo e fáceis de encontrar.
-            4. REGRA CULTURAL RIGOROSA: Se for 'Café da Manhã', sugira exclusivamente itens tradicionais matinais (pão, ovo, queijo, café, leite, aveia, frutas simples, tapioca). PROIBIDO sugerir frango, carne, legumes cozidos ou refeições pesadas no café da manhã.
-            5. PROIBIDO USAR ADJETIVOS: Não use adjetivos ou floreios nos nomes (ex: proibido "delicioso", "nutritivo", "caseiro"). Apenas o nome direto do prato (ex: "Ovos mexidos com torradas").
-            6. APENAS UMA SUGESTÃO: É proibido listar opções ou variações. Gere apenas 1 prato com 3 a 5 ingredientes no máximo.
-            7. PROIBIDO introduções, conclusões, saudações, explicações ou blocos markdown (sem ```html).
-            8. Retorne EXATAMENTE a estrutura HTML abaixo, substituindo os valores entre colchetes [ ]:
+            DIRETRIZES DE CRIATIVIDADE E SABOR:
+            1. ELEVE O PRÁTICO: Transforme preparações simples com toques acessíveis de sabor (ex: usar páprica defumada, orégano, cúrcuma, raspas de limão, alho-poró picado, queijo minas, requeijão light, cebolinha ou tomate cereja tostado).
+            2. TEMPO MÁXIMO: O preparo deve levar de 5 a 15 minutos em fogão, frigideira ou micro-ondas. PROIBIDO receitas demoradas de forno longo, massas complexas ou suflês.
+            3. BAIXO TEOR CALÓRICO E ECONÔMICO: Priorize ingredientes comuns do mercado, com foco em densidade nutricional (proteínas magras, fibras e pouca gordura saturada).
+            4. REGRA CULTURAL RIGOROSA: Se for 'Café da Manhã', mantenha o contexto matinal brasileiro (pães integrais, torradas, ovos, queijos brancos, tapiocas, crepiocas, iogurtes, aveia, frutas). PROIBIDO frango desfiado, carnes vermelhas, arroz/feijão ou peixes no café da manhã.
+            5. PROIBIDO ADJETIVOS: Não adicione floreios ou adjetivos exagerados ao nome do prato (ex: proibido "maravilhoso", "supremo", "delicioso"). Dê um nome objetivo focado nos ingredientes principais (ex: "Torrada com Ovos Mexidos, Páprica e Requeijão Light", "Crepioca de Queijo Minas e Orégano", "Frango com Crosta de Ervas e Arroz Integral").
+            6. APENAS UMA SUGESTÃO: Gere exatamente 1 prato com 3 a 5 ingredientes principais listados com quantidades claras.
+            7. PROIBIDO saudações, introduções, explicações ou markdown com ```html.
+            8. Retorne ESTRITAMENTE a estrutura HTML abaixo, substituindo apenas os campos entre colchetes [ ]:
 
             <div class="space-y-3">
                 <h4 class="font-bold text-lg text-verdeEscuro">[NOME DO PRATO]</h4>
@@ -148,6 +148,7 @@ public class ArtificialIntelligenceService {
                     <li>[QUANTIDADE] de [INGREDIENTE]</li>
                     <li>[QUANTIDADE] de [INGREDIENTE]</li>
                     <li>[QUANTIDADE] de [INGREDIENTE]</li>
+                    <li>[QUANTIDADE] de [INGREDIENTE COM TEMPERO OU TOQUE ESPECIAL]</li>
                 </ul>
             </div>
             """.formatted(tipoRefeicao);
@@ -184,13 +185,13 @@ public class ArtificialIntelligenceService {
             System.err.println("Fallback acionado para ideias do dia: " + e.getMessage());
             return """
                 <div class="space-y-3">
-                    <h4 class="font-bold text-lg text-verdeEscuro">Ovos Mexidos com Pão Francês</h4>
+                    <h4 class="font-bold text-lg text-verdeEscuro">Pão Tostado com Ovos Mexidos, Páprica e Requeijão Light</h4>
                     <p class="text-xs font-bold text-textoClaro uppercase tracking-wider">Ingredientes:</p>
                     <ul class="list-disc pl-5 space-y-1.5 text-sm text-textoEscuro font-medium">
                         <li>2 ovos inteiros</li>
-                        <li>1 pão francês</li>
-                        <li>1 colher de chá de manteiga</li>
-                        <li>1 pitada de sal</li>
+                        <li>1 fatia de pão integral ou francês</li>
+                        <li>1 colher de sopa de requeijão light</li>
+                        <li>1 pitada de páprica defumada e orégano</li>
                     </ul>
                 </div>
             """;
