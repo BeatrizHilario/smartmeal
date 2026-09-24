@@ -128,14 +128,18 @@ public class ArtificialIntelligenceService {
         }
 
         String prompt = """
-            Atue como um chef de cozinha e nutricionista muito criativo focado em economia doméstica. "
-            + "Gere UMA ÚNICA sugestão de " + tipoRefeicao + " saudável e de baixo custo. "
-            +REGRAS OBRIGATÓRIAS:
-            + 1. Seja variado nas sugestões, focando em ingredientes simples do dia a dia brasileiro.
-            + 2. PROIBIDO gerar listas com várias opções. Gere APENAS uma sugestão por vez.
-            + 3. PROIBIDO USAR FORMATO JSON ou markdown (sem ```html).
-            + 4. PROIBIDO escrever introduções, conclusões ou saudações.
-            5. Retorne EXATAMENTE a estrutura HTML abaixo:
+            Você é um cozinheiro e nutricionista focado em praticidade e economia doméstica no Brasil.
+            Gere UMA ÚNICA sugestão de %s rápida, prática e realista para quem cozinha no dia a dia.
+
+            REGRAS OBRIGATÓRIAS:
+            1. PRATICIDADE TOTAL: Sugira preparações simples do dia a dia (ex: ovos mexidos, cuscuz, pão com ovo, tapioca, arroz com feijão e frango grelhado, carne moída simples, salada básica).
+            2. É ESTRITAMENTE PROIBIDO sugerir pratos complexos, demorados ou que exijam forno longo (ex: tortas, suflês, assados elaborados, massas artesanais, peixes incomuns).
+            3. INGREDIENTES ACESSÍVEIS: Use apenas ingredientes comuns de supermercado brasileiro, de baixo custo e fáceis de encontrar.
+            4. REGRA CULTURAL RIGOROSA: Se for 'Café da Manhã', sugira exclusivamente itens tradicionais matinais (pão, ovo, queijo, café, leite, aveia, frutas simples, tapioca). PROIBIDO sugerir frango, carne, legumes cozidos ou refeições pesadas no café da manhã.
+            5. PROIBIDO USAR ADJETIVOS: Não use adjetivos ou floreios nos nomes (ex: proibido "delicioso", "nutritivo", "caseiro"). Apenas o nome direto do prato (ex: "Ovos mexidos com torradas").
+            6. APENAS UMA SUGESTÃO: É proibido listar opções ou variações. Gere apenas 1 prato com 3 a 5 ingredientes no máximo.
+            7. PROIBIDO introduções, conclusões, saudações, explicações ou blocos markdown (sem ```html).
+            8. Retorne EXATAMENTE a estrutura HTML abaixo, substituindo os valores entre colchetes [ ]:
 
             <div class="space-y-3">
                 <h4 class="font-bold text-lg text-verdeEscuro">[NOME DO PRATO]</h4>
@@ -147,90 +151,90 @@ public class ArtificialIntelligenceService {
                 </ul>
             </div>
             """.formatted(tipoRefeicao);
-    
-            Map<String, Object> requestBody = new HashMap<>();
-            Map<String, Object> textPart = new HashMap<>();
-            textPart.put("text", prompt);
-    
-            Map<String, Object> parts = new HashMap<>();
-            parts.put("parts", Collections.singletonList(textPart));
-    
-            Map<String, Object> contents = new HashMap<>();
-            contents.put("contents", Collections.singletonList(parts));
-    
-            requestBody.put("contents", contents.get("contents"));
-    
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-            try {
-                String urlCompleta = apiUrl + "?key=" + apiKey;
-                ResponseEntity<Map> response = restTemplate.postForEntity(urlCompleta, entity, Map.class);
+        Map<String, Object> requestBody = new HashMap<>();
+        Map<String, Object> textPart = new HashMap<>();
+        textPart.put("text", prompt);
 
-                List candidates = (List) response.getBody().get("candidates");
-                Map firstCandidate = (Map) candidates.get(0);
-                Map content = (Map) firstCandidate.get("content");
-                List responseParts = (List) content.get("parts");
-                Map firstPart = (Map) responseParts.get(0);
+        Map<String, Object> parts = new HashMap<>();
+        parts.put("parts", Collections.singletonList(textPart));
 
-                String respostaGemini = (String) firstPart.get("text");
-                return respostaGemini.replace("```html", "").replace("```", "").trim();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return """
-                    <div class="space-y-3">
-                        <h4 class="font-bold text-lg text-verdeEscuro">Omelete de Aveia com Tomate e Ervas</h4>
-                        <p class="text-xs font-bold text-textoClaro uppercase tracking-wider">Ingredientes:</p>
-                        <ul class="list-disc pl-5 space-y-1.5 text-sm text-textoEscuro font-medium">
-                            <li>2 ovos inteiros</li>
-                            <li>2 colheres de sopa de farelo de aveia</li>
-                            <li>1 tomate pequeno picado</li>
-                            <li>Sal e orégano a gosto</li>
-                        </ul>
-                    </div>
-                """;
-            }
-        }
-    
-        public Integer estimarCaloriasRefeicaoLivre(String descricao) {
-            String prompt = String.format("Atue como nutricionista. Estime o total aproximado de calorias para a seguinte refeição: '%s'. Retorne APENAS o número inteiro de calorias, sem textos adicionais, sem formatação, sem a palavra 'kcal'.", descricao);
-    
-            try {
-                String respostaIA = chamarApiGemini(prompt);
-                return Integer.parseInt(respostaIA.replaceAll("[^0-9]", ""));
-            } catch (Exception e) {
-                System.err.println("Erro ao estimar calorias via IA: " + e.getMessage());
-                return 0;
-            }
-        }
-    
-        public String chamarApiGemini(String prompt) {
-            Map<String, Object> requestBody = new HashMap<>();
-            Map<String, Object> textPart = new HashMap<>();
-            textPart.put("text", prompt);
-    
-            Map<String, Object> parts = new HashMap<>();
-            parts.put("parts", Collections.singletonList(textPart));
-    
-            Map<String, Object> contents = new HashMap<>();
-            contents.put("contents", Collections.singletonList(parts));
-    
-            requestBody.put("contents", contents.get("contents"));
-    
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
-    
+        Map<String, Object> contents = new HashMap<>();
+        contents.put("contents", Collections.singletonList(parts));
+
+        requestBody.put("contents", contents.get("contents"));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+        try {
             String urlCompleta = apiUrl + "?key=" + apiKey;
             ResponseEntity<Map> response = restTemplate.postForEntity(urlCompleta, entity, Map.class);
-    
+
             List candidates = (List) response.getBody().get("candidates");
             Map firstCandidate = (Map) candidates.get(0);
             Map content = (Map) firstCandidate.get("content");
             List responseParts = (List) content.get("parts");
             Map firstPart = (Map) responseParts.get(0);
-    
-            return (String) firstPart.get("text");
+
+            String respostaGemini = (String) firstPart.get("text");
+            return respostaGemini.replace("```html", "").replace("```", "").trim();
+        } catch (Exception e) {
+            System.err.println("Fallback acionado para ideias do dia: " + e.getMessage());
+            return """
+                <div class="space-y-3">
+                    <h4 class="font-bold text-lg text-verdeEscuro">Ovos Mexidos com Pão Francês</h4>
+                    <p class="text-xs font-bold text-textoClaro uppercase tracking-wider">Ingredientes:</p>
+                    <ul class="list-disc pl-5 space-y-1.5 text-sm text-textoEscuro font-medium">
+                        <li>2 ovos inteiros</li>
+                        <li>1 pão francês</li>
+                        <li>1 colher de chá de manteiga</li>
+                        <li>1 pitada de sal</li>
+                    </ul>
+                </div>
+            """;
         }
     }
+
+    public Integer estimarCaloriasRefeicaoLivre(String descricao) {
+        String prompt = String.format("Atue como nutricionista. Estime o total aproximado de calorias para a seguinte refeição: '%s'. Retorne APENAS o número inteiro de calorias, sem textos adicionais, sem formatação, sem a palavra 'kcal'.", descricao);
+
+        try {
+            String respostaIA = chamarApiGemini(prompt);
+            return Integer.parseInt(respostaIA.replaceAll("[^0-9]", ""));
+        } catch (Exception e) {
+            System.err.println("Erro ao estimar calorias via IA: " + e.getMessage());
+            return 0;
+        }
+    }
+
+    public String chamarApiGemini(String prompt) {
+        Map<String, Object> requestBody = new HashMap<>();
+        Map<String, Object> textPart = new HashMap<>();
+        textPart.put("text", prompt);
+
+        Map<String, Object> parts = new HashMap<>();
+        parts.put("parts", Collections.singletonList(textPart));
+
+        Map<String, Object> contents = new HashMap<>();
+        contents.put("contents", Collections.singletonList(parts));
+
+        requestBody.put("contents", contents.get("contents"));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+
+        String urlCompleta = apiUrl + "?key=" + apiKey;
+        ResponseEntity<Map> response = restTemplate.postForEntity(urlCompleta, entity, Map.class);
+
+        List candidates = (List) response.getBody().get("candidates");
+        Map firstCandidate = (Map) candidates.get(0);
+        Map content = (Map) firstCandidate.get("content");
+        List responseParts = (List) content.get("parts");
+        Map firstPart = (Map) responseParts.get(0);
+
+        return (String) firstPart.get("text");
+    }
+}
