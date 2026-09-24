@@ -105,7 +105,9 @@ public class DiarioService {
                     totalCalorias += caloriasIa;
                 }
             } catch (Exception e) {
-                System.err.println("Erro no fallback da IA: " + e.getMessage());
+                System.err.println("Erro no fallback da IA (usando estimativa de segurança): " + e.getMessage());
+                // Fallback de segurança caso a IA esteja fora do ar: atribui 150 kcal padrão por item não encontrado
+                totalCalorias += (itensNaoEncontrados.size() * 150.0);
             }
         }
 
