@@ -130,7 +130,7 @@ public class ArtificialIntelligenceService {
             6. PROIBIDO explicações, introduções ou blocos ```html.
             7. Retorne ESTRITAMENTE a estrutura HTML abaixo, substituindo os campos entre colchetes [ ]:
 
-            <div class="flex flex-col md:flex-row items-start justify-between gap-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="flex-1 w-full text-textoClaro font-medium text-sm leading-relaxed max-h-[400px] overflow-y-auto pr-4">
                     <h4 class="font-bold text-lg text-verdeEscuro mb-3">[NOME DO PRATO]</h4>
                     <p class="text-xs font-bold text-textoClaro uppercase tracking-wider mb-2">Ingredientes:</p>
@@ -140,9 +140,9 @@ public class ArtificialIntelligenceService {
                         <li>[QUANTIDADE] de [INGREDIENTE COM TEMPERO OU TOQUE ESPECIAL]</li>
                     </ul>
                 </div>
-                <div class="bg-fundoCreme border-2 border-dashed border-amareloMostarda rounded-3xl p-5 text-center w-full md:w-44 shrink-0 mt-2">
-                    <p class="text-xs text-textoClaro font-semibold mb-1">Total Estimado</p>
-                    <p class="text-2xl font-bold text-amareloMostarda">[XXX] kcal</p>
+                <div class="bg-fundoCreme border-2 border-dashed border-amareloMostarda rounded-3xl py-8 px-6 text-center w-full md:w-48 shrink-0 flex flex-col justify-center items-center shadow-sm">
+                    <p class="text-sm text-textoClaro font-semibold mb-2">Total Estimado</p>
+                    <p class="text-3xl font-bold text-amareloMostarda">[XXX] kcal</p>
                 </div>
             </div>
             """.formatted(tipoRefeicao);
@@ -257,7 +257,7 @@ public class ArtificialIntelligenceService {
 
         return """
             %s
-            <div class="flex flex-col md:flex-row items-start justify-between gap-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="flex-1 w-full text-textoClaro font-medium text-sm leading-relaxed max-h-[400px] overflow-y-auto pr-4">
                     <h4 class="font-bold text-lg text-verdeEscuro mb-3">%s</h4>
                     <p class="text-xs font-bold text-textoClaro uppercase tracking-wider mb-2">Ingredientes:</p>
@@ -265,9 +265,9 @@ public class ArtificialIntelligenceService {
                         %s
                     </ul>
                 </div>
-                <div class="bg-fundoCreme border-2 border-dashed border-amareloMostarda rounded-3xl p-5 text-center w-full md:w-44 shrink-0 mt-2">
-                    <p class="text-xs text-textoClaro font-semibold mb-1">Total Estimado</p>
-                    <p class="text-2xl font-bold text-amareloMostarda">%s</p>
+                <div class="bg-fundoCreme border-2 border-dashed border-amareloMostarda rounded-3xl py-8 px-6 text-center w-full md:w-48 shrink-0 flex flex-col justify-center items-center shadow-sm">
+                    <p class="text-sm text-textoClaro font-semibold mb-2">Total Estimado</p>
+                    <p class="text-3xl font-bold text-amareloMostarda">%s</p>
                 </div>
             </div>
         """.formatted(avisoIa, prato[0], prato[2], prato[1]);
